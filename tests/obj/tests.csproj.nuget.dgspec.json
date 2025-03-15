@@ -4,6 +4,126 @@
     "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {}
   },
   "projects": {
+    "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
+        "projectName": "proxy",
+        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
+        "packagesPath": "/home/sparky/.nuget/packages/",
+        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/sparky/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/home/sparky/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj",
+        "projectName": "receiver",
+        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj",
+        "packagesPath": "/home/sparky/.nuget/packages/",
+        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/sparky/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/home/sparky/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -12,6 +132,82 @@
         "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj",
         "packagesPath": "/home/sparky/.nuget/packages/",
         "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/sparky/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/home/sparky/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {
+                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj"
+              },
+              "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj": {
+                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj"
+              },
+              "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {
+                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "BenchmarkDotNet": {
+              "target": "Package",
+              "version": "[0.14.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
+        "projectName": "viewer",
+        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
+        "packagesPath": "/home/sparky/.nuget/packages/",
+        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/sparky/.nuget/NuGet/NuGet.Config"
@@ -45,9 +241,31 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "BenchmarkDotNet": {
+            "Avalonia": {
               "target": "Package",
-              "version": "[0.14.0, )"
+              "version": "[11.2.1, )"
+            },
+            "Avalonia.Desktop": {
+              "target": "Package",
+              "version": "[11.2.1, )"
+            },
+            "Avalonia.Diagnostics": {
+              "include": "None",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[11.2.1, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.2.1, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.2.1, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.1, )"
             }
           },
           "imports": [
