@@ -38,8 +38,7 @@ class Retranslator
             _socket.Receive(securityHandshake, securityHandshake.Length, 0);
         } catch (SocketException ex)
         {
-            Console.WriteLine(ex.Message);
-            Environment.Exit(1);
+            _ExitProcessRetranslator(ex.Message, 1);
         }
     }
 
@@ -51,9 +50,14 @@ class Retranslator
             _socket.Send(sharedFlag, sharedFlag.Length, 0);
         } catch (SocketException ex)
         {
-            Console.WriteLine(ex.Message);
-            Environment.Exit(1);
+            _ExitProcessRetranslator(ex.Message, 1);
         }
+    }
+
+    private void _ExitProcessRetranslator(string msg, int code)
+    {
+        Console.WriteLine(msg);
+        Environment.Exit(code);
     }
 
     public void Connect()
