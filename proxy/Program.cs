@@ -23,7 +23,7 @@ class Retranslator
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-    public void ClientInit()
+    private void ClientInit()
     {
         byte[] sharedFlag = new byte[1] { 0 };
         socket.Send(sharedFlag, sharedFlag.Length, 0);
@@ -60,13 +60,10 @@ class Retranslator
                     break;
             }
             Console.ForegroundColor = ConsoleColor.White;
+            ClientInit();
         } catch (SocketException ex)
         {
             LogMessage(ConsoleColor.Red, ex.Message);
-        } finally
-        {
-            socket.Dispose();
-            socket.Close();
         }
     }
 }
@@ -77,6 +74,5 @@ class Program
     {
         Retranslator retranslator = new Retranslator();
         retranslator.Connect(new byte[] { 127, 0, 0, 1 }, 5900);
-        retranslator.ClientInit();
     }
 }
