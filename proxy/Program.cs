@@ -19,6 +19,11 @@ class Retranslator
 
     private void ServerInit()
     {
+        byte[] serverInfo = new byte[64];
+        _socket.Receive(serverInfo, serverInfo.Length, 0);
+
+        foreach (byte s in serverInfo)
+            Console.WriteLine(s);
     }
 
     private void makeHandshakes()
@@ -68,6 +73,7 @@ class Retranslator
     {
         makeHandshakes();
         ClientInit();
+        ServerInit();
     }
 }
 
