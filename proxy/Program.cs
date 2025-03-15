@@ -17,6 +17,10 @@ class Retranslator
         _port = port;
     }
 
+    private void ServerInit()
+    {
+    }
+
     private void makeHandshakes()
     {
         try
