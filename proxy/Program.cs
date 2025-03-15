@@ -13,6 +13,7 @@ class Retranslator
     {
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
+        ip = new IPAddress(new byte[] { 0, 0, 0, 0 } );
     }
 
     private void LogMessage(ConsoleColor color, string msg)
