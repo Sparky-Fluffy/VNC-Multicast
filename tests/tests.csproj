@@ -11,4 +11,10 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\proxy\proxy.csproj" />
+    <ProjectReference Include="..\receiver\receiver.csproj" />
+    <ProjectReference Include="..\viewer\viewer.csproj" />
+  </ItemGroup>
+
 </Project>
