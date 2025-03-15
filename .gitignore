@@ -3,3 +3,6 @@ proxy/obj/Debug/
 receiver/obj/Debug/
 tests/obj/Debug/
 viewer/obj/Debug/
+proxy/obj/Release/
+receiver/obj/Release/
+viewer/obj/Release/
