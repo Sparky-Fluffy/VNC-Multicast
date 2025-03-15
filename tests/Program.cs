@@ -1,4 +1,6 @@
-﻿namespace tests;
+﻿using BenchmarkDotNet.Running;
+
+namespace tests;
 
 class Program
 {
