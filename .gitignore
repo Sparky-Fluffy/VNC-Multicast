@@ -1,0 +1,5 @@
+bin/
+proxy/obj/Debug/
+receiver/obj/Debug/
+tests/obj/Debug/
+viewer/obj/Debug/
