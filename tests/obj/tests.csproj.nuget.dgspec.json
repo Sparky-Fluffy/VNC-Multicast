@@ -1,0 +1,74 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {}
+  },
+  "projects": {
+    "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj",
+        "projectName": "tests",
+        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj",
+        "packagesPath": "/home/sparky/.nuget/packages/",
+        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/sparky/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/home/sparky/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "BenchmarkDotNet": {
+              "target": "Package",
+              "version": "[0.14.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
