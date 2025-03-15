@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace proxy;
 
-class Retranslator
+public class Retranslator
 {
     public int _port { get; private set; }
     public IPAddress _ip { get; private set; }
