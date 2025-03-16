@@ -50,6 +50,26 @@ public class Retranslator
             Console.WriteLine(s);
     }
 
+    private void SetPixelFormat()
+    {
+    }
+
+    private void FramebufferUpdateRequest()
+    {
+    }
+
+    private void KeyEvent()
+    {
+    }
+
+    private void PointerEvent()
+    {
+    }
+
+    private void ClientCutText()
+    {
+    }
+
     private void SetEncoding()
     {
         byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
