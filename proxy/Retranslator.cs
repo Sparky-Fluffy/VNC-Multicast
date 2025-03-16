@@ -48,10 +48,13 @@ public class Retranslator
         _socket.Receive(serverInfo, serverInfo.Length, 0);
 
 #if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nServer Init message data");
+        Console.ForegroundColor = ConsoleColor.Yellow;
         foreach (byte s in serverInfo)
             Console.Write($"{s} ");
         Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.White;
 #endif
     }
 
@@ -78,7 +81,11 @@ public class Retranslator
     private void SetEncoding()
     {
 #if DEBUG
-        Console.WriteLine($"\nSet encoding message: {_encodingType}");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"\nSet encoding message: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine(_encodingType);
+        Console.ForegroundColor = ConsoleColor.White;
 #endif
         byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
             (byte)_encodingType };
@@ -90,39 +97,55 @@ public class Retranslator
         try
         {
 #if DEBUG
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Попытка подключения к серверу...");
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
             _socket.Connect(_ip, _port);
 
             byte[] protocolVersion = new byte[12];
             _socket.Receive(protocolVersion, protocolVersion.Length, 0);
 #if DEBUG
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nProtocolVersion");
+            Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (byte p in protocolVersion)
                 Console.Write($"{p} ");
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
             _socket.Send(protocolVersion, protocolVersion.Length, 0);
 
             byte[] securityTypes = new byte[2];
             _socket.Receive(securityTypes, securityTypes.Length, 0);
 #if DEBUG
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nSecurity Types");
+            Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (byte st in securityTypes)
                 Console.Write($"{st} ");
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
 
             byte[] securityType = new byte[] { securityTypes[0] };
 #if DEBUG
-            Console.WriteLine($"\nSecurity type from client: {securityType[0]}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nSecurity type from client: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(securityType[0]);
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
             _socket.Send(securityType, securityType.Length, 0);
 
             byte[] securityHandshake = new byte[1];
             _socket.Receive(securityHandshake, securityHandshake.Length, 0);
 #if DEBUG
-            Console.WriteLine($"\nSecurity handshake: {securityHandshake[0]}.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nSecurity handshake: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(securityHandshake[0]);
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
         } catch (SocketException ex)
         {
