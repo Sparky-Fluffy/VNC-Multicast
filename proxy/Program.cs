@@ -8,6 +8,7 @@ public class Retranslator
     public int _port { get; private set; }
     public IPAddress _ip { get; private set; }
     public Socket _socket { get; private set; }
+    public int encodingType { get; private set; }
 
     public Retranslator(byte[] addr, int port)
     {
@@ -24,6 +25,12 @@ public class Retranslator
 
         foreach (byte s in serverInfo)
             Console.WriteLine(s);
+    }
+
+    private void SetEncoding(int numberEncoding)
+    {
+        byte[] msg = new byte[] { 2, 0, (byte)numberEncoding };
+        _socket.Send(msg, msg.Length, 0);
     }
 
     private void makeHandshakes()
@@ -74,6 +81,7 @@ public class Retranslator
         makeHandshakes();
         ClientInit();
         ServerInit();
+        SetEncoding(0);
     }
 }
 
