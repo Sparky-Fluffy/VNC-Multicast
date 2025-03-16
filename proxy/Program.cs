@@ -3,6 +3,16 @@ using System.Net.Sockets;
 
 namespace proxy;
 
+public enum ClientMessageTypes : byte
+{
+    SetPixelFormat = 0,
+    SetEncodings = 2,
+    FramebufferUpdateRequest = 3,
+    KeyEvent = 4,
+    PointerEvent = 5,
+    ClientCutText = 6,
+}
+
 public enum Encodings
 {
     Raw = 0,
@@ -42,7 +52,8 @@ public class Retranslator
 
     private void SetEncoding()
     {
-        byte[] msg = new byte[] { 2, 0, (byte)_encodingType };
+        byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
+            (byte)_encodingType };
         _socket.Send(msg, msg.Length, 0);
     }
 
