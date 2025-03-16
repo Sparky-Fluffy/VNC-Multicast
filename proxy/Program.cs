@@ -20,14 +20,15 @@ public class Retranslator
     public int _port { get; private set; }
     public IPAddress _ip { get; private set; }
     public Socket _socket { get; private set; }
-    public int encodingType { get; private set; }
+    public Encodings _encodingType { get; private set; }
 
-    public Retranslator(byte[] addr, int port)
+    public Retranslator(byte[] addr, int port, Encodings encodingType)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
         _ip = new IPAddress(addr);
         _port = port;
+        _encodingType = encodingType;
     }
 
     private void ServerInit()
@@ -39,9 +40,9 @@ public class Retranslator
             Console.WriteLine(s);
     }
 
-    private void SetEncoding(int numberEncoding)
+    private void SetEncoding()
     {
-        byte[] msg = new byte[] { 2, 0, (byte)numberEncoding };
+        byte[] msg = new byte[] { 2, 0, (byte)_encodingType };
         _socket.Send(msg, msg.Length, 0);
     }
 
@@ -93,7 +94,7 @@ public class Retranslator
         makeHandshakes();
         ClientInit();
         ServerInit();
-        SetEncoding(0);
+        SetEncoding();
     }
 }
 
@@ -102,7 +103,7 @@ class Program
     static void Main(string[] args)
     {
         Retranslator client = new Retranslator(new byte[] { 127, 0, 0, 1 },
-                5900);
+                5900, Encodings.Raw);
         client.Connect();
     }
 }
