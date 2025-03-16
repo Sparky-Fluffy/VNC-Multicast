@@ -3,6 +3,18 @@ using System.Net.Sockets;
 
 namespace proxy;
 
+public enum Encodings
+{
+    Raw = 0,
+    CopyRect = 1,
+    RRE = 2,
+    Hextile = 5,
+    TRLE = 15,
+    ZRLE = 16,
+    CursorPseudoEncoding = -239,
+    DesktopSizePseudoEncoding = -223
+}
+
 public class Retranslator
 {
     public int _port { get; private set; }
