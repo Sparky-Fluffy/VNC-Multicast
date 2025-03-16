@@ -3,9 +3,6 @@ using System.Net.Sockets;
 
 namespace proxy;
 
-/// <summary>
-/// List of client-to-server message different types
-/// </summary>
 public enum ClientMessageTypes : byte
 {
     SetPixelFormat = 0,
@@ -16,9 +13,6 @@ public enum ClientMessageTypes : byte
     ClientCutText = 6,
 }
 
-/// <summary>
-/// List of client-to-server encoding types
-/// </summary>
 public enum Encodings
 {
     Raw = 0,
@@ -33,17 +27,11 @@ public enum Encodings
 
 public class Retranslator
 {
-    /// <summary>
-    /// Port for connection to VNC server
-    /// </summary>
     public int _port { get; private set; }
     public IPAddress _ip { get; private set; }
     public Socket _socket { get; private set; }
     public Encodings _encodingType { get; private set; }
 
-    /// <summary>
-    /// Public constructor to create an instance of <c>Retranslator</c> class
-    /// </summary>
     public Retranslator(byte[] addr, int port, Encodings encodingType)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
