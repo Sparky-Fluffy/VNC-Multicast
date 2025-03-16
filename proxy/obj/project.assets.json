@@ -14,7 +14,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
-      "projectName": "proxy",
+      "projectName": "VNCClient",
       "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
       "packagesPath": "/home/sparky/.nuget/packages/",
       "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/obj/",
