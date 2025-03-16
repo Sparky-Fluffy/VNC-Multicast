@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace proxy;
+﻿namespace proxy;
 
 class Program
 {
