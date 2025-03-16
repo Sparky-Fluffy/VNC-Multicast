@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {}
+    "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj": {}
   },
   "projects": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {
+    "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj",
         "projectName": "viewer",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/obj/",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\viewer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -54,8 +53,6 @@
               "version": "[11.2.1, )"
             },
             "Avalonia.Diagnostics": {
-              "include": "None",
-              "suppressParent": "All",
               "target": "Package",
               "version": "[11.2.1, )"
             },
@@ -88,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

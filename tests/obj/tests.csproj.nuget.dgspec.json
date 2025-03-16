@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {}
+    "D:\\_modding\\VNC-Multicast\\tests\\tests.csproj": {}
   },
   "projects": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {
+    "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
-        "projectName": "proxy",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/obj/",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj",
+        "projectName": "VNCClient",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\proxy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,27 +59,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj": {
+    "D:\\_modding\\VNC-Multicast\\receiver\\receiver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\receiver\\receiver.csproj",
         "projectName": "receiver",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/obj/",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\receiver\\receiver.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\receiver\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -120,41 +118,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj": {
+    "D:\\_modding\\VNC-Multicast\\tests\\tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\tests\\tests.csproj",
         "projectName": "tests",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/tests.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/tests/obj/",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\tests\\tests.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {
-                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj"
+              "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj": {
+                "projectPath": "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj"
               },
-              "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj": {
-                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/receiver/receiver.csproj"
+              "D:\\_modding\\VNC-Multicast\\receiver\\receiver.csproj": {
+                "projectPath": "D:\\_modding\\VNC-Multicast\\receiver\\receiver.csproj"
               },
-              "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {
-                "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj"
+              "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj": {
+                "projectPath": "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj"
               }
             }
           }
@@ -196,27 +193,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj": {
+    "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj",
         "projectName": "viewer",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/viewer.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/viewer/obj/",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\viewer\\viewer.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\viewer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -250,8 +246,6 @@
               "version": "[11.2.1, )"
             },
             "Avalonia.Diagnostics": {
-              "include": "None",
-              "suppressParent": "All",
               "target": "Package",
               "version": "[11.2.1, )"
             },
@@ -284,7 +278,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

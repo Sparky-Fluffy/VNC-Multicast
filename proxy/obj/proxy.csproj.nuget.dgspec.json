@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {}
+    "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj": {}
   },
   "projects": {
-    "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj": {
+    "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
+        "projectUniqueName": "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj",
         "projectName": "VNCClient",
-        "projectPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/proxy.csproj",
-        "packagesPath": "/home/sparky/.nuget/packages/",
-        "outputPath": "/home/sparky/Документы/Projects/VNC-Multicast/proxy/obj/",
+        "projectPath": "D:\\_modding\\VNC-Multicast\\proxy\\proxy.csproj",
+        "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+        "outputPath": "D:\\_modding\\VNC-Multicast\\proxy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sparky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/home/sparky/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/sparky/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
