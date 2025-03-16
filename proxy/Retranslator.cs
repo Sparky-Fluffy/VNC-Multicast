@@ -66,18 +66,6 @@ public class Retranslator
     {
     }
 
-    private void KeyEvent()
-    {
-    }
-
-    private void PointerEvent()
-    {
-    }
-
-    private void ClientCutText()
-    {
-    }
-
     private void SetEncoding()
     {
 #if DEBUG
