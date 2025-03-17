@@ -8,3 +8,5 @@ receiver/obj/Release/
 viewer/obj/Release/
 tests/obj/Release/
 tests/BenchmarkDotNet.Artifacts/
+obj/
+

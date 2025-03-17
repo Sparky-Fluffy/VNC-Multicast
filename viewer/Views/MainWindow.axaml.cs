@@ -11,16 +11,17 @@ public partial class MainWindow : Window
 {
     private int screenWidth = 1000;
     private int screenHeight = 1000;
-    private MainWindowViewModel viewModel;
+    private MainWindowViewModel viewModel = new MainWindowViewModel();
 
     public MainWindow()
     {
         InitializeComponent();
-        
-        viewModel = new MainWindowViewModel();
 
-        screenWidth = Screens.Primary!.Bounds.Width;
-        screenHeight = Screens.Primary!.Bounds.Height;
+        if (Screens.Primary is Screen screen)
+        {
+            screenWidth = screen.Bounds.Width;
+            screenHeight = screen.Bounds.Height;
+        }
 
         Width = screenWidth * viewModel.PercentWidth;
         Height = screenHeight * viewModel.PercentHeight;
@@ -38,6 +39,8 @@ public partial class MainWindow : Window
             celsius.Text = "0";
             fahrenheit.Text = "0";
         }
+
+        Console.WriteLine(this.DataContext is MainWindowViewModel);
 
         Console.WriteLine($"Click! Celsius={celsius.Text}");
     }
