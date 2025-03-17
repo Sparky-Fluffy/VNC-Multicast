@@ -15,13 +15,28 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <StackPanel>
+    <Grid RowDefinitions="Auto, *" Classes="body">
+        <Border Classes="header" Grid.Row="0">
+            <StackPanel Classes="title">
+                <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
+                <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+            </StackPanel>
+        </Border>
+        <Border Classes="content" Grid.Row="1">
+            <ListBox>
+                <TextBlock Text="jopa"/>
+            </ListBox>
+        </Border>
+    </Grid>
+
+    <!--StackPanel>
         <Grid RowDefinitions="Auto, *" Classes="mainContainer">
             <Border Classes="header" Grid.Row="0">
                 <StackPanel Classes="title">
                     <TextBlock Classes="title"> MO </TextBlock>
                     <TextBlock Classes="titleYellow"> VIEW </TextBlock>
                     <TextBlock Classes="title"> ER </TextBlock>
+                    <Image/>
                 </StackPanel>
             </Border>
             <Border Classes="header" Grid.Row="1">
@@ -41,5 +56,5 @@
                 Calculate
             </Button>
         </Grid>
-    </StackPanel>
+    </StackPanel!-->
 </Window>

@@ -33,17 +33,17 @@ public partial class MainWindow : Window
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (double.TryParse(celsius.Text, out double C))
-        {
-            var F = C * (9d / 5d) + 32;
-            fahrenheit.Text = F.ToString("0.0");
-        }
-        else
-        {
-            celsius.Text = "0";
-            fahrenheit.Text = "0";
-        }
+        // if (double.TryParse(celsius.Text, out double C))
+        // {
+        //     var F = C * (9d / 5d) + 32;
+        //     fahrenheit.Text = F.ToString("0.0");
+        // }
+        // else
+        // {
+        //     celsius.Text = "0";
+        //     fahrenheit.Text = "0";
+        // }
 
-        Console.WriteLine($"Click! Celsius={celsius.Text}");
+        // Console.WriteLine($"Click! Celsius={celsius.Text}");
     }
 }
