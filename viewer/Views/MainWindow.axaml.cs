@@ -13,11 +13,11 @@ public partial class MainWindow : Window
     private int screenHeight = 1000;
     private MainWindowViewModel viewModel;
 
-    public MainWindow(MainWindowViewModel model)
+    public MainWindow()
     {
         InitializeComponent();
         
-        viewModel = model;
+        viewModel = new MainWindowViewModel();
 
         screenWidth = Screens.Primary!.Bounds.Width;
         screenHeight = Screens.Primary!.Bounds.Height;
