@@ -12,9 +12,10 @@
         MinHeight="480"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
-        SystemDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaToDecorationsHint="True">
+        SystemDecorations="BorderOnly"
+        CanResize="True">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
