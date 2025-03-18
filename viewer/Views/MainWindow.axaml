@@ -7,7 +7,12 @@
         x:Class="viewer.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="avares://viewer/Assets/vnc-viewer.png"
-        Title="VNC Viewer">
+        Title="VNC Viewer"
+        MinWidth="320"
+        MinHeight="480"
+        Background="Transparent"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,23 +20,137 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *" Classes="body">
-        <Border Classes="header" Grid.Row="0">
-            <StackPanel Classes="title">
-                <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
-                <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
-            </StackPanel>
-        </Border>
-        <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
-            <ListBox Classes="session-picker" Grid.Row="0" Grid.Column="1">
-                <TextBlock Text="jopa"/>
-                <TextBlock Text="jopa"/>
-                <TextBlock Text="jopa"/>
-                <TextBlock Text="jopa"/>
-            </ListBox>
-            <Button Classes="select" Content="Select" Grid.Row="1" Grid.Column="1"/>
+    <Border Classes="window">
+        <Grid RowDefinitions="Auto, *">
+            <Grid Grid.Row="0">
+                <DockPanel Background="#6781F5"
+                    IsHitTestVisible="True" Name="WindowDragHandle" PointerMoved="WindowDragHandle_OnPointerMoved" PointerPressed="WindowDragHandle_OnPointerPressed" PointerReleased="WindowDragHandle_OnPointerReleased">
+                </DockPanel>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Spacing="6" Margin="6,0,0,0" Background="Transparent">
+                        <StackPanel.Styles>
+                            <Style Selector="StackPanel:pointerover Path">
+                                <Setter Property="IsVisible" Value="true"/>
+                            </Style>
+                            <Style Selector="StackPanel:not(:pointerover) Path">
+                                <Setter Property="IsVisible" Value="false"/>
+                            </Style>
+                            <Style Selector="StackPanel > Button">
+                                <Setter Property="Margin" Value="0 15 0 0"/>
+                            </Style>
+                        </StackPanel.Styles>
+
+                        <Button Name="CloseButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="24" Height="24">
+                            <Button.Resources>
+                                <CornerRadius x:Key="ControlCornerRadius">12</CornerRadius>
+                            </Button.Resources>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="#99FF5D55"/>
+                                </Style>
+                                <Style Selector="Button:not(:pointerover) /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="#FF5D55"/>
+                                </Style>
+                                <Style Selector="Button">
+                                    <Setter Property="Margin" Value="15 15 0 0"/>
+                                </Style>
+                            </Button.Styles>
+
+                            <Path Data="M 0,0 l 12,12 M 0,12 l 12,-12"
+                                Stroke="#4C0102"
+                                StrokeThickness="1"
+                                Width="12"
+                                Height="12">
+                            </Path>
+                        </Button>
+
+                        <Button Name="MinimizeButton"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="24"
+                            Height="24">
+                            <Button.Resources>
+                                <CornerRadius x:Key="ControlCornerRadius">12</CornerRadius>
+                            </Button.Resources>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="#99FFBC2E"/>
+                                </Style>
+                                <Style Selector="Button:not(:pointerover) /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="#FFBC2E"/>
+                                </Style>
+                            </Button.Styles>
+
+                            <Path Data="M 0,0 l 16,0"
+                                Stroke="#985712"
+                                StrokeThickness="1"
+                                Width="16"
+                                Height="1">
+                            </Path>
+                        </Button>
+
+                        <Button Name="ZoomButton"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="24"
+                            Height="24">
+                            <Button.Resources>
+                                <CornerRadius x:Key="ControlCornerRadius">12</CornerRadius>
+                            </Button.Resources>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="#9928C83E"/>
+                                </Style>
+                                <Style Selector="Button:not(:pointerover) /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="#28C83E"/>
+                                </Style>
+                            </Button.Styles>
+
+                            <Path Data="M 0,12 l 9,0 l -9,-9 l 0,9 M 12,0 l 0,9 l -9,-9 l 9,0"
+                                Fill="#0A630C"
+                                StrokeThickness="0"
+                                Width="12"
+                                Height="12">
+                            </Path>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="6"
+                        Name="TitleAndWindowIconWrapper" Margin="0 15 0 0">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform X="-33" Y="0"/>
+                        </StackPanel.RenderTransform>
+                        <Image Source="/Assets/vnc-viewer.png"
+                            Height="25"
+                            Width="25">
+                        </Image>
+                        <TextBlock Text="Custom TitleBar Demo"
+                            FontSize="20"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource MacOsWindowTitleColor}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
+            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1">
+                <Border Classes="header" Grid.Row="0">
+                    <StackPanel Classes="title">
+                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                    </StackPanel>
+                </Border>
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
+                    <ListBox Name="SessionPicker" Classes="session-picker" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                    </ListBox>
+                    <Button Classes="select" Content="SELECT" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 
     <!--StackPanel>
         <Grid RowDefinitions="Auto, *" Classes="mainContainer">

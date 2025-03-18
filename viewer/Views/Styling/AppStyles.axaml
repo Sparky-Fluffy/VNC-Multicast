@@ -1,7 +1,13 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui">
 
-<Style Selector="Grid.body">
+<Style Selector="Border.window">
     <Setter Property="Background" Value="#EAECF5"/>
+    <Setter Property="ClipToBounds" Value="True"/>
+    <Setter Property="CornerRadius" Value="15"/>
+    <Setter Property="IsHitTestVisible" Value="True"/>
+</Style>
+
+<Style Selector="Grid.body">
     <Setter Property="VerticalAlignment" Value="Stretch"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
 </Style>
@@ -31,47 +37,61 @@
 </Style>
 
 <Style Selector="ListBox.session-picker">
-    <Setter Property="Background" Value="#E2E5DE"/>
+    <Setter Property="Background" Value="#e1e5f5"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MaxWidth" Value="500"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
-    <Setter Property="CornerRadius" Value="15"/>
     <Setter Property="Padding" Value="10"/>
+    <Setter Property="CornerRadius" Value="15"/>
 </Style>
 
 <Style Selector="ListBox.session-picker > ListBoxItem">
-    <Setter Property="Background" Value="#d6cced"/>
+    <Setter Property="Background" Value="#d5dbf5"/>
     <Setter Property="Foreground" Value="#6781F5"/>
     <Setter Property="FontSize" Value="18"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Margin" Value="0 0 0 10"/>
-    <Setter Property="CornerRadius" Value="15"/>
     <Setter Property="Padding" Value="10"/>
+    <Setter Property="CornerRadius" Value="15"/>
 </Style>
 
 <Style Selector="ListBox.session-picker > ListBoxItem:selected /template/ ContentPresenter,
                 ListBoxItem:pointerover /template/ ContentPresenter">
     <Setter Property="FontWeight" Value="DemiBold"/>
+    <Setter Property="Foreground" Value="#EAECF5"/>
 </Style>
 
 <Style Selector="ListBox.session-picker > ListBoxItem:selected /template/ ContentPresenter">
     <Setter Property="Background" Value="#6781F5"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
     <Setter Property="Padding" Value="15"/>
 </Style>
 
-<Style Selector="ListBox.session-picker ListBoxItem:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="#8795d4"/>
-    <Setter Property="Foreground" Value="#67DBF5"/>
+<Style Selector="ListBox.session-picker > ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#a5b3f0"/>
 </Style>
 
 <Style Selector="Button.select">
     <Setter Property="Background" Value="#6781F5"/>
     <Setter Property="Foreground" Value="#EAECF5"/>
+    <Setter Property="FontSize" Value="20"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MaxWidth" Value="340"/>
     <Setter Property="Margin" Value="70 0 70 50"/>
     <Setter Property="Padding" Value="15"/>
     <Setter Property="CornerRadius" Value="15"/>
+</Style>
+
+<Style Selector="Button.select:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#748cf7"/>
+    <Setter Property="Foreground" Value="#EAECF5"/>
+</Style>
+
+<Style Selector="Button.select:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="#67DBF5"/>
+    <Setter Property="Foreground" Value="#6781F5"/>
 </Style>
 
 </Styles>
