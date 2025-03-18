@@ -22,11 +22,15 @@
                 <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
             </StackPanel>
         </Border>
-        <Border Classes="content" Grid.Row="1">
-            <ListBox>
+        <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
+            <ListBox Classes="session-picker" Grid.Row="0" Grid.Column="1">
+                <TextBlock Text="jopa"/>
+                <TextBlock Text="jopa"/>
+                <TextBlock Text="jopa"/>
                 <TextBlock Text="jopa"/>
             </ListBox>
-        </Border>
+            <Button Classes="select" Content="Select" Grid.Row="1" Grid.Column="1"/>
+        </Grid>
     </Grid>
 
     <!--StackPanel>
