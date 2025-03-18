@@ -26,7 +26,7 @@
     <Border Classes="window">
         <Grid RowDefinitions="Auto, *">
             <Grid Grid.Row="0">
-                <DockPanel Background="#6781F5"
+                <DockPanel Background="DarkOrange"
                     IsHitTestVisible="True" Name="WindowDragHandle" PointerMoved="WindowDragHandle_OnPointerMoved" PointerPressed="WindowDragHandle_OnPointerPressed" PointerReleased="WindowDragHandle_OnPointerReleased">
                 </DockPanel>
                 <DockPanel>
