@@ -26,7 +26,7 @@
     <Border Classes="window">
         <Grid RowDefinitions="Auto, *">
             <Grid Grid.Row="0">
-                <DockPanel Background="DarkOrange"
+                <DockPanel Background="#6781F5"
                     IsHitTestVisible="True" Name="WindowDragHandle" PointerMoved="WindowDragHandle_OnPointerMoved" PointerPressed="WindowDragHandle_OnPointerPressed" PointerReleased="WindowDragHandle_OnPointerReleased">
                 </DockPanel>
                 <DockPanel>
@@ -124,6 +124,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="6"
+                        IsHitTestVisible="False"
                         Name="TitleAndWindowIconWrapper" Margin="0 15 0 0">
                         <StackPanel.RenderTransform>
                             <TranslateTransform X="-33" Y="0"/>
