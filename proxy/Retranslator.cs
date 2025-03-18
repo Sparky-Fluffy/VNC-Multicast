@@ -66,12 +66,23 @@ public class Retranslator
 #endif
     }
 
-    private void SetPixelFormat()
+    public void SetPixelFormat(byte pitsPerPixel, byte depth, byte
+            bigEndianFlag, byte trueColorFlag, uint redMax, uint greenMax, uint
+            blueMax, byte redShift, byte greenShift, byte blueShift)
     {
+        byte[] msg = new byte[] { (byte)ClientMessageTypes.SetPixelFormat, 0, 0,
+            0, pitsPerPixel, depth, bigEndianFlag, trueColorFlag, (byte)redMax,
+            (byte)greenMax, (byte)blueMax, redShift, greenShift, blueShift, 0,
+            0, 0 };
+        _socket.Send(msg, msg.Length, 0);
     }
 
-    private void FramebufferUpdateRequest()
+    public void FramebufferUpdateRequest(byte incremental, ushort XPosition,
+            ushort YPosition, uint width, uint height)
     {
+        byte[] msg = new byte[] { incremental, Convert.ToByte(XPosition),
+            Convert.ToByte(YPosition), Convert.ToByte(width),
+            Convert.ToByte(height) };
     }
 
     private void SetEncoding()
