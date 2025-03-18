@@ -12,6 +12,7 @@
         MinHeight="480"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
+        SystemDecorations="BorderOnly"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaToDecorationsHint="True">
 
