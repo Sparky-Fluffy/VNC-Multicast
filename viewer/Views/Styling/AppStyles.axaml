@@ -78,6 +78,7 @@
     <Setter Property="Background" Value="#6781F5"/>
     <Setter Property="Foreground" Value="#EAECF5"/>
     <Setter Property="FontSize" Value="20"/>
+    <Setter Property="FontWeight" Value="DemiBold"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
     <Setter Property="MinWidth" Value="300"/>
