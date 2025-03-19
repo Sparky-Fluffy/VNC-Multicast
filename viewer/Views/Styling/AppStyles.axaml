@@ -98,6 +98,43 @@
     <Setter Property="Foreground" Value="#6781F5"/>
 </Style>
 
+<Style Selector="Border#screenView">
+    <Setter Property="Background" Value="#757c9c"/>
+    <Setter Property="BorderThickness" Value="7"/>
+    <Setter Property="BorderBrush" Value="#e1e5f5"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/> 
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MinHeight" Value="410"/>
+    <Setter Property="Margin" Value="0 50 0 20"/>
+    <Setter Property="Padding" Value="10"/>
+    <Setter Property="CornerRadius" Value="15"/>
+</Style>
+
+<Style Selector="Grid#functionButtons">
+    <Setter Property="Margin" Value="0 0 0 50"/>
+</Style>
+
+<Style Selector="Button.cancel">
+    <Setter Property="Background" Value="#cf443a"/>
+    <Setter Property="Foreground" Value="#EAECF5"/>
+    <Setter Property="FontSize" Value="20"/>
+    <Setter Property="FontWeight" Value="DemiBold"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="Padding" Value="15"/>
+    <Setter Property="CornerRadius" Value="15"/>
+</Style>
+
+<Style Selector="Button.cancel:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#db564d"/>
+    <Setter Property="Foreground" Value="#EAECF5"/>
+</Style>
+
+<Style Selector="Button.cancel:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="#e62f22"/>
+    <Setter Property="Foreground" Value="#782a24"/>
+</Style>
+
 </Styles>
 
 <!--Content
