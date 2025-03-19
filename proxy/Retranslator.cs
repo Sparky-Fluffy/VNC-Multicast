@@ -83,6 +83,7 @@ public class Retranslator
         byte[] msg = new byte[] { incremental, Convert.ToByte(XPosition),
             Convert.ToByte(YPosition), Convert.ToByte(width),
             Convert.ToByte(height) };
+        _socket.Send(msg, msg.Length, 0);
     }
 
     private void SetEncoding()
