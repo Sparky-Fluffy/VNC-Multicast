@@ -11,15 +11,6 @@
         MinWidth="320"
         MinHeight="480">
 
-        <!--
-            
-            TransparencyLevelHint="Transparent"
-            ExtendClientAreaToDecorationsHint="True"
-            ExtendClientAreaChromeHints="NoChrome"
-            SystemDecorations="BorderOnly"
-            CanResize="True"
-        -->
-
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -27,7 +18,7 @@
     </Design.DataContext>
 
     <Border Classes="window">
-        <Grid RowDefinitions="Auto, Auto">
+        <Grid>
             <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -41,8 +32,8 @@
                     <Button Classes="select" Content="SELECT" Grid.Row="1" Grid.Column="1"/>
                 </Grid>
             </Grid>
-            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1">
-                <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="False">
+            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1" IsVisible="False">
+                <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
                     <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto">
                         <ListBox Name="SessionPicker2" Classes="session-picker" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                         </ListBox>
