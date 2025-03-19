@@ -9,11 +9,7 @@
         Icon="avares://viewer/Assets/vnc-viewer.png"
         Title="VNC Viewer"
         MinWidth="320"
-        MinHeight="480"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
-        Background="Transparent"
-        SystemDecorations="Full">
+        MinHeight="480">
 
         <!--
             
@@ -31,23 +27,8 @@
     </Design.DataContext>
 
     <Border Classes="window">
-        <Grid RowDefinitions="Auto, *">
-            <Grid Grid.Row="0">
-                <DockPanel Name="WindowDragHandle" PointerMoved="WindowDragHandle_OnPointerMoved"
-                    PointerPressed="WindowDragHandle_OnPointerPressed" PointerReleased="WindowDragHandle_OnPointerReleased"/>
-                <DockPanel Name="Titlebar">
-                    <StackPanel Name="TitlebarButtons">
-                        <Button Name="CloseButton"><Path/></Button>
-                        <Button Name="MinimizeButton"><Path/></Button>
-                        <Button Name="ZoomButton"><Path/></Button>
-                    </StackPanel>
-                    <StackPanel Name="TitleIcon">
-                        <Image Source="/Assets/vnc-viewer.png"/>
-                        <TextBlock Text="VNC Multicast"/>
-                    </StackPanel>
-                </DockPanel>
-            </Grid>
-            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1">
+        <Grid RowDefinitions="Auto, Auto">
+            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
                         <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
@@ -59,7 +40,9 @@
                     </ListBox>
                     <Button Classes="select" Content="SELECT" Grid.Row="1" Grid.Column="1"/>
                 </Grid>
-                <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1" IsVisible="False">
+            </Grid>
+            <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="1">
+                <Grid RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="False">
                     <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto">
                         <ListBox Name="SessionPicker2" Classes="session-picker" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                         </ListBox>
