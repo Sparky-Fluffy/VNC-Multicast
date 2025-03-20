@@ -15,6 +15,9 @@ public partial class MainWindow : Window
     private int screenWidth = 1000;
     private int screenHeight = 1000;
 
+    public double WindowWidth => Width;
+    public double WindowHeight => Height;
+
     private string sessionName = "";
 
     private bool isFullScreen = false;
@@ -64,6 +67,8 @@ public partial class MainWindow : Window
     {
         WindowState = WindowState.Normal;
         SystemDecorations = SystemDecorations.Full;
+        ScreenView.Classes.Remove("fullScreen");
+        ViewHeader.IsVisible = true;
         isFullScreen = false;
     }
 
@@ -71,10 +76,8 @@ public partial class MainWindow : Window
     {
         WindowState = WindowState.FullScreen;
         SystemDecorations = SystemDecorations.None;
+        ScreenView.Classes.Add("fullScreen");
         ViewHeader.IsVisible = false;
-        ScreenView.Width = screenWidth;
-        ScreenView.Height = screenHeight;
-        ScreenView.Margin = new Thickness(0, 0, 0, 0);
         FunctionButtons.Margin = new Thickness(0, 0, 0, 0);
         isFullScreen = true;
         

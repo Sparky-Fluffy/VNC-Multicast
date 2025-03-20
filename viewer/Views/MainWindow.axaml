@@ -34,8 +34,8 @@
             </Grid>
             <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
-                <Grid Grid.Row="1" ColumnDefinitions="1*, 1*, 2*, 1*, 1*" RowDefinitions="*, Auto">
-                    <Border Name="ScreenView" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3">
+                <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 1*, 2*, 1*, 1*" RowDefinitions="*, Auto">
+                    <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3">
                         <Image Source="avares://viewer/Assets/vnc-viewer.png"/>
                     </Border>
                 </Grid>
