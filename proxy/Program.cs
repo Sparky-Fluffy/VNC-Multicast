@@ -15,7 +15,7 @@ class Program
         string? ip = config.GetValue<string>("IP");
         int port = config.GetValue<int>("port");
 
-        Retranslator client = new Retranslator(new byte[] { 127, 0, 0, 1 }, 5900
+        Retranslator client = new Retranslator(new byte[] { 127, 0, 0, 1 }, port
                 , Encodings.Raw);
         client.Connect();
 
