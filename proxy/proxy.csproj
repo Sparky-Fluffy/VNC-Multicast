@@ -11,4 +11,8 @@
     <Company>KHSU ITI</Company>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+  </ItemGroup>
+
 </Project>
