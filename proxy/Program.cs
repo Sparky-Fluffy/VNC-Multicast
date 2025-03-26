@@ -12,7 +12,6 @@ class Program
         IConfiguration config =
             host.Services.GetRequiredService<IConfiguration>();
 
-        string? ip = config.GetValue<string>("IP");
         int port = config.GetValue<int>("port");
 
         Retranslator client = new Retranslator(new byte[] { 127, 0, 0, 1 }, port
