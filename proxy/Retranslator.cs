@@ -37,15 +37,15 @@ public enum Encodings
 public class Retranslator
 {
     public int _port { get; private set; }
-    public IPAddress _ip { get; private set; }
+    public string _ip { get; private set; }
     public Socket _socket { get; private set; }
     public Encodings _encodingType { get; private set; }
 
-    public Retranslator(byte[] addr, int port, Encodings encodingType)
+    public Retranslator(string ip, int port, Encodings encodingType)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
-        _ip = new IPAddress(addr);
+        _ip = ip;
         _port = port;
         _encodingType = encodingType;
     }

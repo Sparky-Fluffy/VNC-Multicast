@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,10 +13,10 @@ class Program
         IConfiguration config =
             host.Services.GetRequiredService<IConfiguration>();
 
+        string? ip = config.GetValue<string?>("ip");
         int port = config.GetValue<int>("port");
 
-        Retranslator client = new Retranslator(new byte[] { 127, 0, 0, 1 }, port
-                , Encodings.Raw);
+        Retranslator client = new Retranslator(ip, port, Encodings.Raw);
         client.Connect();
 
         await host.RunAsync();
