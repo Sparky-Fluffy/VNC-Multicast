@@ -36,10 +36,10 @@ public enum Encodings
 
 public class Retranslator
 {
-    public int _port { get; private set; }
-    public string _ip { get; private set; }
-    public Socket _socket { get; private set; }
-    public Encodings _encodingType { get; private set; }
+    public int _port { get; }
+    public string _ip { get; }
+    public Socket _socket { get; }
+    public Encodings _encodingType { get; }
 
     public Retranslator(string ip, int port, Encodings encodingType)
     {
@@ -84,6 +84,29 @@ public class Retranslator
             Convert.ToByte(YPosition), Convert.ToByte(width),
             Convert.ToByte(height) };
         _socket.Send(msg, msg.Length, 0);
+
+        byte[] frameBufferUpdateMessageResponse = new byte[3];
+        _socket.Receive(frameBufferUpdateMessageResponse,
+                frameBufferUpdateMessageResponse.Length, 0);
+#if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("\nFrame Buffer Update Message Response");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (byte s in frameBufferUpdateMessageResponse)
+            Console.Write($"{s} ");
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.White;
+#endif
+
+#if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
+        /* Console.WriteLine("\nFrame Buffer Update Message Response");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (byte s in frameBufferUpdateMessageResponse)
+            Console.Write($"{s} ");
+        Console.WriteLine(); */
+        Console.ForegroundColor = ConsoleColor.White;
+#endif
     }
 
     private void SetEncoding()
@@ -106,7 +129,7 @@ public class Retranslator
         {
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Попытка подключения к серверу...");
+            Console.WriteLine("\nПопытка подключения к серверу...");
             Console.ForegroundColor = ConsoleColor.White;
 #endif
             _socket.Connect(_ip, _port);

@@ -1,7 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+
+#if DEBUG
+using System;
+#endif
 
 namespace proxy;
 
@@ -16,8 +19,14 @@ class Program
         string? ip = config.GetValue<string?>("ip");
         int port = config.GetValue<int>("port");
 
+#if DEBUG
+        Console.WriteLine($"ip = {ip}.");
+        Console.WriteLine($"port = {port}.");
+#endif
+
         Retranslator client = new Retranslator(ip, port, Encodings.Raw);
         client.Connect();
+        client.FramebufferUpdateRequest(0, 15, 15, 100, 100);
 
         await host.RunAsync();
     }
