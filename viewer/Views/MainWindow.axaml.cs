@@ -20,7 +20,10 @@ public partial class MainWindow : Window
 
     private string sessionName = "";
 
-    private bool isFullScreen = false;
+    private bool wasMaximized = false;
+
+    public bool IsMaximized => WindowState == WindowState.Maximized;
+    public bool IsFullScreen => WindowState == WindowState.FullScreen;
 
     public MainWindow()
     {
@@ -50,6 +53,11 @@ public partial class MainWindow : Window
         Page2.IsVisible = true;
     }
 
+    private void Audio_OnClick(object? sender, RoutedEventArgs e)
+    {
+        
+    }
+
     private void Cancel_OnClick(object? sender, RoutedEventArgs e)
     {
         Page1.IsVisible = true;
@@ -59,27 +67,30 @@ public partial class MainWindow : Window
 
     private void Expand_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (isFullScreen) SetWindowNormal();
+        if (IsFullScreen) SetWindowNormal();
         else SetWindowMaximized();
     }
 
     private void SetWindowNormal()
     {
-        WindowState = WindowState.Normal;
+        if (IsMaximized || wasMaximized)
+            WindowState = WindowState.Maximized;
+        else
+            WindowState = WindowState.Normal;
+        wasMaximized = false;
         SystemDecorations = SystemDecorations.Full;
         ScreenView.Classes.Remove("fullScreen");
+        FunctionButtons.Classes.Remove("fullScreen");
         ViewHeader.IsVisible = true;
-        isFullScreen = false;
     }
 
     private void SetWindowMaximized()
     {
+        if (IsMaximized) wasMaximized = true;
         WindowState = WindowState.FullScreen;
         SystemDecorations = SystemDecorations.None;
         ScreenView.Classes.Add("fullScreen");
+        FunctionButtons.Classes.Add("fullScreen");
         ViewHeader.IsVisible = false;
-        FunctionButtons.Margin = new Thickness(0, 0, 0, 0);
-        isFullScreen = true;
-        
     }
 }

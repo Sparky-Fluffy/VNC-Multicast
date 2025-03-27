@@ -10,7 +10,6 @@
         Title="VNC Viewer"
         MinWidth="320"
         MinHeight="480">
-
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -27,22 +26,28 @@
                     </StackPanel>
                 </Border>
                 <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
-                    <ListBox Name="SessionPicker" Classes="session-picker" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                     </ListBox>
-                    <Button Classes="select" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick" HotKey="W"/>
                 </Grid>
             </Grid>
             <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
-                <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 1*, 2*, 1*, 1*" RowDefinitions="*, Auto">
-                    <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3">
+                <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
+                    <Border Classes="rounded">
                         <Image Source="avares://viewer/Assets/vnc-viewer.png"/>
                     </Border>
                 </Grid>
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="1*, 6*, Auto, 6*, 1*">
-                    <Button Classes="cancel" Content="Cancel" Click="Cancel_OnClick" Grid.Column="1" HorizontalAlignment="Right"/>
-                    <Button Classes="cancel" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center"/>
-                    <Button Classes="cancel" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left"/>
+                    <Button Classes="rounded" Content="Cancel" Click="Cancel_OnClick" Grid.Column="1" HorizontalAlignment="Right">
+                        <Svg Path="avares://viewer/Assets/headset.svg"/>
+                    </Button>
+                    <Button Classes="cancelButton rounded" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center">
+                        <Svg Path="avares://viewer/Assets/phone.svg"/>
+                    </Button>
+                    <Button Classes="rounded" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
+                        <Svg Path="avares://viewer/Assets/expand.svg"/>
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>

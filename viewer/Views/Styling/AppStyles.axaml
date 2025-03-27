@@ -3,7 +3,7 @@
 <!--WINDOW-->
 
 <Style Selector="Border.window">
-    <Setter Property="Background" Value="#EAECF5"/>
+    <Setter Property="Background" Value="{DynamicResource MWhite}"/>
     <Setter Property="ClipToBounds" Value="True"/>
     <Setter Property="IsHitTestVisible" Value="True"/>
 </Style>
@@ -15,8 +15,24 @@
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
 </Style>
 
+<!--ROUNDED-->
+
+<Style Selector=":is(TemplatedControl)">
+    <Setter Property="Foreground" Value="{DynamicResource MWhite}"/>
+
+    <Style Selector="^.rounded, ^.rounded > ListBoxItem">
+        <Setter Property="CornerRadius" Value="15"/>
+    </Style>
+</Style>
+
+<Style Selector="Border.rounded">
+    <Setter Property="CornerRadius" Value="15"/>
+</Style>
+
+<!--HEADER-->
+
 <Style Selector="Border.header">
-    <Setter Property="Background" Value="#6781F5"/>
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
     <Setter Property="VerticalAlignment" Value="Stretch"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Padding" Value="0 30"/>
@@ -30,73 +46,131 @@
 
 <Style Selector="TextBlock.title">
     <Setter Property="FontSize" Value="32"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
     <Setter Property="FontWeight" Value="DemiBold"/>
     <Setter Property="Margin" Value="4 0"/>
 </Style>
 
 <Style Selector="TextBlock.special">
-    <Setter Property="Foreground" Value="#67DBF5"/>
+    <Setter Property="Foreground" Value="{DynamicResource SCyan}"/>
 </Style>
 
-<Style Selector="ListBox.session-picker">
+<!--LISTBOX-->
+
+<Style Selector="ListBox">
     <Setter Property="Background" Value="#e1e5f5"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MaxWidth" Value="500"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
     <Setter Property="Padding" Value="10"/>
-    <Setter Property="CornerRadius" Value="15"/>
 </Style>
 
-<Style Selector="ListBox.session-picker > ListBoxItem">
+<Style Selector="ListBoxItem">
     <Setter Property="Background" Value="#d5dbf5"/>
-    <Setter Property="Foreground" Value="#6781F5"/>
+    <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
     <Setter Property="FontSize" Value="18"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Margin" Value="0 0 0 10"/>
     <Setter Property="Padding" Value="10"/>
-    <Setter Property="CornerRadius" Value="15"/>
+
+    <Style Selector="^:selected /template/ ContentPresenter,
+                    ^:pointerover /template/ ContentPresenter">
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style>
+
+    <Style Selector="^:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+        <Setter Property="Padding" Value="15"/>
+    </Style>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#a5b3f0"/>
+    </Style>
 </Style>
 
-<Style Selector="ListBox.session-picker > ListBoxItem:selected /template/ ContentPresenter,
-                ListBoxItem:pointerover /template/ ContentPresenter">
-    <Setter Property="FontWeight" Value="DemiBold"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
-</Style>
+<!--BUTTONS-->
 
-<Style Selector="ListBox.session-picker > ListBoxItem:selected /template/ ContentPresenter">
-    <Setter Property="Background" Value="#6781F5"/>
-    <Setter Property="Padding" Value="15"/>
-</Style>
-
-<Style Selector="ListBox.session-picker > ListBoxItem:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="#a5b3f0"/>
-</Style>
-
-<Style Selector="Button.select">
-    <Setter Property="Background" Value="#6781F5"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
+<Style Selector="Button">
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
     <Setter Property="FontSize" Value="20"/>
     <Setter Property="FontWeight" Value="DemiBold"/>
-    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    <Setter Property="MinWidth" Value="300"/>
-    <Setter Property="MaxWidth" Value="340"/>
-    <Setter Property="Margin" Value="70 0 70 50"/>
     <Setter Property="Padding" Value="15"/>
-    <Setter Property="CornerRadius" Value="15"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#748cf7"/>
+    </Style>
+
+    <Style Selector="^:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SCyan}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
+    </Style>
+
+    <Style Selector="^.selectButton">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="MinWidth" Value="300"/>
+        <Setter Property="MaxWidth" Value="340"/>
+        <Setter Property="Margin" Value="70 0 70 50"/>
+    </Style>
+
+    <Style Selector="^ > Svg">
+        <Setter Property="Svg.Css" Value="
+        .svg { stroke-width: 30; stroke: #67DBF5 }
+        .svg-stroke { stroke: #67DBF5 }
+        .svg-fill { fill: #67DBF5 }"/>
+    </Style>
+
+    <Style Selector="^:pointerover > Svg">
+        <Setter Property="Svg.Css" Value="
+        .svg { fill: #FF0000; stroke: #e1e5f5 }
+        .svg-stroke { stroke: #e1e5f5 }
+        .svg-fill { fill: #e1e5f5 }"/>
+    </Style>
+
+    <Style Selector="^:pressed > Svg">
+        <Setter Property="Svg.Css" Value="
+        .svg { fill: #782a24; stroke:rgb(75, 14, 10); }
+        .svg-stroke { stroke:rgb(75, 14, 10); }
+        .svg-fill { fill: rgb(75, 14, 10); }"/>
+    </Style>
+
+    <!--CANCEL BUTTON-->
+
+    <Style Selector="^.cancelButton">
+        <Setter Property="Background" Value="#cf443a"/>
+
+        <Style Selector="^ > Svg">
+            <Setter Property="Svg.Css" Value="
+            .svg { fill: #EAECF5; stroke: #e1e5f5 }"/>
+        </Style>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#db564d"/>
+            <Setter Property="Foreground" Value="{DynamicResource MWhite}"/>
+        </Style>
+
+        <Style Selector="^:pointerover > Svg">
+            <Setter Property="Svg.Css" Value="
+            .svg { fill: #FF0000; stroke: #e1e5f5 }
+            .svg-stroke { stroke: #e1e5f5 }
+            .svg-fill { fill: #e1e5f5 }"/>
+        </Style>
+
+        <Style Selector="^:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#e62f22"/>
+            <Setter Property="Foreground" Value="#782a24"/>
+        </Style>
+
+        <Style Selector="^:pressed > Svg">
+            <Setter Property="Svg.Css" Value="
+            .svg { fill: #782a24; stroke:rgb(75, 14, 10); }
+            .svg-stroke { stroke:rgb(75, 14, 10); }
+            .svg-fill { fill: rgb(75, 14, 10); }"/>
+        </Style>
+    </Style>
 </Style>
 
-<Style Selector="Button.select:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="#748cf7"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
-</Style>
-
-<Style Selector="Button.select:pressed /template/ ContentPresenter">
-    <Setter Property="Background" Value="#67DBF5"/>
-    <Setter Property="Foreground" Value="#6781F5"/>
-</Style>
+<!--SCREEN VIEW-->
 
 <Style Selector="Grid#ScreenView > Border">
     <Setter Property="Background" Value="#757c9c"/>
@@ -107,177 +181,35 @@
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MinHeight" Value="400"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
-    <Setter Property="CornerRadius" Value="15"/>
+    <Setter Property="Grid.Row" Value="0"/>
+    <Setter Property="Grid.Column" Value="1"/>
 </Style>
 
 <Style Selector="Grid#ScreenView.fullScreen">
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Grid.RowSpan" Value="2"/>
+
+    <Style Selector="^ > Border">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Grid.Column" Value="0"/>
+        <Setter Property="Grid.ColumnSpan" Value="5"/>
+    </Style>
 </Style>
 
-<Style Selector="Grid#ScreenView.fullScreen > Border">
-    <Setter Property="BorderThickness" Value="0"/>
-    <Setter Property="Margin" Value="0"/>
-    <Setter Property="CornerRadius" Value="0"/>
-    <Setter Property="Grid.Column" Value="0"/>
-    <Setter Property="Grid.ColumnSpan" Value="5"/>
-</Style>
-
-<Style Selector="Grid#functionButtons">
+<Style Selector="Grid#FunctionButtons">
     <Setter Property="Margin" Value="0 0 0 50"/>
-</Style>
 
-<Style Selector="Button.cancel">
-    <Setter Property="Background" Value="#cf443a"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
-    <Setter Property="FontSize" Value="20"/>
-    <Setter Property="FontWeight" Value="DemiBold"/>
-    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    <Setter Property="Padding" Value="15"/>
-    <Setter Property="CornerRadius" Value="15"/>
-</Style>
+    <Style Selector="^ > Button">
+        <Setter Property="Margin" Value="10 0 10 0"/>
+        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="MaxWidth" Value="100"/>
+    </Style>
 
-<Style Selector="Button.cancel:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="#db564d"/>
-    <Setter Property="Foreground" Value="#EAECF5"/>
-</Style>
-
-<Style Selector="Button.cancel:pressed /template/ ContentPresenter">
-    <Setter Property="Background" Value="#e62f22"/>
-    <Setter Property="Foreground" Value="#782a24"/>
+    <Style Selector="^.fullScreen">
+        <Setter Property="Margin" Value="0 0 0 20"/>
+    </Style>
 </Style>
 
 </Styles>
-
-<!--Content
-<Style  Selector="Grid.contentContainer">
-    <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
-    <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies">
-    <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-    <Setter Property="BorderThickness" Value="0"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem /template/ ContentPresenter">
-    <Setter Property="BorderThickness" Value="1"></Setter>
-    <Setter Property="BorderBrush" Value="#E2E5F3"></Setter>
-    <Setter Property="Margin" Value="8"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem > Grid > Border.title">
-    <Setter Property="Margin" Value="-2"></Setter>
-    <Setter Property="BorderThickness" Value="0 1 0 0"></Setter>
-    <Setter Property="BorderBrush" Value="#E2E5F3"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem > Grid > Border > Grid > TextBlock">
-    <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-    <Setter Property="FontWeight" Value="SemiBold"></Setter>
-    <Setter Property="Foreground" Value="#819FFF"></Setter>
-    <Setter Property="TextWrapping" Value="Wrap"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies /template/ ScrollViewer#PART_ScrollViewer /template/  ScrollBar#verticalScrollBar /template/ Thumb#thumb">
-    <Setter Property="Background">
-    <Setter.Value>
-        <LinearGradientBrush>
-            <GradientStop Color="#55A5EE" Offset="0.25" />
-            <GradientStop Color="#596ACC" Offset="1" />
-        </LinearGradientBrush>
-        </Setter.Value>
-    </Setter>
-</Style>
-
-<Style Selector="ListBox.movies /template/ ScrollViewer#PART_ScrollViewer /template/  ScrollBar#verticalScrollBar /template/ RepeatButton">
-    <Setter Property="Background" Value="#E2E5F3"/>
-</Style>
-
-<Style Selector="ListBox.movies /template/ ScrollViewer#PART_ScrollViewer /template/  ScrollBar#verticalScrollBar /template/ Grid">
-    <Setter Property="Background" Value="#E2E5F3"/>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:selected /template/ ContentPresenter">
-    <Setter Property="Background">
-    <Setter.Value>
-        <LinearGradientBrush>
-        <GradientStop Color="#55A5EE" Offset="0.25" />
-        <GradientStop Color="#596ACC" Offset="1" />
-        </LinearGradientBrush>
-    </Setter.Value>
-    </Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:pointerover /template/ ContentPresenter">
-    <Setter Property="Background">
-    <Setter.Value>
-        <LinearGradientBrush>
-        <GradientStop Color="#55A5EE" Offset="0.25" />
-        <GradientStop Color="#596ACC" Offset="1" />
-        </LinearGradientBrush>
-    </Setter.Value>
-    </Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:selected > Grid > Border > Grid > TextBlock">
-    <Setter Property="Foreground" Value="#FFFFFF"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:pointerover > Grid > Border > Grid > TextBlock">
-    <Setter Property="Foreground" Value="#FFFFFF"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:selected > Grid > Border.title">
-    <Setter Property="BorderBrush" Value="#FFFFFF"></Setter>
-    <Setter Property="Opacity" Value="0.85"></Setter>
-</Style>
-
-<Style Selector="ListBox.movies > ListBoxItem:pointerover > Grid > Border.title">
-    <Setter Property="BorderBrush" Value="#FFFFFF"></Setter>
-    <Setter Property="Opacity" Value="0.85"></Setter>
-</Style>
-
-<Style Selector="Button.navigation">
-    <Setter Property="Background" Value="Transparent"></Setter>
-    <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    <Setter Property="Margin" Value="12"></Setter>
-    <Setter Property="Foreground" Value="#2977B4"></Setter>
-    <Setter Property="FontSize" Value="24"></Setter>
-</Style>
-
-<Style Selector="Button.navigation /template/ ContentPresenter">
-    <Setter Property="BorderThickness" Value="0"></Setter>
-    <Setter Property="Padding" Value="8"></Setter>
-</Style>
-
-<Style Selector="Button.navigation:pointerover">
-    <Setter Property="Foreground" Value="#819FFF"></Setter>
-</Style>
-
-<Style Selector="Button.navigation:pointerover > ContentControl /template/ ContentPresenter">
-    <Setter Property="BorderBrush" Value="#819FFF"></Setter>
-    <Setter Property="Background" Value="Transparent"></Setter>
-</Style>
-
-<Style Selector="Button.navigation:pressed /template/ ContentPresenter">
-    <Setter Property="BorderBrush" Value="#819FFF"></Setter>
-    <Setter Property="Background" Value="Transparent"></Setter>
-</Style>
-
-<Style Selector="ProgressBar.progressBar">
-    <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-    <Setter Property="Foreground">
-    <Setter.Value>
-        <LinearGradientBrush>
-        <GradientStop Color="#55A5EE" Offset="0.25" />
-        <GradientStop Color="#596ACC" Offset="1" />
-        </LinearGradientBrush>
-    </Setter.Value>
-    </Setter>
-    <Setter Property="Background" Value="#E2E5F3"></Setter>
-</Style>
--->
