@@ -23,6 +23,10 @@
     <Style Selector="^.rounded, ^.rounded > ListBoxItem">
         <Setter Property="CornerRadius" Value="15"/>
     </Style>
+
+    <Style Selector="^.roundedMax">
+        <Setter Property="CornerRadius" Value="30"/>
+    </Style>
 </Style>
 
 <Style Selector="Border.rounded">
@@ -113,25 +117,21 @@
         <Setter Property="Margin" Value="70 0 70 50"/>
     </Style>
 
-    <Style Selector="^ > Svg">
-        <Setter Property="Svg.Css" Value="
-        .svg { stroke-width: 30; stroke: #67DBF5 }
-        .svg-stroke { stroke: #67DBF5 }
-        .svg-fill { fill: #67DBF5 }"/>
+    <Style Selector="^ > Path">
+        <Setter Property="Stroke" Value="{DynamicResource SCyan}"/>
+        <Setter Property="StrokeThickness" Value="3"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="Fill" Value="Transparent"/>
     </Style>
 
-    <Style Selector="^:pointerover > Svg">
-        <Setter Property="Svg.Css" Value="
-        .svg { fill: #FF0000; stroke: #e1e5f5 }
-        .svg-stroke { stroke: #e1e5f5 }
-        .svg-fill { fill: #e1e5f5 }"/>
+    <Style Selector="^:pointerover > Path">
+        <Setter Property="Stroke" Value="#e1e5f5"/>
+        <Setter Property="Fill" Value="Red"/>
     </Style>
 
-    <Style Selector="^:pressed > Svg">
-        <Setter Property="Svg.Css" Value="
-        .svg { fill: #782a24; stroke:rgb(75, 14, 10); }
-        .svg-stroke { stroke:rgb(75, 14, 10); }
-        .svg-fill { fill: rgb(75, 14, 10); }"/>
+    <Style Selector="^:pressed > Path">
+        <Setter Property="Stroke" Value="rgb(75, 14, 10)"/>
+        <Setter Property="Fill" Value="#782a24"/>
     </Style>
 
     <!--CANCEL BUTTON-->
@@ -139,9 +139,9 @@
     <Style Selector="^.cancelButton">
         <Setter Property="Background" Value="#cf443a"/>
 
-        <Style Selector="^ > Svg">
-            <Setter Property="Svg.Css" Value="
-            .svg { fill: #EAECF5; stroke: #e1e5f5 }"/>
+        <Style Selector="^ > Path">
+            <Setter Property="Stroke" Value="#e1e5f5"/>
+            <Setter Property="Fill" Value="{DynamicResource MWhite}"/>
         </Style>
 
         <Style Selector="^:pointerover /template/ ContentPresenter">
@@ -149,11 +149,9 @@
             <Setter Property="Foreground" Value="{DynamicResource MWhite}"/>
         </Style>
 
-        <Style Selector="^:pointerover > Svg">
-            <Setter Property="Svg.Css" Value="
-            .svg { fill: #FF0000; stroke: #e1e5f5 }
-            .svg-stroke { stroke: #e1e5f5 }
-            .svg-fill { fill: #e1e5f5 }"/>
+        <Style Selector="^:pointerover > Path">
+            <Setter Property="Stroke" Value="#e1e5f5"/>
+            <Setter Property="Fill" Value="Red"/>
         </Style>
 
         <Style Selector="^:pressed /template/ ContentPresenter">
@@ -161,11 +159,9 @@
             <Setter Property="Foreground" Value="#782a24"/>
         </Style>
 
-        <Style Selector="^:pressed > Svg">
-            <Setter Property="Svg.Css" Value="
-            .svg { fill: #782a24; stroke:rgb(75, 14, 10); }
-            .svg-stroke { stroke:rgb(75, 14, 10); }
-            .svg-fill { fill: rgb(75, 14, 10); }"/>
+        <Style Selector="^:pressed > Path">
+            <Setter Property="Stroke" Value="rgb(75, 14, 10)"/>
+            <Setter Property="Fill" Value="#782a24"/>
         </Style>
     </Style>
 </Style>
@@ -203,8 +199,8 @@
 
     <Style Selector="^ > Button">
         <Setter Property="Margin" Value="10 0 10 0"/>
-        <Setter Property="MinWidth" Value="50"/>
-        <Setter Property="MaxWidth" Value="100"/>
+        <Setter Property="Width" Value="85"/>
+        <Setter Property="Padding" Value="20"/>
     </Style>
 
     <Style Selector="^.fullScreen">
