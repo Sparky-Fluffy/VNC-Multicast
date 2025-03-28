@@ -32,6 +32,7 @@ class Program
             } catch (FormatException fe)
             {
                 Console.WriteLine(fe.Message);
+                Environment.Exit(1);
             }
         }
 
