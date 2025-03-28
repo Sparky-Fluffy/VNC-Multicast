@@ -24,7 +24,7 @@ class Program
         Console.WriteLine($"port = {port}.");
 #endif
 
-        Retranslator client = new Retranslator(ip, port, Encodings.Raw);
+        Retranslator client = new Retranslator(ip!, port, Encodings.Raw);
         client.Connect();
         client.FramebufferUpdateRequest(0, 15, 15, 100, 100);
 
