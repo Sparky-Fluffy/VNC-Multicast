@@ -31,7 +31,9 @@ class Program
                 ip_addr = IPAddress.Parse(ip);
             } catch (FormatException fe)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(fe.Message);
+                Console.ForegroundColor = ConsoleColor.White;
                 Environment.Exit(1);
             }
         }
