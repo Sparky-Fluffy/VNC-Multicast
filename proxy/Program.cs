@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-
-#if DEBUG
-using System;
-#endif
 
 namespace proxy;
 
@@ -18,6 +15,22 @@ class Program
 
         string? ip = config.GetValue<string?>("ip");
         int port = config.GetValue<int>("port");
+
+        if (ip == string.Empty || ip == null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Неверный ip.");
+            Console.ForegroundColor = ConsoleColor.White;
+            Environment.Exit(1);
+        }
+
+        if (port < 5900 || port > 5906)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Неподходящий порт: {port}.");
+            Console.ForegroundColor = ConsoleColor.White;
+            Environment.Exit(1);
+        }
 
 #if DEBUG
         Console.WriteLine($"ip = {ip}.");
