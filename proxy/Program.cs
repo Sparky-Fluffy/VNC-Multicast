@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,13 +16,23 @@ class Program
 
         string? ip = config.GetValue<string?>("ip");
         int port = config.GetValue<int>("port");
+        IPAddress ip_addr = null;
 
         if (ip == string.Empty || ip == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Неверный ip.");
+            Console.WriteLine($"Строка параметра 'ip' не задана.");
             Console.ForegroundColor = ConsoleColor.White;
             Environment.Exit(1);
+        } else
+        {
+            try
+            {
+                ip_addr = IPAddress.Parse(ip);
+            } catch (FormatException fe)
+            {
+                Console.WriteLine(fe.Message);
+            }
         }
 
         if (port < 5900 || port > 5906)
@@ -37,7 +48,7 @@ class Program
         Console.WriteLine($"port = {port}.");
 #endif
 
-        Retranslator client = new Retranslator(ip!, port, Encodings.Raw);
+        Retranslator client = new Retranslator(ip_addr, port, Encodings.Raw);
         client.Connect();
         client.FramebufferUpdateRequest(0, 15, 15, 100, 100);
 
