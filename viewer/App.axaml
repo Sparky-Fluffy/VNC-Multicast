@@ -10,6 +10,15 @@
     </Application.DataTemplates>
   
     <Application.Styles>
+        <StyleInclude Source="/Views/Styling/AppStyles.axaml"/>
         <FluentTheme />
     </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+            <MergeResourceInclude Source="/Assets/AppResources.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

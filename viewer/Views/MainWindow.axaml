@@ -3,18 +3,84 @@
         xmlns:vm="using:viewer.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
         x:Class="viewer.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="viewer">
-
+        Icon="avares://viewer/Assets/vnc-viewer.png"
+        Title="VNC Viewer"
+        MinWidth="320"
+        MinHeight="480"
+        RequestedThemeVariant="Dark">
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Border Classes="window">
+        <Grid>
+            <Grid Name="Page1" RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="True">
+                <Border Classes="header" Grid.Row="0">
+                    <StackPanel Classes="title">
+                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                    </StackPanel>
+                </Border>
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                    </ListBox>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick" HotKey="W"/>
+                </Grid>
+            </Grid>
+            <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
+                <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
+                <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
+                    <Border Classes="rounded">
+                        <Image Source="avares://viewer/Assets/vnc-viewer.png"/>
+                    </Border>
+                </Grid>
+                <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
+                    <Button Classes="roundedMax" Content="Audio" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
+                        <Path Data="{DynamicResource AudioImage}"/>
+                    </Button>
+                    <Button Classes="cancelButton roundedMax" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center">
+                        <Path Data="{DynamicResource CancelImage}"/>
+                    </Button>
+                    <Button Classes="roundedMax" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
+                        <Path Data="{DynamicResource ExpandImage}"/>
+                    </Button>
+                </Grid>
+            </Grid>
+            <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
+        </Grid>
+    </Border>
 
+    <!--StackPanel>
+        <Grid RowDefinitions="Auto, *" Classes="mainContainer">
+            <Border Classes="header" Grid.Row="0">
+                <StackPanel Classes="title">
+                    <TextBlock Classes="title"> MO </TextBlock>
+                    <TextBlock Classes="titleYellow"> VIEW </TextBlock>
+                    <TextBlock Classes="title"> ER </TextBlock>
+                    <Image/>
+                </StackPanel>
+            </Border>
+            <Border Classes="header" Grid.Row="1">
+                <Button Classes="header">Calculate</Button>
+            </Border>
+        </Grid>
+
+        <Grid Margin="5"
+            ColumnDefinitions="120, 100" 
+            RowDefinitions="Auto, Auto, Auto">
+            <Label Grid.Row="0" Grid.Column="0" Margin="10">Celsius</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="0 5" Text="0" Name="celsius"/>
+            <Label Grid.Row="1" Grid.Column="0" Margin="10">Fahrenheit</Label>
+            <TextBox Grid.Row="1"  Grid.Column="1" Margin="0 5" Text="0" Name="fahrenheit" IsReadOnly="True"/>
+            <Button Grid.Row="2" Grid.Column="1"
+                Margin="0 5" Click="Button_OnClick">
+                Calculate
+            </Button>
+        </Grid>
+    </StackPanel!-->
 </Window>

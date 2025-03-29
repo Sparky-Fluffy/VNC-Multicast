@@ -1,0 +1,204 @@
+﻿<Styles xmlns="https://github.com/avaloniaui">
+
+<!--WINDOW-->
+
+<Style Selector="Border.window">
+    <Setter Property="Background" Value="{DynamicResource MWhite}"/>
+    <Setter Property="ClipToBounds" Value="True"/>
+    <Setter Property="IsHitTestVisible" Value="True"/>
+</Style>
+
+<!--BODY-->
+
+<Style Selector="Grid.body">
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+</Style>
+
+<!--ROUNDED-->
+
+<Style Selector=":is(TemplatedControl)">
+    <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+    </Style>
+
+    <Style Selector="^.rounded, ^.rounded > ListBoxItem">
+        <Setter Property="CornerRadius" Value="15"/>
+    </Style>
+
+    <Style Selector="^.roundedMax">
+        <Setter Property="CornerRadius" Value="30"/>
+    </Style>
+</Style>
+
+<Style Selector="Border.rounded">
+    <Setter Property="CornerRadius" Value="15"/>
+</Style>
+
+<!--HEADER-->
+
+<Style Selector="Border.header">
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="Padding" Value="0 30"/>
+</Style>
+
+<Style Selector="StackPanel.title">
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="Orientation" Value="Horizontal"/>
+</Style>
+
+<Style Selector="TextBlock.title">
+    <Setter Property="FontSize" Value="32"/>
+    <Setter Property="FontWeight" Value="DemiBold"/>
+    <Setter Property="Margin" Value="4 0"/>
+</Style>
+
+<Style Selector="TextBlock.special">
+    <Setter Property="Foreground" Value="{DynamicResource SCyan}"/>
+</Style>
+
+<!--LISTBOX-->
+
+<Style Selector="ListBox">
+    <Setter Property="Background" Value="{DynamicResource SGrey}"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MaxWidth" Value="500"/>
+    <Setter Property="Margin" Value="0 50 0 20"/>
+    <Setter Property="Padding" Value="10"/>
+</Style>
+
+<Style Selector="ListBoxItem">
+    <Setter Property="Background" Value="{DynamicResource TGrey}"/>
+    <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
+    <Setter Property="FontSize" Value="18"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="Margin" Value="0 0 0 10"/>
+    <Setter Property="Padding" Value="10"/>
+
+    <Style Selector="^:selected /template/ ContentPresenter,
+                    ^:pointerover /template/ ContentPresenter">
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style>
+
+    <Style Selector="^:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+        <Setter Property="Padding" Value="15"/>
+    </Style>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource TBlue}"/>
+    </Style>
+</Style>
+
+<!--BUTTONS-->
+
+<Style Selector="Button">
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+    <Setter Property="FontSize" Value="20"/>
+    <Setter Property="FontWeight" Value="DemiBold"/>
+    <Setter Property="Padding" Value="15"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SBlue}"/>
+    </Style>
+
+    <Style Selector="^:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SCyan}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
+    </Style>
+
+    <Style Selector="^.selectButton">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="MinWidth" Value="300"/>
+        <Setter Property="MaxWidth" Value="340"/>
+        <Setter Property="Margin" Value="70 0 70 50"/>
+    </Style>
+
+    <Style Selector="^ > Path">
+        <Setter Property="Stroke" Value="{DynamicResource SLGrey}"/>
+        <Setter Property="StrokeThickness" Value="3"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+    </Style>
+
+    <Style Selector="^:pressed > Path">
+        <Setter Property="Stroke" Value="{DynamicResource MBlue}"/>
+    </Style>
+
+    <!--CANCEL BUTTON-->
+
+    <Style Selector="^.cancelButton">
+        <Setter Property="Background" Value="{DynamicResource MRed}"/>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SRed}"/>
+        </Style>
+
+        <Style Selector="^:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource TRed}"/>
+            <Setter Property="Foreground" Value="{DynamicResource SRed}"/>
+        </Style>
+
+        <Style Selector="^:pressed > Path">
+            <Setter Property="Stroke" Value="{DynamicResource MLWhite}"/>
+        </Style>
+    </Style>
+</Style>
+
+<!--SCREEN VIEW-->
+
+<Style Selector="Grid#ScreenView > Border">
+    <Setter Property="Background" Value="{DynamicResource FGrey}"/>
+    <Setter Property="BorderThickness" Value="7"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource SGrey}"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/> 
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MinHeight" Value="400"/>
+    <Setter Property="Margin" Value="0 50 0 20"/>
+    <Setter Property="Grid.Row" Value="0"/>
+    <Setter Property="Grid.Column" Value="1"/>
+</Style>
+
+<Style Selector="Grid#ScreenView.fullScreen">
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="Grid.RowSpan" Value="2"/>
+
+    <Style Selector="^ > Border">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Grid.Column" Value="0"/>
+        <Setter Property="Grid.ColumnSpan" Value="5"/>
+    </Style>
+</Style>
+
+<Style Selector="Grid#FunctionButtons">
+    <Setter Property="Margin" Value="0 0 0 50"/>
+
+    <Style Selector="^ > Button">
+        <Setter Property="Margin" Value="10 0 10 0"/>
+        <Setter Property="Width" Value="85"/>
+        <Setter Property="Padding" Value="20"/>
+    </Style>
+
+    <Style Selector="^.fullScreen">
+        <Setter Property="Margin" Value="0 0 0 20"/>
+    </Style>
+</Style>
+
+<Style Selector="Button#ThemeSwitch">
+    <Setter Property="HorizontalAlignment" Value="Right"/>
+    <Setter Property="VerticalAlignment" Value="Bottom"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Padding" Value="5"/>
+    <Setter Property="Margin" Value="5"/>
+</Style>
+
+</Styles>
