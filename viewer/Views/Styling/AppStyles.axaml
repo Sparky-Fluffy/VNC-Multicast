@@ -18,7 +18,11 @@
 <!--ROUNDED-->
 
 <Style Selector=":is(TemplatedControl)">
-    <Setter Property="Foreground" Value="{DynamicResource MWhite}"/>
+    <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+    </Style>
 
     <Style Selector="^.rounded, ^.rounded > ListBoxItem">
         <Setter Property="CornerRadius" Value="15"/>
@@ -61,7 +65,7 @@
 <!--LISTBOX-->
 
 <Style Selector="ListBox">
-    <Setter Property="Background" Value="#e1e5f5"/>
+    <Setter Property="Background" Value="{DynamicResource SGrey}"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MaxWidth" Value="500"/>
@@ -70,7 +74,7 @@
 </Style>
 
 <Style Selector="ListBoxItem">
-    <Setter Property="Background" Value="#d5dbf5"/>
+    <Setter Property="Background" Value="{DynamicResource TGrey}"/>
     <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
     <Setter Property="FontSize" Value="18"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -88,7 +92,7 @@
     </Style>
 
     <Style Selector="^:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#a5b3f0"/>
+        <Setter Property="Background" Value="{DynamicResource TBlue}"/>
     </Style>
 </Style>
 
@@ -102,7 +106,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
 
     <Style Selector="^:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#748cf7"/>
+        <Setter Property="Background" Value="{DynamicResource SBlue}"/>
     </Style>
 
     <Style Selector="^:pressed /template/ ContentPresenter">
@@ -118,50 +122,31 @@
     </Style>
 
     <Style Selector="^ > Path">
-        <Setter Property="Stroke" Value="{DynamicResource SCyan}"/>
+        <Setter Property="Stroke" Value="{DynamicResource SLGrey}"/>
         <Setter Property="StrokeThickness" Value="3"/>
         <Setter Property="Stretch" Value="Uniform"/>
-        <Setter Property="Fill" Value="Transparent"/>
-    </Style>
-
-    <Style Selector="^:pointerover > Path">
-        <Setter Property="Stroke" Value="#e1e5f5"/>
-        <Setter Property="Fill" Value="Red"/>
     </Style>
 
     <Style Selector="^:pressed > Path">
-        <Setter Property="Stroke" Value="rgb(75, 14, 10)"/>
-        <Setter Property="Fill" Value="#782a24"/>
+        <Setter Property="Stroke" Value="{DynamicResource MBlue}"/>
     </Style>
 
     <!--CANCEL BUTTON-->
 
     <Style Selector="^.cancelButton">
-        <Setter Property="Background" Value="#cf443a"/>
-
-        <Style Selector="^ > Path">
-            <Setter Property="Stroke" Value="#e1e5f5"/>
-            <Setter Property="Fill" Value="{DynamicResource MWhite}"/>
-        </Style>
+        <Setter Property="Background" Value="{DynamicResource MRed}"/>
 
         <Style Selector="^:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#db564d"/>
-            <Setter Property="Foreground" Value="{DynamicResource MWhite}"/>
-        </Style>
-
-        <Style Selector="^:pointerover > Path">
-            <Setter Property="Stroke" Value="#e1e5f5"/>
-            <Setter Property="Fill" Value="Red"/>
+            <Setter Property="Background" Value="{DynamicResource SRed}"/>
         </Style>
 
         <Style Selector="^:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#e62f22"/>
-            <Setter Property="Foreground" Value="#782a24"/>
+            <Setter Property="Background" Value="{DynamicResource TRed}"/>
+            <Setter Property="Foreground" Value="{DynamicResource SRed}"/>
         </Style>
 
         <Style Selector="^:pressed > Path">
-            <Setter Property="Stroke" Value="rgb(75, 14, 10)"/>
-            <Setter Property="Fill" Value="#782a24"/>
+            <Setter Property="Stroke" Value="{DynamicResource MLWhite}"/>
         </Style>
     </Style>
 </Style>
@@ -169,9 +154,9 @@
 <!--SCREEN VIEW-->
 
 <Style Selector="Grid#ScreenView > Border">
-    <Setter Property="Background" Value="#757c9c"/>
+    <Setter Property="Background" Value="{DynamicResource FGrey}"/>
     <Setter Property="BorderThickness" Value="7"/>
-    <Setter Property="BorderBrush" Value="#e1e5f5"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource SGrey}"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="VerticalAlignment" Value="Stretch"/> 
     <Setter Property="MinWidth" Value="300"/>
@@ -206,6 +191,14 @@
     <Style Selector="^.fullScreen">
         <Setter Property="Margin" Value="0 0 0 20"/>
     </Style>
+</Style>
+
+<Style Selector="Button#ThemeSwitch">
+    <Setter Property="HorizontalAlignment" Value="Right"/>
+    <Setter Property="VerticalAlignment" Value="Bottom"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Padding" Value="5"/>
+    <Setter Property="Margin" Value="5"/>
 </Style>
 
 </Styles>
