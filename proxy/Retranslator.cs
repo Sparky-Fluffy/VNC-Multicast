@@ -80,9 +80,10 @@ public class Retranslator
     public void FramebufferUpdateRequest(byte incremental, ushort XPosition,
             ushort YPosition, uint width, uint height)
     {
-        byte[] msg = new byte[] { incremental, Convert.ToByte(XPosition),
-            Convert.ToByte(YPosition), Convert.ToByte(width),
-            Convert.ToByte(height) };
+        byte[] msg = new byte[]
+        { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
+            Convert.ToByte(XPosition), Convert.ToByte(YPosition),
+            Convert.ToByte(width), Convert.ToByte(height) };
         _socket.Send(msg, msg.Length, 0);
 
         byte[] frameBufferUpdateMessageResponse = new byte[3];
