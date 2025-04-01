@@ -53,7 +53,7 @@ class Program
 
         Retranslator client = new Retranslator(ip_addr, port, Encodings.Raw);
         client.Connect();
-        client.FramebufferUpdateRequest(0, 0, 0);
+        client.FramebufferUpdateRequest();
 
         await host.RunAsync();
     }
