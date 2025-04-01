@@ -40,6 +40,8 @@ public class Retranslator
     public IPAddress _ip { get; }
     public Socket _socket { get; }
     public Encodings _encodingType { get; }
+    private byte[] _width = new byte[2];
+    private byte[] _height = new byte[2];
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -54,6 +56,10 @@ public class Retranslator
     {
         byte[] serverInfo = new byte[64];
         _socket.Receive(serverInfo, serverInfo.Length, 0);
+        _width[0] = serverInfo[3];
+        _width[1] = serverInfo[4];
+        _height[0] = serverInfo[5];
+        _height[1] = serverInfo[6];
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
@@ -71,22 +77,23 @@ public class Retranslator
             blueMax, byte redShift, byte greenShift, byte blueShift)
     {
         byte[] msg = new byte[] { (byte)ClientMessageTypes.SetPixelFormat, 0, 0,
-            0, pitsPerPixel, depth, bigEndianFlag, trueColorFlag, (byte)redMax,
-            (byte)greenMax, (byte)blueMax, redShift, greenShift, blueShift, 0,
-            0, 0 };
+            0, pitsPerPixel, depth, bigEndianFlag, trueColorFlag,
+            (byte)(redMax >> 8), (byte)redMax, (byte)(greenMax >> 8),
+            (byte)greenMax, (byte)(blueMax >> 8), (byte)blueMax, redShift,
+            greenShift, blueShift, 0, 0, 0 };
         _socket.Send(msg, msg.Length, 0);
     }
 
     public void FramebufferUpdateRequest(byte incremental, ushort XPosition,
-            ushort YPosition, uint width, uint height)
+            ushort YPosition)
     {
         byte[] msg = new byte[]
         { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
-            Convert.ToByte(XPosition), Convert.ToByte(YPosition),
-            Convert.ToByte(width), Convert.ToByte(height) };
+            (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
+            (byte)YPosition, _width[0], _width[1], _height[0], _height[1] };
         _socket.Send(msg, msg.Length, 0);
 
-        byte[] frameBufferUpdateMessageResponse = new byte[3];
+        byte[] frameBufferUpdateMessageResponse = new byte[4];
         _socket.Receive(frameBufferUpdateMessageResponse,
                 frameBufferUpdateMessageResponse.Length, 0);
 #if DEBUG
