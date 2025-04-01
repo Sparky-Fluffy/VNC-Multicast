@@ -4,6 +4,12 @@ using System.Net.Sockets;
 
 namespace proxy;
 
+public enum ReceivingRectangles : byte
+{
+    Incremental = 0,
+    NoIncremental = 1
+}
+
 public enum ServerMessageTypes : byte
 {
     FramebufferUpdate = 0,
