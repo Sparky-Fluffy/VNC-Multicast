@@ -41,10 +41,7 @@ class Program
                 enc = (Encodings)Enum.Parse(typeof(Encodings), encoding);
             } catch (FormatException e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(e.Message);
-                Console.ForegroundColor = ConsoleColor.White;
-                Environment.Exit(1);
+                WriteErrorAndExit(e.Message);
             }
         }
 
