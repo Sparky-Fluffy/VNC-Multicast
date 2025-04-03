@@ -100,8 +100,7 @@ public class Retranslator
         _socket.Send(msg, msg.Length, 0);
 
         byte[] frameBufferUpdateMessageResponse = new byte[4];
-        _socket.Receive(frameBufferUpdateMessageResponse,
-                frameBufferUpdateMessageResponse.Length, 0);
+        _socket.ReceiveAsync(frameBufferUpdateMessageResponse, 0);
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nFrame Buffer Update Message Response");
