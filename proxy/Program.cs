@@ -8,6 +8,14 @@ namespace proxy;
 
 class Program
 {
+    static void WriteErrorAndExit(string msg)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(msg);
+        Console.ForegroundColor = ConsoleColor.White;
+        Environment.Exit(1);
+    }
+
     static async void RunAppAsync(string[] args)
     {
         using IHost host = Host.CreateApplicationBuilder(args).Build();
@@ -22,18 +30,10 @@ class Program
         Encodings enc = Encodings.Raw;
 
         if (ip == string.Empty || ip == null)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Строка параметра 'ip' не задана.");
-            Console.ForegroundColor = ConsoleColor.White;
-            Environment.Exit(1);
-        } else if (encoding == string.Empty || encoding == null)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Кодировка не задана корректно.");
-            Console.ForegroundColor = ConsoleColor.White;
-            Environment.Exit(1);
-        } else
+            WriteErrorAndExit("Строка параметра 'ip' не задана.");
+        else if (encoding == string.Empty || encoding == null)
+            WriteErrorAndExit("Кодировка не задана корректно.");
+        else
         {
             try
             {
