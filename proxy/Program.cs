@@ -46,12 +46,7 @@ class Program
         }
 
         if (port < 5900 || port > 5906)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Неподходящий порт: {port}.");
-            Console.ForegroundColor = ConsoleColor.White;
-            Environment.Exit(1);
-        }
+            WriteErrorAndExit("Неподходящий порт в appsettings.json.");
 
 #if DEBUG
         Console.WriteLine($"ip = {ip}.");
