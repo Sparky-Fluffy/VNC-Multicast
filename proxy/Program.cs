@@ -24,7 +24,13 @@ class Program
         if (ip == string.Empty || ip == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Строка параметра 'ip' не задана.");
+            Console.WriteLine("Строка параметра 'ip' не задана.");
+            Console.ForegroundColor = ConsoleColor.White;
+            Environment.Exit(1);
+        } else if (encoding == string.Empty || encoding == null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Кодировка не задана корректно.");
             Console.ForegroundColor = ConsoleColor.White;
             Environment.Exit(1);
         } else
