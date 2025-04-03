@@ -16,7 +16,10 @@ class Program
 
         string? ip = config.GetValue<string?>("ip");
         int port = config.GetValue<int>("port");
+        string? encoding = config.GetValue<string?>("encoding");
+
         IPAddress ip_addr = null;
+        Encodings enc = Encodings.Raw;
 
         if (ip == string.Empty || ip == null)
         {
@@ -29,10 +32,11 @@ class Program
             try
             {
                 ip_addr = IPAddress.Parse(ip);
-            } catch (FormatException fe)
+                enc = (Encodings)Enum.Parse(typeof(Encodings), encoding);
+            } catch (FormatException e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(fe.Message);
+                Console.WriteLine(e.Message);
                 Console.ForegroundColor = ConsoleColor.White;
                 Environment.Exit(1);
             }
@@ -49,9 +53,11 @@ class Program
 #if DEBUG
         Console.WriteLine($"ip = {ip}.");
         Console.WriteLine($"port = {port}.");
+        Console.WriteLine($"Encoding = {encoding}.");
+        Console.WriteLine($"Encoding enum = {(byte)enc}");
 #endif
 
-        Retranslator client = new Retranslator(ip_addr, port, Encodings.Raw);
+        Retranslator client = new Retranslator(ip_addr, port, enc);
         client.Connect();
         client.FramebufferUpdateRequest();
 
