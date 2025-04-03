@@ -46,8 +46,8 @@ public class Retranslator
     public IPAddress _ip { get; }
     public Socket _socket { get; }
     public Encodings _encodingType { get; }
-    private byte[] _width = new byte[2];
-    private byte[] _height = new byte[2];
+    public byte[] _width { get; } = new byte[2];
+    public byte[] _height { get; } = new byte[2];
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -93,11 +93,22 @@ public class Retranslator
     public void FramebufferUpdateRequest(byte incremental = 0, ushort
             XPosition = 0, ushort YPosition = 0)
     {
-        byte[] msg = new byte[]
+        byte[] updateRequest = new byte[]
         { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
             (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
             (byte)YPosition, _width[0], _width[1], _height[0], _height[1] };
-        _socket.Send(msg, msg.Length, 0);
+
+#if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("\nFrame buffer update request");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (byte b in updateRequest)
+            Console.Write($"{b} ");
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.White;
+#endif
+
+        _socket.Send(updateRequest, updateRequest.Length, 0);
 
         byte[] frameBufferUpdateMessageResponse = new byte[4];
         _socket.ReceiveAsync(frameBufferUpdateMessageResponse, 0);
