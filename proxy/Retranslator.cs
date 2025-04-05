@@ -42,20 +42,20 @@ public enum Encodings
 
 public class Retranslator
 {
-    public int _port { get; }
-    public IPAddress _ip { get; }
-    public Socket _socket { get; }
-    public Encodings _encodingType { get; }
-    public byte[] _width { get; } = new byte[2];
-    public byte[] _height { get; } = new byte[2];
+    public int port { get; }
+    public IPAddress ip { get; }
+    public Socket socket { get; }
+    public Encodings encodingType { get; }
+    public byte[] width { get; } = new byte[2];
+    public byte[] height { get; } = new byte[2];
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
-        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
+        this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
-        _ip = ip;
-        _port = port;
-        _encodingType = encodingType;
+        this.ip = ip;
+        this.port = port;
+        this.encodingType = encodingType;
     }
 
     private void ServerInit()
@@ -64,33 +64,33 @@ public class Retranslator
         Console.Write("\nServer Init message data: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        byte[] width = new byte[2];
-        _socket.Receive(width, width.Length, 0);
+        byte[] w = new byte[2];
+        socket.Receive(w, w.Length, 0);
 
-        _width[0] = width[0];
-        _width[1] = width[1];
+        width[0] = w[0];
+        width[1] = w[1];
 
         foreach (byte s in width)
             Console.Write($"{s} ");
 
-        byte[] height = new byte[2];
-        _socket.Receive(height, height.Length, 0);
+        byte[] h = new byte[2];
+        socket.Receive(h, h.Length, 0);
 
-        _height[0] = height[0];
-        _height[1] = height[1];
+        height[0] = h[0];
+        height[1] = h[1];
 
         foreach (byte s in height)
             Console.Write($"{s} ");
 
         byte[] pixelFormat = new byte[16];
 
-        _socket.Receive(pixelFormat, pixelFormat.Length, 0);
+        socket.Receive(pixelFormat, pixelFormat.Length, 0);
         foreach (byte s in pixelFormat)
             Console.Write($"{s} ");
 
         byte[] nameLenght = new byte[4];
 
-        _socket.Receive(nameLenght, nameLenght.Length, 0);
+        socket.Receive(nameLenght, nameLenght.Length, 0);
         foreach (byte s in nameLenght)
             Console.Write($"{s} ");
         
@@ -98,7 +98,7 @@ public class Retranslator
         int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
 
         byte[] nameString = new byte[nameLenghtNumber];
-        _socket.Receive(nameString, nameString.Length, 0);
+        socket.Receive(nameString, nameString.Length, 0);
         foreach (byte s in nameString)
             Console.Write($"{s} ");
         Console.WriteLine();
@@ -115,7 +115,7 @@ public class Retranslator
             (byte)(redMax >> 8), (byte)redMax, (byte)(greenMax >> 8),
             (byte)greenMax, (byte)(blueMax >> 8), (byte)blueMax, redShift,
             greenShift, blueShift, 0, 0, 0 };
-        _socket.Send(msg, msg.Length, 0);
+        socket.Send(msg, msg.Length, 0);
     }
 
     public void FramebufferUpdateRequest(byte incremental = 0, ushort
@@ -124,7 +124,7 @@ public class Retranslator
         byte[] updateRequest = new byte[]
         { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
             (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-            (byte)YPosition, _width[0], _width[1], _height[0], _height[1] };
+            (byte)YPosition, width[0], width[1], height[0], height[1] };
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
@@ -136,10 +136,10 @@ public class Retranslator
         Console.ForegroundColor = ConsoleColor.White;
 #endif
 
-        _socket.Send(updateRequest, updateRequest.Length, 0);
+        socket.Send(updateRequest, updateRequest.Length, 0);
 
         byte[] frameBufferUpdateMessageResponse = new byte[4];
-        _socket.ReceiveAsync(frameBufferUpdateMessageResponse, 0);
+        socket.ReceiveAsync(frameBufferUpdateMessageResponse, 0);
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nFrame Buffer Update Message Response");
@@ -162,20 +162,20 @@ public class Retranslator
         Console.ForegroundColor = ConsoleColor.Green;
         Console.Write($"\nSet encoding message: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(_encodingType);
+        Console.WriteLine(encodingType);
         Console.ForegroundColor = ConsoleColor.White;
 #endif
         byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
-            (byte)_encodingType };
-        _socket.Send(msg, msg.Length, 0);
+            (byte)encodingType };
+        socket.Send(msg, msg.Length, 0);
     }
 
     private void setProtocolVersion()
     {
-        _socket.Connect(_ip, _port);
+        socket.Connect(ip, port);
 
         byte[] protocolVersion = new byte[12];
-        _socket.Receive(protocolVersion, protocolVersion.Length, 0);
+        socket.Receive(protocolVersion, protocolVersion.Length, 0);
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
         Console.Write("\nProtocolVersion: ");
@@ -185,13 +185,13 @@ public class Retranslator
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;
 #endif
-        _socket.Send(protocolVersion, protocolVersion.Length, 0);
+        socket.Send(protocolVersion, protocolVersion.Length, 0);
     }
 
     private byte[] getSecurityTypes()
     {
         byte[] numberOfSecurity = new byte[1];
-        _socket.Receive(numberOfSecurity, numberOfSecurity.Length, 0);
+        socket.Receive(numberOfSecurity, numberOfSecurity.Length, 0);
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
@@ -202,7 +202,7 @@ public class Retranslator
 #endif
 
         byte[] securityTypes = new byte[numberOfSecurity[0]];
-        _socket.Receive(securityTypes, securityTypes.Length, 0);
+        socket.Receive(securityTypes, securityTypes.Length, 0);
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
@@ -236,10 +236,10 @@ public class Retranslator
             Console.WriteLine(securityType[0]);
             Console.ForegroundColor = ConsoleColor.White;
 #endif
-            _socket.Send(securityType, securityType.Length, 0);
+            socket.Send(securityType, securityType.Length, 0);
 
             byte[] securityHandshake = new byte[4];
-            _socket.Receive(securityHandshake, securityHandshake.Length, 0);
+            socket.Receive(securityHandshake, securityHandshake.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"\nSecurity handshake: ");
@@ -260,7 +260,7 @@ public class Retranslator
         byte[] sharedFlag = new byte[1] { 0 };
         try
         {
-            _socket.Send(sharedFlag, sharedFlag.Length, 0);
+            socket.Send(sharedFlag, sharedFlag.Length, 0);
         } catch (SocketException ex)
         {
             _ExitProcessRetranslator(ex.Message, 1);
