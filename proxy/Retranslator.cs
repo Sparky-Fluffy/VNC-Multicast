@@ -60,22 +60,49 @@ public class Retranslator
 
     private void ServerInit()
     {
-        byte[] serverInfo = new byte[64];
-        _socket.Receive(serverInfo, serverInfo.Length, 0);
-        _width[0] = serverInfo[3];
-        _width[1] = serverInfo[4];
-        _height[0] = serverInfo[5];
-        _height[1] = serverInfo[6];
-
-#if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nServer Init message data");
         Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte s in serverInfo)
+
+        byte[] width = new byte[2];
+        _socket.Receive(width, width.Length, 0);
+
+        _width[0] = width[0];
+        _width[1] = width[1];
+
+        foreach (byte s in width)
             Console.Write($"{s} ");
-        Console.WriteLine();
+
+        byte[] height = new byte[2];
+        _socket.Receive(height, height.Length, 0);
+
+        _height[0] = height[0];
+        _height[1] = height[1];
+
+        foreach (byte s in height)
+            Console.Write($"{s} ");
+
+        byte[] pixelFormat = new byte[16];
+
+        _socket.Receive(pixelFormat, pixelFormat.Length, 0);
+        foreach (byte s in pixelFormat)
+            Console.Write($"{s} ");
+
+        byte[] nameLenght = new byte[4];
+
+        _socket.Receive(nameLenght, nameLenght.Length, 0);
+        foreach (byte s in nameLenght)
+            Console.Write($"{s} ");
+        
+        Array.Reverse(nameLenght);
+        int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
+
+        byte[] nameString = new byte[nameLenghtNumber];
+        _socket.Receive(nameString, nameString.Length, 0);
+        foreach (byte s in nameString)
+            Console.Write($"{s} ");
+        
         Console.ForegroundColor = ConsoleColor.White;
-#endif
     }
 
     public void SetPixelFormat(byte pitsPerPixel, byte depth, byte
@@ -208,13 +235,14 @@ public class Retranslator
 #endif
             _socket.Send(securityType, securityType.Length, 0);
 
-            byte[] securityHandshake = new byte[1];
+            byte[] securityHandshake = new byte[4];
             _socket.Receive(securityHandshake, securityHandshake.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nSecurity handshake: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(securityHandshake[0]);
+            foreach (var t in securityHandshake)
+                Console.Write($"{t} ");
             Console.ForegroundColor = ConsoleColor.White;
 #endif
         } catch (SocketException ex)
