@@ -48,6 +48,7 @@ public class Retranslator
     public Encodings encodingType { get; }
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
+    public byte[] pixelFormat { get; } = new byte[16];
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -81,8 +82,6 @@ public class Retranslator
 
         foreach (byte s in height)
             Console.Write($"{s} ");
-
-        byte[] pixelFormat = new byte[16];
 
         socket.Receive(pixelFormat, pixelFormat.Length, 0);
         foreach (byte s in pixelFormat)
@@ -139,7 +138,8 @@ public class Retranslator
         socket.Send(updateRequest, updateRequest.Length, 0);
 
         byte[] frameBufferUpdateMessageResponse = new byte[4];
-        socket.ReceiveAsync(frameBufferUpdateMessageResponse, 0);
+        socket.Receive(frameBufferUpdateMessageResponse,
+                frameBufferUpdateMessageResponse.Length, 0);
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nFrame Buffer Update Message Response");
