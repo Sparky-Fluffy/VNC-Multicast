@@ -202,6 +202,8 @@ public class Retranslator
             Console.WriteLine(securityHandshake[0]);
             Console.ForegroundColor = ConsoleColor.White;
 #endif
+            if (securityHandshake[0] != 0)
+                _ExitProcessRetranslator("Security handshake error", 1);
         } catch (SocketException ex)
         {
             _ExitProcessRetranslator(ex.Message, 1);
