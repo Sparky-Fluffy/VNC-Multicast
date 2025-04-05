@@ -152,11 +152,6 @@ public class Retranslator
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
-        /* Console.WriteLine("\nFrame Buffer Update Message Response");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte s in frameBufferUpdateMessageResponse)
-            Console.Write($"{s} ");
-        Console.WriteLine(); */
         Console.ForegroundColor = ConsoleColor.White;
 #endif
     }
