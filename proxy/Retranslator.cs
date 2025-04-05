@@ -61,7 +61,7 @@ public class Retranslator
     private void ServerInit()
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("\nServer Init message data");
+        Console.Write("\nServer Init message data: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
 
         byte[] width = new byte[2];
@@ -128,7 +128,7 @@ public class Retranslator
 
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("\nFrame buffer update request");
+        Console.Write("\nFrame buffer update request: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
         foreach (byte b in updateRequest)
             Console.Write($"{b} ");
@@ -165,7 +165,7 @@ public class Retranslator
     {
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\nSet encoding message: ");
+        Console.Write($"\nSet encoding message: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine(_encodingType);
         Console.ForegroundColor = ConsoleColor.White;
@@ -183,7 +183,7 @@ public class Retranslator
         _socket.Receive(protocolVersion, protocolVersion.Length, 0);
 #if DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("\nProtocolVersion");
+        Console.Write("\nProtocolVersion: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
         foreach (byte p in protocolVersion)
             Console.Write($"{p} ");
@@ -199,17 +199,24 @@ public class Retranslator
         _socket.Receive(numberOfSecurity, numberOfSecurity.Length, 0);
 
 #if DEBUG
-        Console.WriteLine($"\nNumber of security types: {numberOfSecurity[0]}");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("\nNumber of security types: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"{numberOfSecurity[0]}");
+        Console.ForegroundColor = ConsoleColor.White;
 #endif
 
         byte[] securityTypes = new byte[numberOfSecurity[0]];
         _socket.Receive(securityTypes, securityTypes.Length, 0);
 
 #if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.Write("Security types: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
         foreach (var t in securityTypes)
             Console.Write($"{t} ");
         Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.White;
 #endif
         return securityTypes;
     }
@@ -229,7 +236,7 @@ public class Retranslator
             byte[] securityType = new byte[] { 1 };
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nSecurity type from client: ");
+            Console.Write("\nSecurity type from client: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(securityType[0]);
             Console.ForegroundColor = ConsoleColor.White;
@@ -240,7 +247,7 @@ public class Retranslator
             _socket.Receive(securityHandshake, securityHandshake.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\nSecurity handshake: ");
+            Console.Write($"\nSecurity handshake: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (var t in securityHandshake)
                 Console.Write($"{t} ");
