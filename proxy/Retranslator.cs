@@ -147,6 +147,24 @@ public class Retranslator
         _socket.Send(msg, msg.Length, 0);
     }
 
+    private void setProtocolVersion()
+    {
+        _socket.Connect(_ip, _port);
+
+        byte[] protocolVersion = new byte[12];
+        _socket.Receive(protocolVersion, protocolVersion.Length, 0);
+#if DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("\nProtocolVersion");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (byte p in protocolVersion)
+            Console.Write($"{p} ");
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.White;
+#endif
+        _socket.Send(protocolVersion, protocolVersion.Length, 0);
+    }
+
     private void makeHandshakes()
     {
         try
@@ -156,22 +174,9 @@ public class Retranslator
             Console.WriteLine("\nПопытка подключения к серверу...");
             Console.ForegroundColor = ConsoleColor.White;
 #endif
-            _socket.Connect(_ip, _port);
+            setProtocolVersion();
 
-            byte[] protocolVersion = new byte[12];
-            _socket.Receive(protocolVersion, protocolVersion.Length, 0);
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nProtocolVersion");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (byte p in protocolVersion)
-                Console.Write($"{p} ");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.White;
-#endif
-            _socket.Send(protocolVersion, protocolVersion.Length, 0);
-
-            byte[] securityTypes = new byte[2];
+            byte[] securityTypes = new byte[4];
             _socket.Receive(securityTypes, securityTypes.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
