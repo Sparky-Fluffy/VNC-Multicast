@@ -101,6 +101,7 @@ public class Retranslator
         _socket.Receive(nameString, nameString.Length, 0);
         foreach (byte s in nameString)
             Console.Write($"{s} ");
+        Console.WriteLine();
         
         Console.ForegroundColor = ConsoleColor.White;
     }
@@ -243,6 +244,7 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (var t in securityHandshake)
                 Console.Write($"{t} ");
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 #endif
         } catch (SocketException ex)
