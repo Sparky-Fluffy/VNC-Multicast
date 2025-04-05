@@ -6,6 +6,12 @@ namespace proxy;
 
 using FuckedExceptionKHSU = System.Exception;
 
+enum CloseProxyStatus : byte
+{
+    SuccessYEAH = 0,
+    FailedSuck = 1
+}
+
 public enum ReceivingRectangles : byte
 {
     Incremental = 0,
@@ -109,7 +115,7 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.White;
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, 1);
+            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -128,7 +134,7 @@ public class Retranslator
             Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, 1);
+            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -173,7 +179,7 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, 1);
+            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -193,7 +199,7 @@ public class Retranslator
             socket.Send(msg, msg.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, 1);
+            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -217,7 +223,7 @@ public class Retranslator
             socket.Send(protocolVersion, protocolVersion.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, 1);
+            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -284,7 +290,7 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, 1);
+            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -296,7 +302,7 @@ public class Retranslator
             socket.Send(sharedFlag, sharedFlag.Length, 0);
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, 1);
+            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
