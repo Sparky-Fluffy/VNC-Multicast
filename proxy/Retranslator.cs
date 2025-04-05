@@ -61,131 +61,162 @@ public class Retranslator
 
     private void ServerInit()
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("\nServer Init message data: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nServer Init message data: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
-        byte[] w = new byte[2];
-        socket.Receive(w, w.Length, 0);
+            byte[] w = new byte[2];
+            socket.Receive(w, w.Length, 0);
 
-        width[0] = w[0];
-        width[1] = w[1];
+            width[0] = w[0];
+            width[1] = w[1];
 
-        foreach (byte s in width)
-            Console.Write($"{s} ");
+            foreach (byte s in width)
+                Console.Write($"{s} ");
 
-        byte[] h = new byte[2];
-        socket.Receive(h, h.Length, 0);
+            byte[] h = new byte[2];
+            socket.Receive(h, h.Length, 0);
 
-        height[0] = h[0];
-        height[1] = h[1];
+            height[0] = h[0];
+            height[1] = h[1];
 
-        foreach (byte s in height)
-            Console.Write($"{s} ");
+            foreach (byte s in height)
+                Console.Write($"{s} ");
 
-        socket.Receive(pixelFormat, pixelFormat.Length, 0);
-        foreach (byte s in pixelFormat)
-            Console.Write($"{s} ");
+            socket.Receive(pixelFormat, pixelFormat.Length, 0);
+            foreach (byte s in pixelFormat)
+                Console.Write($"{s} ");
 
-        byte[] nameLenght = new byte[4];
+            byte[] nameLenght = new byte[4];
 
-        socket.Receive(nameLenght, nameLenght.Length, 0);
-        foreach (byte s in nameLenght)
-            Console.Write($"{s} ");
-        
-        Array.Reverse(nameLenght);
-        int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
+            socket.Receive(nameLenght, nameLenght.Length, 0);
+            foreach (byte s in nameLenght)
+                Console.Write($"{s} ");
+            
+            Array.Reverse(nameLenght);
+            int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
 
-        byte[] nameString = new byte[nameLenghtNumber];
-        socket.Receive(nameString, nameString.Length, 0);
-        foreach (byte s in nameString)
-            Console.Write($"{s} ");
-        Console.WriteLine();
-        
-        Console.ForegroundColor = ConsoleColor.White;
+            byte[] nameString = new byte[nameLenghtNumber];
+            socket.Receive(nameString, nameString.Length, 0);
+            foreach (byte s in nameString)
+                Console.Write($"{s} ");
+            Console.WriteLine();
+            
+            Console.ForegroundColor = ConsoleColor.White;
+        } catch (Exception e)
+        {
+            _ExitProcessRetranslator(e.Message, 1);
+        }
     }
 
     public void SetPixelFormat()
     {
-        byte[] fucked_msg = new byte[] {
-            (byte)ClientMessageTypes.SetPixelFormat, 0, 0, 0, pixelFormat[0],
-            pixelFormat[1], pixelFormat[2], pixelFormat[3], pixelFormat[4],
-            pixelFormat[5], pixelFormat[6], pixelFormat[7], pixelFormat[8],
-            pixelFormat[9], pixelFormat[10], pixelFormat[11], pixelFormat[12],
-            pixelFormat[13], pixelFormat[14], pixelFormat[15] };
-        socket.Send(fucked_msg, fucked_msg.Length, 0);
-        Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
+        try
+        {
+            byte[] fucked_msg = new byte[] {
+                (byte)ClientMessageTypes.SetPixelFormat, 0, 0, 0,
+                pixelFormat[0], pixelFormat[1], pixelFormat[2], pixelFormat[3],
+                pixelFormat[4], pixelFormat[5], pixelFormat[6], pixelFormat[7],
+                pixelFormat[8], pixelFormat[9], pixelFormat[10],
+                pixelFormat[11], pixelFormat[12], pixelFormat[13],
+                pixelFormat[14], pixelFormat[15] };
+            socket.Send(fucked_msg, fucked_msg.Length, 0);
+            Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
+        } catch (Exception e)
+        {
+            _ExitProcessRetranslator(e.Message, 1);
+        }
     }
 
     public void FramebufferUpdateRequest(byte incremental = 0, ushort
             XPosition = 0, ushort YPosition = 0)
     {
-        byte[] updateRequest = new byte[]
-        { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
-            (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-            (byte)YPosition, width[0], width[1], height[0], height[1] };
+        try
+        {
+            byte[] updateRequest = new byte[]
+            { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
+                (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
+                (byte)YPosition, width[0], width[1], height[0], height[1] };
 
 #if DEBUG
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("\nFrame buffer update request: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte b in updateRequest)
-            Console.Write($"{b} ");
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nFrame buffer update request: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (byte b in updateRequest)
+                Console.Write($"{b} ");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
 
-        socket.Send(updateRequest, updateRequest.Length, 0);
+            socket.Send(updateRequest, updateRequest.Length, 0);
 
-        byte[] frameBufferUpdateMessageResponse = new byte[4];
-        socket.Receive(frameBufferUpdateMessageResponse,
-                frameBufferUpdateMessageResponse.Length, 0);
+            byte[] frameBufferUpdateMessageResponse = new byte[4];
+            socket.Receive(frameBufferUpdateMessageResponse,
+                    frameBufferUpdateMessageResponse.Length, 0);
 #if DEBUG
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("\nFrame Buffer Update Message Response");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte s in frameBufferUpdateMessageResponse)
-            Console.Write($"{s} ");
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nFrame Buffer Update Message Response");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (byte s in frameBufferUpdateMessageResponse)
+                Console.Write($"{s} ");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
 
 #if DEBUG
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
+        } catch (Exception e)
+        {
+            _ExitProcessRetranslator(e.Message, 1);
+        }
     }
 
     private void SetEncoding()
     {
+        try
+        {
 #if DEBUG
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"\nSet encoding message: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(encodingType);
-        Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"\nSet encoding message: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(encodingType);
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
-        byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
-            (byte)encodingType };
-        socket.Send(msg, msg.Length, 0);
+            byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
+                (byte)encodingType };
+            socket.Send(msg, msg.Length, 0);
+        } catch (Exception e)
+        {
+            _ExitProcessRetranslator(e.Message, 1);
+        }
     }
 
     private void setProtocolVersion()
     {
-        socket.Connect(ip, port);
+        try
+        {
+            socket.Connect(ip, port);
 
-        byte[] protocolVersion = new byte[12];
-        socket.Receive(protocolVersion, protocolVersion.Length, 0);
+            byte[] protocolVersion = new byte[12];
+            socket.Receive(protocolVersion, protocolVersion.Length, 0);
 #if DEBUG
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("\nProtocolVersion: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte p in protocolVersion)
-            Console.Write($"{p} ");
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nProtocolVersion: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (byte p in protocolVersion)
+                Console.Write($"{p} ");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
 #endif
-        socket.Send(protocolVersion, protocolVersion.Length, 0);
+            socket.Send(protocolVersion, protocolVersion.Length, 0);
+        } catch (Exception e)
+        {
+            _ExitProcessRetranslator(e.Message, 1);
+        }
     }
 
     private byte[] getSecurityTypes()

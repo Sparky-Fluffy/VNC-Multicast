@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace proxy;
 
+using FuckedExceptionKHSU = System.Exception;
+
 class Program
 {
     static void WriteErrorAndExit(string msg)
@@ -39,7 +41,7 @@ class Program
             {
                 ip_addr = IPAddress.Parse(ip);
                 enc = (Encodings)Enum.Parse(typeof(Encodings), encoding);
-            } catch (FormatException e)
+            } catch (FuckedExceptionKHSU e)
             {
                 WriteErrorAndExit(e.Message);
             }
