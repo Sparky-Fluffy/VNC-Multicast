@@ -4,6 +4,8 @@ using System.Net.Sockets;
 
 namespace proxy;
 
+using FuckedExceptionKHSU = System.Exception;
+
 public enum ReceivingRectangles : byte
 {
     Incremental = 0,
@@ -105,7 +107,7 @@ public class Retranslator
             Console.WriteLine();
             
             Console.ForegroundColor = ConsoleColor.White;
-        } catch (Exception e)
+        } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, 1);
         }
@@ -124,7 +126,7 @@ public class Retranslator
                 pixelFormat[14], pixelFormat[15] };
             socket.Send(fucked_msg, fucked_msg.Length, 0);
             Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
-        } catch (Exception e)
+        } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, 1);
         }
@@ -169,7 +171,7 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.White;
 #endif
-        } catch (Exception e)
+        } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, 1);
         }
@@ -189,7 +191,7 @@ public class Retranslator
             byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
                 (byte)encodingType };
             socket.Send(msg, msg.Length, 0);
-        } catch (Exception e)
+        } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, 1);
         }
@@ -213,7 +215,7 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.White;
 #endif
             socket.Send(protocolVersion, protocolVersion.Length, 0);
-        } catch (Exception e)
+        } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, 1);
         }
@@ -280,7 +282,7 @@ public class Retranslator
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 #endif
-        } catch (SocketException ex)
+        } catch (FuckedExceptionKHSU ex)
         {
             _ExitProcessRetranslator(ex.Message, 1);
         }
@@ -292,7 +294,7 @@ public class Retranslator
         try
         {
             socket.Send(sharedFlag, sharedFlag.Length, 0);
-        } catch (SocketException ex)
+        } catch (FuckedExceptionKHSU ex)
         {
             _ExitProcessRetranslator(ex.Message, 1);
         }
