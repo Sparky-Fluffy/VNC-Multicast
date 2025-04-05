@@ -105,16 +105,16 @@ public class Retranslator
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-    public void SetPixelFormat(byte pitsPerPixel, byte depth, byte
-            bigEndianFlag, byte trueColorFlag, uint redMax, uint greenMax, uint
-            blueMax, byte redShift, byte greenShift, byte blueShift)
+    public void SetPixelFormat()
     {
-        byte[] msg = new byte[] { (byte)ClientMessageTypes.SetPixelFormat, 0, 0,
-            0, pitsPerPixel, depth, bigEndianFlag, trueColorFlag,
-            (byte)(redMax >> 8), (byte)redMax, (byte)(greenMax >> 8),
-            (byte)greenMax, (byte)(blueMax >> 8), (byte)blueMax, redShift,
-            greenShift, blueShift, 0, 0, 0 };
-        socket.Send(msg, msg.Length, 0);
+        byte[] fucked_msg = new byte[] {
+            (byte)ClientMessageTypes.SetPixelFormat, 0, 0, 0, pixelFormat[0],
+            pixelFormat[1], pixelFormat[2], pixelFormat[3], pixelFormat[4],
+            pixelFormat[5], pixelFormat[6], pixelFormat[7], pixelFormat[8],
+            pixelFormat[9], pixelFormat[10], pixelFormat[11], pixelFormat[12],
+            pixelFormat[13], pixelFormat[14], pixelFormat[15] };
+        socket.Send(fucked_msg, fucked_msg.Length, 0);
+        Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
     }
 
     public void FramebufferUpdateRequest(byte incremental = 0, ushort

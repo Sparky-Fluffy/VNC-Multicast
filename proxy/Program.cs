@@ -57,7 +57,7 @@ class Program
 
         Retranslator client = new Retranslator(ip_addr, port, enc);
         client.Connect();
-        client.SetPixelFormat(8, 8, 0, 0, 0, 0, 0, 0, 0, 0);
+        client.SetPixelFormat();
         client.FramebufferUpdateRequest();
 
         await host.RunAsync();
