@@ -331,6 +331,6 @@ public class Retranslator
         makeHandshakes();
         ClientInit();
         ServerInit();
-        SetEncoding();
+        // SetEncoding();
     }
 }
