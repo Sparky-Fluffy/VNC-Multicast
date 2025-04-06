@@ -201,16 +201,12 @@ public class Retranslator
     {
         try
         {
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"\nSet encoding message: ");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(encodingType);
-            Console.ForegroundColor = ConsoleColor.White;
-#endif
-            byte[] msg = new byte[] { (byte)ClientMessageTypes.SetEncodings, 0,
-                (byte)encodingType };
-            socket.Send(msg, msg.Length, 0);
+            byte[] numberOfEncodings = new byte[] {
+                (byte)ClientMessageTypes.SetEncodings, 0, 0, 1 };
+            socket.Send(numberOfEncodings, numberOfEncodings.Length, 0);
+
+            byte[] encodingTypeMsg = new byte[] { 0, 0, 0, (byte)encodingType };
+            socket.Send(encodingTypeMsg, encodingTypeMsg.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
@@ -331,6 +327,6 @@ public class Retranslator
         makeHandshakes();
         ClientInit();
         ServerInit();
-        // SetEncoding();
+        SetEncoding();
     }
 }
