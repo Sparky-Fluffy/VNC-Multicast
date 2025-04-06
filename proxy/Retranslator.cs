@@ -160,7 +160,7 @@ public class Retranslator
             byte[] updateRequest = new byte[]
             { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
                 (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-                (byte)YPosition, width[0], width[1], height[0], height[1] };
+                (byte)YPosition, 0, 1, 0, 1 };
 
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
@@ -186,9 +186,45 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.White;
 #endif
 
-            byte[,] rectangesData = new byte[countRects[countRects.Length - 1], 12]; // TODO: set sizes for this idiot array
+            ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3], countRects[2]], 0);
+
+            byte[][] rectanglesData = new byte[numberOfRectangles][];
+            byte[][][] pixelData = new byte[numberOfRectangles][][];
+
+            for (ushort i = 0; i < numberOfRectangles; i++)
+            {
+                rectanglesData[i] = new byte[12];
+                socket.Receive(rectanglesData[i], rectanglesData[i].Length, 0);
+                ushort width = BitConverter.ToUInt16([rectanglesData[i][5], rectanglesData[i][4]]);
+                ushort height = BitConverter.ToUInt16([rectanglesData[i][7], rectanglesData[i][6]]);
+                Console.WriteLine(width);
+                Console.WriteLine(height);
+                pixelData[i] = new byte[width * height][];
+                for (int j = 0; j < pixelData[i].Length; j++)
+                {
+                    pixelData[i][j] = new byte[pixelFormat[0]];
+                    socket.Receive(pixelData[i][j], pixelData.Length, 0);
+                }
+            }
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
+            for (int i = 0; i < rectanglesData.Length; i++)
+            {
+                Console.Write("Rectangle header:");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                foreach (byte s in rectanglesData[i])
+                    Console.Write($"{s} ");
+                
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nRectangle pixel data");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                // foreach (byte[] s in pixelData[i])
+                //     foreach (byte t in s)
+                //         Console.Write($"{t} ");
+                Console.WriteLine();
+            }
             Console.ForegroundColor = ConsoleColor.White;
 #endif
         } catch (FuckedExceptionKHSU e)
