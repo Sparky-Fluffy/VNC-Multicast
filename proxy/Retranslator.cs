@@ -115,7 +115,8 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.White;
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(e.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -134,7 +135,8 @@ public class Retranslator
             Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(e.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -179,7 +181,8 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(e.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -199,7 +202,8 @@ public class Retranslator
             socket.Send(msg, msg.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(e.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -223,7 +227,8 @@ public class Retranslator
             socket.Send(protocolVersion, protocolVersion.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(e.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -290,7 +295,8 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(ex.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -302,7 +308,8 @@ public class Retranslator
             socket.Send(sharedFlag, sharedFlag.Length, 0);
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
+            _ExitProcessRetranslator(ex.Message,
+                    (byte)CloseProxyStatus.FailedSuck);
         }
     }
 
