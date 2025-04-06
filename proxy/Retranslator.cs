@@ -186,7 +186,8 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.White;
 #endif
 
-            ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3], countRects[2]], 0);
+            ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
+                    countRects[2]], 0);
 
             byte[][] rectanglesData = new byte[numberOfRectangles][];
             byte[][][] pixelData = new byte[numberOfRectangles][][];
@@ -195,8 +196,10 @@ public class Retranslator
             {
                 rectanglesData[i] = new byte[12];
                 socket.Receive(rectanglesData[i], rectanglesData[i].Length, 0);
-                ushort width = BitConverter.ToUInt16([rectanglesData[i][5], rectanglesData[i][4]]);
-                ushort height = BitConverter.ToUInt16([rectanglesData[i][7], rectanglesData[i][6]]);
+                ushort width = BitConverter.ToUInt16([rectanglesData[i][5],
+                        rectanglesData[i][4]]);
+                ushort height = BitConverter.ToUInt16([rectanglesData[i][7],
+                        rectanglesData[i][6]]);
                 Console.WriteLine(width);
                 Console.WriteLine(height);
                 pixelData[i] = new byte[width * height][];
