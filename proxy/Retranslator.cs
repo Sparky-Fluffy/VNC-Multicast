@@ -71,9 +71,11 @@ public class Retranslator
     {
         try
         {
+#if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("\nServer Init message data: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
+#endif
 
             byte[] w = new byte[2];
             socket.Receive(w, w.Length, 0);
@@ -81,8 +83,10 @@ public class Retranslator
             width[0] = w[0];
             width[1] = w[1];
 
+#if DEBUG
             foreach (byte s in width)
                 Console.Write($"{s} ");
+#endif
 
             byte[] h = new byte[2];
             socket.Receive(h, h.Length, 0);
@@ -90,29 +94,39 @@ public class Retranslator
             height[0] = h[0];
             height[1] = h[1];
 
+#if DEBUG
             foreach (byte s in height)
                 Console.Write($"{s} ");
+#endif
 
             socket.Receive(pixelFormat, pixelFormat.Length, 0);
+
+#if DEBUG
             foreach (byte s in pixelFormat)
                 Console.Write($"{s} ");
+#endif
 
             byte[] nameLenght = new byte[4];
 
             socket.Receive(nameLenght, nameLenght.Length, 0);
+
+#if DEBUG
             foreach (byte s in nameLenght)
                 Console.Write($"{s} ");
+#endif
             
             Array.Reverse(nameLenght);
             int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
 
             byte[] nameString = new byte[nameLenghtNumber];
             socket.Receive(nameString, nameString.Length, 0);
+
+#if DEBUG
             foreach (byte s in nameString)
                 Console.Write($"{s} ");
             Console.WriteLine();
-            
             Console.ForegroundColor = ConsoleColor.White;
+#endif
         } catch (FuckedExceptionKHSU e)
         {
             _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
