@@ -129,7 +129,7 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -148,7 +148,7 @@ public class Retranslator
             Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -174,26 +174,26 @@ public class Retranslator
 
             socket.Send(updateRequest, updateRequest.Length, 0);
 
-            byte[] frameBufferUpdateMessageResponse = new byte[4];
-            socket.Receive(frameBufferUpdateMessageResponse,
-                    frameBufferUpdateMessageResponse.Length, 0);
+            byte[] countRects = new byte[4];
+            socket.Receive(countRects, countRects.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nFrame Buffer Update Message Response");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (byte s in frameBufferUpdateMessageResponse)
+            foreach (byte s in countRects)
                 Console.Write($"{s} ");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 #endif
 
+            byte[,] rectangesData = new byte[countRects[countRects.Length - 1], 12]; // TODO: set sizes for this idiot array
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.White;
 #endif
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -209,7 +209,7 @@ public class Retranslator
             socket.Send(encodingTypeMsg, encodingTypeMsg.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -233,7 +233,7 @@ public class Retranslator
             socket.Send(protocolVersion, protocolVersion.Length, 0);
         } catch (FuckedExceptionKHSU e)
         {
-            _ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -300,7 +300,7 @@ public class Retranslator
 #endif
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
@@ -312,11 +312,11 @@ public class Retranslator
             socket.Send(sharedFlag, sharedFlag.Length, 0);
         } catch (FuckedExceptionKHSU ex)
         {
-            _ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
+            ExitProcessRetranslator(ex.Message, CloseProxyStatus.FailedSuck);
         }
     }
 
-    private void _ExitProcessRetranslator(string msg, CloseProxyStatus st)
+    private void ExitProcessRetranslator(string msg, CloseProxyStatus st)
     {
         Console.WriteLine(msg);
         Environment.Exit((int)st);
