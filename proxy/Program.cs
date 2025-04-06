@@ -57,6 +57,9 @@ class Program
         Console.WriteLine($"Encoding enum = {(byte)enc}");
 #endif
 
+        if (enc != Encodings.Raw)
+            WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
+
         Retranslator client = new Retranslator(ip_addr, port, enc);
         client.Connect();
         client.SetPixelFormat();
