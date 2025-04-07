@@ -160,7 +160,7 @@ public class Retranslator
             byte[] updateRequest = new byte[]
             { (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
                 (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-                (byte)YPosition, 0, 1, 0, 1 };
+                (byte)YPosition, width[0], width[1], height[0], height[1] };
 
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
