@@ -63,7 +63,11 @@ class Program
         Retranslator client = new Retranslator(ip_addr, port, enc);
         client.Connect();
         client.SetPixelFormat();
-        client.FramebufferUpdateRequest();
+        while (true)
+        {
+            client.FramebufferUpdateRequest();
+            client.SendMulticast();
+        }
 
         await host.RunAsync();
     }
