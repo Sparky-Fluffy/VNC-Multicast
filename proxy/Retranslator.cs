@@ -205,7 +205,7 @@ public class Retranslator
                 pixelData[i] = new byte[width * height][];
                 for (int j = 0; j < pixelData[i].Length; j++)
                 {
-                    pixelData[i][j] = new byte[pixelFormat[0]];
+                    pixelData[i][j] = new byte[pixelFormat[0] / 8];
                     socket.Receive(pixelData[i][j], pixelData.Length, 0);
                 }
             }
@@ -223,9 +223,9 @@ public class Retranslator
                 Console.WriteLine("\nRectangle pixel data");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                // foreach (byte[] s in pixelData[i])
-                //     foreach (byte t in s)
-                //         Console.Write($"{t} ");
+                foreach (byte[] s in pixelData[i])
+                    foreach (byte t in s)
+                        Console.Write($"{t} ");
                 Console.WriteLine();
             }
             Console.ForegroundColor = ConsoleColor.White;
