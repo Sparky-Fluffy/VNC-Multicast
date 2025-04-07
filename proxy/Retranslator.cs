@@ -57,6 +57,7 @@ public class Retranslator
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
     public byte[] pixelFormat { get; } = new byte[16];
+    public byte[][][] pixelData { get; private set; } = null;
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -194,7 +195,7 @@ public class Retranslator
                     countRects[2]], 0);
 
             byte[][] rectanglesData = new byte[numberOfRectangles][];
-            byte[][][] pixelData = new byte[numberOfRectangles][][];
+            pixelData = new byte[numberOfRectangles][][];
 
             for (ushort i = 0; i < numberOfRectangles; i++)
             {
