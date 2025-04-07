@@ -178,7 +178,7 @@ public class Retranslator
             socket.Receive(countRects, countRects.Length, 0);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nFrame Buffer Update Message Response");
+            Console.Write("\nFrame Buffer Update Message Response: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (byte s in countRects)
                 Console.Write($"{s} ");
