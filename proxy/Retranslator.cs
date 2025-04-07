@@ -152,6 +152,10 @@ public class Retranslator
         }
     }
 
+    public void SendMulticast()
+    {
+    }
+
     public void FramebufferUpdateRequest(byte incremental = 0, ushort
             XPosition = 0, ushort YPosition = 0)
     {
