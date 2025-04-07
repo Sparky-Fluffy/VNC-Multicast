@@ -206,7 +206,7 @@ public class Retranslator
                 for (int j = 0; j < pixelData[i].Length; j++)
                 {
                     pixelData[i][j] = new byte[pixelFormat[0] / 8];
-                    socket.Receive(pixelData[i][j], pixelData.Length, 0);
+                    socket.Receive(pixelData[i][j], pixelData[i][j].Length, 0);
                 }
             }
 #if DEBUG
