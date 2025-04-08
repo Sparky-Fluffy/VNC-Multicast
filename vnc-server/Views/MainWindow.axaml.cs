@@ -16,14 +16,11 @@ public partial class MainWindow : Window
     private void RunServer()
     {
 #if DEBUG
-        Console.WriteLine(isHideWin.IsChecked);
-        Console.WriteLine(tbPortData.Text);
+        Console.WriteLine($"Close window: {isHideWin.IsChecked}");
+        Console.WriteLine($"Port: {tbPortData.Text}");
+        Console.WriteLine($"tbPortData.Text == string.Empty ({tbPortData.Text ==
+            string.Empty})");
 #endif
-        var box = MessageBoxManager
-            .GetMessageBoxStandard("Caption", "Are you sure you would like to" +
-                    "delete appender_replace_page_1?",
-                ButtonEnum.YesNo);
-        box.ShowWindowDialogAsync(this);
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
