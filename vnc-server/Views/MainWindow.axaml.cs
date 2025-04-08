@@ -23,7 +23,7 @@ public partial class MainWindow : Window
             .GetMessageBoxStandard("Caption", "Are you sure you would like to" +
                     "delete appender_replace_page_1?",
                 ButtonEnum.YesNo);
-        box.ShowAsync();
+        box.ShowWindowDialogAsync(this);
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
