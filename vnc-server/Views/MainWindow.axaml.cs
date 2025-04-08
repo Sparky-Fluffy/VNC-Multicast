@@ -14,5 +14,6 @@ public partial class MainWindow : Window
     private void StartServer(object sender, RoutedEventArgs e)
     {
         Console.WriteLine(isHideWin.IsChecked);
+        Console.WriteLine(tbPortData.Text);
     }
 }
