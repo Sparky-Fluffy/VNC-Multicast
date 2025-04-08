@@ -10,5 +10,5 @@ tests/obj/Release/
 tests/BenchmarkDotNet.Artifacts/
 obj/
 *.sln
-vnc-server/bin
-vnc-server/obj
+vnc-server/bin/
+vnc-server/obj/
