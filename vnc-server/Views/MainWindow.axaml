@@ -6,8 +6,8 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="vnc_server.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="vnc_server">
+        Icon="/Assets/vnc-server-logo.ico"
+        Title="VNC Сервер">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
