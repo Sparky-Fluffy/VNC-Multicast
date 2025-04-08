@@ -17,6 +17,9 @@
 
     <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
 
-    <Button HorizontalAlignment="Center">Запустить</Button>
+    <StackPanel>
+        <Button HorizontalAlignment="Center">Запустить</Button>
+        <TextBox/>
+    </StackPanel>
 
 </Window>
