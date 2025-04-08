@@ -22,9 +22,9 @@
             <TextBox Grid.Row="0" Grid.Column="1"/>
             <Label Grid.Row="1" Grid.Column="0">Скрыть окно</Label>
             <CheckBox Grid.Row="1" Grid.Column="1"/>
-            <Button Grid.Row="2" Grid.Column="0" Margin="5"
+            <Button Grid.Row="2" Grid.Column="0" Margin="5" Content="Старт"
                 Grid.ColumnSpan="2" HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center">Старт</Button>
+                HorizontalContentAlignment="Center"/>
     </Grid>
 
 </Window>
