@@ -57,7 +57,6 @@ public class Retranslator
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
     public byte[] pixelFormat { get; } = new byte[16];
-    public byte[][][] pixelData { get; private set; } = null;
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -194,47 +193,39 @@ public class Retranslator
             ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
                     countRects[2]], 0);
 
-            byte[][] rectanglesData = new byte[numberOfRectangles][];
-            pixelData = new byte[numberOfRectangles][][];
+            byte[] rectData = new byte[12];
+            byte[] pixelData = new byte[pixelFormat[0] / 8];
 
             for (ushort i = 0; i < numberOfRectangles; i++)
             {
-                rectanglesData[i] = new byte[12];
-                socket.Receive(rectanglesData[i], rectanglesData[i].Length, 0);
-                ushort width = BitConverter.ToUInt16([rectanglesData[i][5],
-                        rectanglesData[i][4]]);
-                ushort height = BitConverter.ToUInt16([rectanglesData[i][7],
-                        rectanglesData[i][6]]);
-                Console.WriteLine(width);
-                Console.WriteLine(height);
-                pixelData[i] = new byte[width * height][];
-                for (int j = 0; j < pixelData[i].Length; j++)
-                {
-                    pixelData[i][j] = new byte[pixelFormat[0] / 8];
-                    socket.Receive(pixelData[i][j], pixelData[i][j].Length, 0);
-                }
-            }
+                socket.Receive(rectData, rectData.Length, 0);
+                ushort width = BitConverter.ToUInt16([rectData[5], rectData[4]]);
+                ushort height = BitConverter.ToUInt16([rectData[7], rectData[6]]);
 #if DEBUG
-            Console.ForegroundColor = ConsoleColor.Green;
-            for (int i = 0; i < rectanglesData.Length; i++)
-            {
-                Console.Write("Rectangle header:");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("\nRectangle header: ");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                foreach (byte s in rectanglesData[i])
+                foreach (byte s in rectData)
                     Console.Write($"{s} ");
                 
+                Console.WriteLine();
+                
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nRectangle pixel data");
+                Console.Write("Rectangle width and height: ");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                foreach (byte[] s in pixelData[i])
-                    foreach (byte t in s)
-                        Console.Write($"{t} ");
-                Console.WriteLine();
-            }
-            Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"{width}x{height}");
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Rectangle pixel data is in prostration");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.White;
 #endif
+                for (int j = 0; j < width * height; j++)
+                    socket.Receive(pixelData, pixelData.Length, 0);
+            }
         } catch (FuckedExceptionKHSU e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
