@@ -11,9 +11,16 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private void StartServer(object sender, RoutedEventArgs e)
+    private void RunServer()
     {
+#if DEBUG
         Console.WriteLine(isHideWin.IsChecked);
         Console.WriteLine(tbPortData.Text);
+#endif
+    }
+
+    private void StartServer(object sender, RoutedEventArgs e)
+    {
+        RunServer();
     }
 }
