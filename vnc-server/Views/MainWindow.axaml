@@ -7,19 +7,24 @@
         x:Class="vnc_server.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/vnc-server-logo.ico"
-        Title="VNC Сервер">
+        Title="VNC Сервер"
+        RequestedThemeVariant="Light"
+        Width="270" Height="150" CanResize="false">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-
-    <StackPanel>
-        <Button HorizontalAlignment="Center">Запустить</Button>
-        <TextBox/>
-    </StackPanel>
+    <Grid Margin="5" ColumnDefinitions="120, 100" HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        RowDefinitions="1*, 1*, 1*">
+            <Label Grid.Row="0" Grid.Column="0">Порт</Label>
+            <TextBox Grid.Row="0" Grid.Column="1"/>
+            <Label Grid.Row="1" Grid.Column="0">Скрыть окно</Label>
+            <CheckBox Grid.Row="1" Grid.Column="1"/>
+            <Button Grid.Row="2" Grid.Column="0" Margin="5"
+                Grid.ColumnSpan="2" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center">Старт</Button>
+    </Grid>
 
 </Window>
