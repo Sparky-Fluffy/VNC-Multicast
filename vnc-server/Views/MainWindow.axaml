@@ -19,7 +19,7 @@
         VerticalAlignment="Center"
         RowDefinitions="1*, 1*, 1*">
             <Label Grid.Row="0" Grid.Column="0">Порт</Label>
-            <TextBox Grid.Row="0" Grid.Column="1"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Name="tbPortData"/>
             <Label Grid.Row="1" Grid.Column="0">Скрыть окно</Label>
             <CheckBox Grid.Row="1" Grid.Column="1" Name="isHideWin"/>
             <Button Grid.Row="2" Grid.Column="0" Margin="5" Content="Старт"
