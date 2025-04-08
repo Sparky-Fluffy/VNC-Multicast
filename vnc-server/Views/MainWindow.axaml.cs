@@ -37,6 +37,10 @@ public partial class MainWindow : Window
             await box.ShowWindowDialogAsync(this);
             Environment.Exit(1);
         }
+#if DEBUG
+        Console.WriteLine($"Variables: hideWindow = {hideWindow}, port = " +
+                $"{port}");
+#endif
     }
 
     private void RunServer()
