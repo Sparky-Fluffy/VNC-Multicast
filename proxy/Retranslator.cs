@@ -57,6 +57,7 @@ public class Retranslator
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
     public byte[] pixelFormat { get; } = new byte[16];
+    public Socket multicastSocket { get; private set; }
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -65,6 +66,7 @@ public class Retranslator
         this.ip = ip;
         this.port = port;
         this.encodingType = encodingType;
+        initMulticastSocket();
     }
 
     private void ServerInit()
@@ -152,8 +154,29 @@ public class Retranslator
         }
     }
 
+    private void initMulticastSocket()
+    {
+        try
+        {
+            multicastSocket = new Socket(AddressFamily.InterNetwork,
+                    SocketType.Dgram, ProtocolType.Udp);
+            IPAddress ipGroup = new IPAddress(new byte[] { 239, 0, 0, 0 } );
+            IPEndPoint endPoint = new IPEndPoint(ipGroup, 8082);
+            multicastSocket.Bind(endPoint);
+        } catch (FuckedExceptionKHSU e)
+        {
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+        }
+    }
+
     public void SendMulticast()
     {
+        try
+        {
+        } catch (FuckedExceptionKHSU e)
+        {
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+        }
     }
 
     public void FramebufferUpdateRequest(byte incremental = 0, ushort
