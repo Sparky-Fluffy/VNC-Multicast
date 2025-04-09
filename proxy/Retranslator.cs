@@ -224,15 +224,15 @@ public class Retranslator
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("В дело вступает мультикаст сокет.");
 #endif
                 for (int j = 0; j < width * height; j++)
+                {
                     socket.Receive(pixelData, pixelData.Length, 0);
+                    multicastSocket.SendTo(pixelData, pixelData.Length, 0,
+                            ipGroup);
+                }
             }
-
-#if DEBUG
-            Console.WriteLine("В дело вступает мультикаст сокет.");
-#endif
-            multicastSocket.SendTo(pixelData, pixelData.Length, 0, ipGroup);
         } catch (FuckedExceptionKHSU e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
