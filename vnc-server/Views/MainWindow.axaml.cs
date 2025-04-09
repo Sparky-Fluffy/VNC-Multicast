@@ -54,11 +54,15 @@ public partial class MainWindow : Window
 
     private void RunServer(bool? isHide, int port)
     {
+#if DEBUG
+        Console.WriteLine($"RunServer: port = {port}");
+#endif
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
     {
         PrepareData();
-        RunServer(hideWindow, port);
+        if (port >= 5900 && port <= 5906)
+            RunServer(hideWindow, port);
     }
 }
