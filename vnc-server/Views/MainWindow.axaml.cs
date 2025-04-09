@@ -42,7 +42,7 @@ public partial class MainWindow : Window
 #endif
     }
 
-    private async void RunServer()
+    private async void PrepareData()
     {
 #if DEBUG
         Console.WriteLine($"Close window: {isHideWin.IsChecked}");
@@ -50,13 +50,15 @@ public partial class MainWindow : Window
         Console.WriteLine($"PortData.Text == null ({tbPortData.Text == null})");
 #endif
         await SetParamsAsync();
-#if DEBUG
-        Console.WriteLine("Параметры установлены.");
-#endif
+    }
+
+    private void RunServer(bool? isHide, int port)
+    {
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
     {
-        RunServer();
+        PrepareData();
+        RunServer(hideWindow, port);
     }
 }
