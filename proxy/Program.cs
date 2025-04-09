@@ -66,7 +66,6 @@ class Program
         // while (true)
         // {
             client.FramebufferUpdateRequest();
-            client.SendMulticast();
         // }
 
         await host.RunAsync();
