@@ -57,6 +57,7 @@ public partial class MainWindow : Window
 #if DEBUG
         Console.WriteLine($"RunServer: port = {port}");
 #endif
+        if (isHide.Value) Hide();
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
