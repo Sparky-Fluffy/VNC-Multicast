@@ -35,10 +35,7 @@ public partial class MainWindow : Window
                     "Порт должен быть от 5900 до 5906", ButtonEnum.Ok);
         }
         if (box != null)
-        {
             await box.ShowWindowDialogAsync(this);
-            Environment.Exit(1);
-        }
 #if DEBUG
         Console.WriteLine($"Variables: hideWindow = {hideWindow}, port = " +
                 $"{port}");
