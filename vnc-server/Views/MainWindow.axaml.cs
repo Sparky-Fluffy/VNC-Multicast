@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System;
+using System.Threading.Tasks;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Base;
@@ -17,7 +18,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private async void SetParamsAsync()
+    private async Task SetParamsAsync()
     {
         IMsBox<ButtonResult> box = null;
         hideWindow = isHideWin.IsChecked;
@@ -43,14 +44,17 @@ public partial class MainWindow : Window
 #endif
     }
 
-    private void RunServer()
+    private async void RunServer()
     {
 #if DEBUG
         Console.WriteLine($"Close window: {isHideWin.IsChecked}");
         Console.WriteLine($"Port: {tbPortData.Text}");
         Console.WriteLine($"PortData.Text == null ({tbPortData.Text == null})");
 #endif
-        SetParamsAsync();
+        await SetParamsAsync();
+#if DEBUG
+        Console.WriteLine("Параметры установлены.");
+#endif
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
