@@ -68,6 +68,7 @@ public partial class MainWindow : Window
 #endif
         bStart.Content = "Старт";
         tbPortData.Text = null;
+        isHideWin.IsChecked = false;
     }
 
     private void StartServer(object sender, RoutedEventArgs e)
