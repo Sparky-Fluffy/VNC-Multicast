@@ -9,7 +9,7 @@
                         ToolTipText="VNC Сервер">
             <TrayIcon.Menu>
             <NativeMenu>
-                <NativeMenuItem Header="Закрыть сервер">
+                <NativeMenuItem Header="Закрыть сервер" Click="ExitTrayItem">
                 </NativeMenuItem>
             </NativeMenu>
             </TrayIcon.Menu>
