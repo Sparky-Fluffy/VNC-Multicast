@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Base;
+using Avalonia.Headless.Vnc;
 
 namespace vnc_server.Views;
 
