@@ -19,11 +19,6 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    // private void ExitTrayItem(object sender, EventArgs)
-    // {
-    //     Environment.Exit(0);
-    // }
-
     private async Task SetParamsAsync()
     {
         IMsBox<ButtonResult> box = null;

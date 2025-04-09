@@ -1,22 +1,11 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="vnc_server.App"
+             xmlns:vm="using:vnc_server.ViewModels"
              xmlns:local="using:vnc_server"
+             x:Class="vnc_server.App"
+             x:DataType="vm:AppViewModel"
              RequestedThemeVariant="Light">
-    <TrayIcon.Icons>
-        <TrayIcons>
-        <TrayIcon Icon="/Assets/vnc-server-logo.ico"
-                        ToolTipText="VNC Сервер">
-            <TrayIcon.Menu>
-            <NativeMenu>
-                <NativeMenuItem Header="Закрыть сервер" Click="ExitTrayItem">
-                </NativeMenuItem>
-            </NativeMenu>
-            </TrayIcon.Menu>
-        </TrayIcon>
-        </TrayIcons>
-    </TrayIcon.Icons>
-
+    
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
@@ -24,4 +13,17 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/vnc-server-logo.ico"
+                            ToolTipText="VNC Сервер">
+                <TrayIcon.Menu>
+                <NativeMenu>
+                    <NativeMenuItem Header="Закрыть сервер" Command="{Binding ExitTrayItem}"/>
+                </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>
