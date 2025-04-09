@@ -6,16 +6,10 @@
     <TrayIcon.Icons>
         <TrayIcons>
         <TrayIcon Icon="/Assets/vnc-server-logo.ico"
-                        ToolTipText="Avalonia Tray Icon ToolTip">
+                        ToolTipText="VNC Сервер">
             <TrayIcon.Menu>
             <NativeMenu>
-                <NativeMenuItem Header="Settings">
-                <NativeMenu>
-                    <NativeMenuItem Header="Option 1"   />
-                    <NativeMenuItem Header="Option 2"   />
-                    <NativeMenuItemSeparator />
-                    <NativeMenuItem Header="Option 3"  />
-                </NativeMenu>
+                <NativeMenuItem Header="Закрыть сервер">
                 </NativeMenuItem>
             </NativeMenu>
             </TrayIcon.Menu>
