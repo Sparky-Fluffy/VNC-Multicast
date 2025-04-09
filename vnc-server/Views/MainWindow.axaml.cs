@@ -54,16 +54,29 @@ public partial class MainWindow : Window
 
     private void RunServer(bool? isHide, int port)
     {
+        bStart.Content = "Остановить";
 #if DEBUG
         Console.WriteLine($"RunServer: port = {port}");
 #endif
         if (isHide.Value) Hide();
     }
 
+    private void StopServer()
+    {
+#if DEBUG
+        Console.WriteLine("Остановка сервера");
+#endif
+        bStart.Content = "Старт";
+    }
+
     private void StartServer(object sender, RoutedEventArgs e)
     {
-        PrepareData();
-        if (port >= 5900 && port <= 5906)
-            RunServer(hideWindow, port);
+        if (bStart.Content == "Старт")
+        {
+            PrepareData();
+            if (port >= 5900 && port <= 5906)
+                RunServer(hideWindow, port);
+        } else if (bStart.Content == "Остановить")
+            StopServer();
     }
 }
