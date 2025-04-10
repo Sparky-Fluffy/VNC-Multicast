@@ -57,8 +57,7 @@ public class Retranslator
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
     public byte[] pixelFormat { get; } = new byte[16];
-    public UdpClient sender { get; }
-    public IPAddress multicastAddress { get; }
+    public Socket multicastSocket { get; }
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType)
     {
@@ -67,8 +66,9 @@ public class Retranslator
         this.ip = ip;
         this.port = port;
         this.encodingType = encodingType;
-        sender = new UdpClient();
-        multicastAddress = new IPAddress(new byte[] { 239, 0, 0, 0 } );
+        multicastSocket = new Socket(AddressFamily.InterNetwork,
+                SocketType.Dgram, ProtocolType.Udp);
+        multicastSocket.EnableBroadcast = true;
     }
 
     private void ServerInit()
@@ -227,8 +227,6 @@ public class Retranslator
                 for (int j = 0; j < width * height; j++)
                 {
                     socket.Receive(pixelData, pixelData.Length, 0);
-                    sender.Send(pixelData, pixelData.Length, new
-                            IPEndPoint(multicastAddress, 8001));
                 }
             }
         } catch (FuckedExceptionKHSU e)
