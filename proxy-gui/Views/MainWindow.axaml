@@ -7,7 +7,10 @@
         x:Class="proxy_gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Прокси GUI">
+        Title="Прокси GUI"
+        RequestedThemeVariant="Light"
+        Width="270" Height="150" CanResize="false">
+
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
