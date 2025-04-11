@@ -11,6 +11,10 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
+    private void Run()
+    {
+    }
+
     private void StartProxyServer(object? sender, RoutedEventArgs e)
     {
 #if DEBUG
