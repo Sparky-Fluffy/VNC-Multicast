@@ -14,6 +14,7 @@ public partial class MainWindow : Window
 {
     private IPAddress serverAddr;
     private IPAddress groupAddr;
+    private int portConnection;
     private bool? hideWin;
     private const uint minMulticastAddr = 3758096384;
     private const uint maxMulticastAddr = 4026531839;
@@ -57,6 +58,15 @@ public partial class MainWindow : Window
             box = MessageBoxManager.GetMessageBoxStandard("Неверный диапазон",
                     "Адрес группы должен быть из диапазон 224.0.0.0 - " +
                     "239.255.255.255", ButtonEnum.Ok);
+        } else if (!int.TryParse(ServerPortTb.Text, out portConnection))
+        {
+            box = MessageBoxManager.GetMessageBoxStandard("Некорректный порт",
+                    "Порт введён неправильно", ButtonEnum.Ok);
+        }  else if (portConnection < 5900 || portConnection > 5906)
+        {
+            box = MessageBoxManager.GetMessageBoxStandard("Недействительный " +
+                    "диапазон", "Порт принимает значения от 5900 до 5906",
+                    ButtonEnum.Ok);
         }
 
         hideWin = isHideWinCheckBox.IsChecked;
