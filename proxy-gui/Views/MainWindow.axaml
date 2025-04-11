@@ -9,7 +9,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Прокси GUI"
         RequestedThemeVariant="Light"
-        Width="270" Height="150" CanResize="false">
+        Width="270" Height="190" CanResize="false">
 
 
     <Design.DataContext>
@@ -18,13 +18,18 @@
 
     <Grid ColumnDefinitions="100, 100" HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        RowDefinitions="1*, 1*, 1*">
-            <Label Grid.Row="0" Grid.Column="0">Порт</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Name="tbPortData"/>
-            <Label Grid.Row="1" Grid.Column="0">Скрыть окно</Label>
-            <CheckBox Grid.Row="1" Grid.Column="1" Name="isHideWin"/>
-            <Button Grid.Row="2" Grid.Column="0" Margin="5" Content="Старт"
-                Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Name="bStart"
+        RowDefinitions="1*, 1*, 1*, 1*">
+            <Label Grid.Row="0" Grid.Column="0">Сервер</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="127.0.0.1"/>
+
+            <Label Grid.Row="1" Grid.Column="0">Группа рассылки</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="239.0.0.0"/>
+
+            <Label Grid.Row="2" Grid.Column="0">Скрыть окно</Label>
+            <CheckBox Grid.Row="2" Grid.Column="1" Name="isHideWin"/>
+
+            <Button Grid.Row="3" Grid.Column="0" Margin="5" Content="Старт"
+                Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Name="bStart"
                 HorizontalContentAlignment="Center"/>
     </Grid>
 
