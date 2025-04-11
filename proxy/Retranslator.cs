@@ -200,10 +200,15 @@ public class Retranslator
 
             ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
                     countRects[2]], 0);
+#if DEBUG
+            Console.WriteLine($"numberOfRectangles = {numberOfRectangles}");
+#endif
 
             byte[] rectData = new byte[12];
             byte[] pixelData = new byte[pixelFormat[0] / 8];
-
+#if DEBUG
+            Console.WriteLine($"pixelData.Length = {pixelData.Length}");
+#endif
             for (ushort i = 0; i < numberOfRectangles; i++)
             {
                 socket.Receive(rectData, rectData.Length, 0);
