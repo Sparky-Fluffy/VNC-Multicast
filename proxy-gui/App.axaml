@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="proxy_gui.App"
              xmlns:local="using:proxy_gui"
+             xmlns:vm="using:proxy_gui.ViewModels"
+             x:DataType="vm:AppViewModel"
              RequestedThemeVariant="Light">
 
     <Application.DataTemplates>
@@ -11,4 +13,18 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/proxy-gui-icon.ico"
+                            ToolTipText="VNC Прокси">
+                <TrayIcon.Menu>
+                <NativeMenu>
+                    <NativeMenuItem Header="Закрыть прокси"
+                        Command="{Binding ExitTrayItem}"/>
+                </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>

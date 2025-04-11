@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
@@ -27,6 +26,7 @@ public partial class App : Application
             {
                 DataContext = new MainWindowViewModel(),
             };
+            DataContext = new AppViewModel();
         }
 
         base.OnFrameworkInitializationCompleted();
