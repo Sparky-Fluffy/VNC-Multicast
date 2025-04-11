@@ -60,7 +60,8 @@ class Program
         if (enc != Encodings.Raw)
             WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
 
-        Retranslator client = new Retranslator(ip_addr, port, enc);
+        Retranslator client = new Retranslator(ip_addr, port, enc,
+                IPAddress.Parse("239.0.0.0"));
         client.Connect();
         client.SetPixelFormat();
         // while (true)

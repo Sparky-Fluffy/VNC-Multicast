@@ -60,7 +60,8 @@ public class Retranslator
     public Socket multicastSocket { get; }
     public IPEndPoint endPoint { get; }
 
-    public Retranslator(IPAddress ip, int port, Encodings encodingType)
+    public Retranslator(IPAddress ip, int port, Encodings encodingType,
+            IPAddress multicastGroupAddress)
     {
         this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
@@ -70,11 +71,11 @@ public class Retranslator
         multicastSocket = new Socket(AddressFamily.InterNetwork,
                 SocketType.Dgram, ProtocolType.Udp);
         MulticastOption mcastOption = new
-            MulticastOption(IPAddress.Parse("239.0.0.0"));
+            MulticastOption(multicastGroupAddress);
         multicastSocket.SetSocketOption(SocketOptionLevel.IP,
                                             SocketOptionName.AddMembership,
                                             mcastOption);
-        endPoint = new IPEndPoint(IPAddress.Parse("239.0.0.0"), 8001);
+        endPoint = new IPEndPoint(multicastGroupAddress, 8001);
     }
 
     private void ServerInit()
