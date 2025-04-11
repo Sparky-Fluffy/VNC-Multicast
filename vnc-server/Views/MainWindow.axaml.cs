@@ -11,8 +11,8 @@ namespace vnc_server.Views;
 
 public partial class MainWindow : Window
 {
-    public bool? hideWindow;
-    public int port;
+    private bool? hideWindow;
+    private int port;
 
     public MainWindow()
     {
@@ -27,13 +27,10 @@ public partial class MainWindow : Window
         if (tbPortData.Text == null)
             box = MessageBoxManager.GetMessageBoxStandard("Пустое значение",
                     "Не введён порт для запуска", ButtonEnum.Ok);
-        else
-        {
-            int.TryParse(tbPortData.Text, out port);
-            if (port < 5900 || port > 5906)
-                box = MessageBoxManager.GetMessageBoxStandard("Неверный порт",
+        else if (int.TryParse(tbPortData.Text, out port) && (port < 5900 ||
+                    port > 5906))
+            box = MessageBoxManager.GetMessageBoxStandard("Неверный порт",
                     "Порт должен быть от 5900 до 5906", ButtonEnum.Ok);
-        }
         if (box != null)
             await box.ShowWindowDialogAsync(this);
 #if DEBUG
