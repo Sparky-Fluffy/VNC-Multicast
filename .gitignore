@@ -14,3 +14,5 @@ vnc-server/bin/
 vnc-server/obj/
 Retranslator/bin/
 Retranslator/obj/
+proxy-gui/bin/
+proxy-gui/obj/
