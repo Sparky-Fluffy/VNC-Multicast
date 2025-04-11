@@ -14,7 +14,7 @@ public partial class MainWindow : Window
 {
     private IPAddress serverAddr;
     private IPAddress groupAddr;
-    private bool hideWin;
+    private bool? hideWin;
     private const uint minMulticastAddr = 3758096384;
     private const uint maxMulticastAddr = 4026531839;
 

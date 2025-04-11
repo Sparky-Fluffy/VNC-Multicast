@@ -9,32 +9,36 @@
         Icon="/Assets/proxy-gui-icon.ico"
         Title="Прокси GUI"
         RequestedThemeVariant="Light"
-        Width="280" Height="190" CanResize="false">
-
+        Width="285" Height="225" CanResize="false">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="125, 100" HorizontalAlignment="Center"
+    <Grid ColumnDefinitions="140, 100" HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        RowDefinitions="1*, 1*, 1*, 1*">
-        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+        RowDefinitions="1*, 1*, 1*, 1*, 1*">
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
             Сервер</Label>
             <TextBox Grid.Row="0" Grid.Column="1" Text="127.0.0.1"
                 Name="ServerAddressTb" Margin="5"/>
 
             <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
-                    Группа рассылки</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="239.0.0.0"
-                Name="GroupMulticastAddressTb" Margin="5"/>
+            Порт подключения к серверу</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="5900"
+                Name="ServerPortTb" Margin="5"/>
 
             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
+                    Группа рассылки</Label>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="239.0.0.0"
+                Name="GroupMulticastAddressTb" Margin="5"/>
+
+            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">
                     Скрыть окно</Label>
-                <CheckBox Grid.Row="2" Grid.Column="1" Name="isHideWinCheckBox"
+                <CheckBox Grid.Row="3" Grid.Column="1" Name="isHideWinCheckBox"
                     Margin="5"/>
 
-            <Button Grid.Row="3" Grid.Column="0" Margin="5" Content="Старт"
+            <Button Grid.Row="4" Grid.Column="0" Margin="5" Content="Старт"
                 Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Name="bStart"
                 HorizontalContentAlignment="Center" Click="StartProxyServer"/>
     </Grid>
