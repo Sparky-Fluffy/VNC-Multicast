@@ -80,6 +80,8 @@ public partial class MainWindow : Window
         await SetAddresses();
         Retranslator retranslator = new Retranslator(serverAddr, portConnection,
                 Encodings.Raw, groupAddr);
+        retranslator.Connect();
+        retranslator.FramebufferUpdateRequest();
     }
 
     private void StartProxyServer(object? sender, RoutedEventArgs e)
