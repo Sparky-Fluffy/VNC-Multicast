@@ -155,7 +155,9 @@ public class Retranslator
                 pixelFormat[11], pixelFormat[12], pixelFormat[13],
                 pixelFormat[14], pixelFormat[15] };
             socket.Send(fucked_msg, fucked_msg.Length, 0);
+#if DEBUG
             Console.WriteLine("Установлен несчастный, сука, SexPixelFormat.");
+#endif
         } catch (FuckedExceptionKHSU e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
