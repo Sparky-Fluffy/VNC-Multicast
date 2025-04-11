@@ -31,7 +31,8 @@
             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
             Выбор кодировки</Label>
             <ComboBox SelectedIndex="0" MaxDropDownHeight="100" Grid.Row="2"
-                Grid.Column="1" VerticalAlignment="Center" Margin="5">
+                Grid.Column="1" VerticalAlignment="Center" Margin="5"
+                Name="ComboboxEncodings">
                 <ComboBoxItem>Raw</ComboBoxItem>
                 <ComboBoxItem>CopyRect</ComboBoxItem>
                 <ComboBoxItem>RRE</ComboBoxItem>

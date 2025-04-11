@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     private IPAddress groupAddr;
     private int portConnection;
     private bool? hideWin;
+    private Encodings encoding;
     private const uint minMulticastAddr = 3758096384;
     private const uint maxMulticastAddr = 4026531839;
 
@@ -78,6 +79,7 @@ public partial class MainWindow : Window
     private async void Run()
     {
         await SetAddresses();
+        if (hideWin.Value) Hide();
         Retranslator retranslator = new Retranslator(serverAddr, portConnection,
                 Encodings.Raw, groupAddr);
         retranslator.Connect();
