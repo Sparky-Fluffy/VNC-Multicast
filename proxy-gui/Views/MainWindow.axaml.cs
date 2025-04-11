@@ -78,6 +78,8 @@ public partial class MainWindow : Window
     private async void Run()
     {
         await SetAddresses();
+        Retranslator retranslator = new Retranslator(serverAddr, portConnection,
+                Encodings.Raw, groupAddr);
     }
 
     private void StartProxyServer(object? sender, RoutedEventArgs e)

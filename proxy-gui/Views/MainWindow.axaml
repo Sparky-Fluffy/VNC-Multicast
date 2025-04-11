@@ -9,7 +9,7 @@
         Icon="/Assets/proxy-gui-icon.ico"
         Title="Прокси GUI"
         RequestedThemeVariant="Light"
-        Width="285" Height="225" CanResize="false">
+        Width="285" Height="260" CanResize="false">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -17,7 +17,7 @@
 
     <Grid ColumnDefinitions="140, 100" HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        RowDefinitions="1*, 1*, 1*, 1*, 1*">
+        RowDefinitions="1*, 1*, 1*, 1*, 1*, 1*">
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
             Сервер</Label>
             <TextBox Grid.Row="0" Grid.Column="1" Text="127.0.0.1"
@@ -29,16 +29,28 @@
                 Name="ServerPortTb" Margin="5"/>
 
             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
-                    Группа рассылки</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Text="239.0.0.0"
-                Name="GroupMulticastAddressTb" Margin="5"/>
+            Порт подключения к серверу</Label>
+            <ComboBox SelectedIndex="0" MaxDropDownHeight="100" Grid.Row="2"
+                Grid.Column="1" VerticalAlignment="Center" Margin="5">
+                <ComboBoxItem>Raw</ComboBoxItem>
+                <ComboBoxItem>CopyRect</ComboBoxItem>
+                <ComboBoxItem>RRE</ComboBoxItem>
+                <ComboBoxItem>Hextile</ComboBoxItem>
+                <ComboBoxItem>TRLE</ComboBoxItem>
+                <ComboBoxItem>ZRLE</ComboBoxItem>
+            </ComboBox>
 
             <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">
+                    Группа рассылки</Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="239.0.0.0"
+                Name="GroupMulticastAddressTb" Margin="5"/>
+
+            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">
                     Скрыть окно</Label>
-                <CheckBox Grid.Row="3" Grid.Column="1" Name="isHideWinCheckBox"
+                <CheckBox Grid.Row="4" Grid.Column="1" Name="isHideWinCheckBox"
                     Margin="5"/>
 
-            <Button Grid.Row="4" Grid.Column="0" Margin="5" Content="Старт"
+            <Button Grid.Row="5" Grid.Column="0" Margin="5" Content="Старт"
                 Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Name="bStart"
                 HorizontalContentAlignment="Center" Click="StartProxyServer"/>
     </Grid>
