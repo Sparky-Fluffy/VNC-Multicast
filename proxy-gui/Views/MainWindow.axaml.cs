@@ -79,7 +79,14 @@ public partial class MainWindow : Window
     private async void Run()
     {
         await SetAddresses();
+
         if (hideWin.Value) Hide();
+        else
+        {
+            bStart.IsEnabled = false;
+            bStop.IsEnabled = true;
+        }
+
         Retranslator retranslator = new Retranslator(serverAddr, portConnection,
                 Encodings.Raw, groupAddr);
         retranslator.Connect();
@@ -95,5 +102,11 @@ public partial class MainWindow : Window
         Console.WriteLine($"Hide window = {isHideWinCheckBox.IsChecked}");
 #endif
         Run();
+    }
+
+    private void StopProxyServer(object? sender, RoutedEventArgs e)
+    {
+        bStart.IsEnabled = true;
+        bStop.IsEnabled = false;
     }
 }

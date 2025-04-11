@@ -15,7 +15,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="140, 100" HorizontalAlignment="Center"
+    <Grid ColumnDefinitions="140, 110" HorizontalAlignment="Center"
         VerticalAlignment="Center"
         RowDefinitions="1*, 1*, 1*, 1*, 1*, 1*">
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
@@ -52,7 +52,11 @@
                     Margin="5"/>
 
             <Button Grid.Row="5" Grid.Column="0" Margin="5" Content="Старт"
-                Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Name="bStart"
-                HorizontalContentAlignment="Center" Click="StartProxyServer"/>
+                Name="bStart" HorizontalContentAlignment="Center"
+                Click="StartProxyServer" HorizontalAlignment="Stretch"/>
+
+            <Button Grid.Row="5" Grid.Column="1" Margin="5" Content="Остановить"
+                Name="bStop" HorizontalContentAlignment="Center"
+                Click="StopProxyServer" IsEnabled="false"/>
     </Grid>
 </Window>
