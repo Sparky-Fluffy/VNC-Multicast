@@ -9,14 +9,14 @@
         Icon="/Assets/proxy-gui-icon.ico"
         Title="Прокси GUI"
         RequestedThemeVariant="Light"
-        Width="270" Height="190" CanResize="false">
+        Width="280" Height="190" CanResize="false">
 
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="100, 100" HorizontalAlignment="Center"
+    <Grid ColumnDefinitions="125, 100" HorizontalAlignment="Center"
         VerticalAlignment="Center"
         RowDefinitions="1*, 1*, 1*, 1*">
             <Label Grid.Row="0" Grid.Column="0">Сервер</Label>
