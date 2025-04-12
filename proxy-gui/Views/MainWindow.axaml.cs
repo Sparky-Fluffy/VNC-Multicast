@@ -76,7 +76,7 @@ public partial class MainWindow : Window
             await box.ShowWindowDialogAsync(this);
     }
 
-    private async void Run()
+    private async void RunAppAsync()
     {
         await SetAddresses();
 
@@ -87,10 +87,13 @@ public partial class MainWindow : Window
             bStop.IsEnabled = true;
         }
 
-        Retranslator retranslator = new Retranslator(serverAddr, portConnection,
-                Encodings.Raw, groupAddr);
-        retranslator.Connect();
-        retranslator.FramebufferUpdateRequest();
+        await Task.Run(() =>
+        {
+            Retranslator retranslator = new Retranslator(serverAddr,
+                    portConnection, Encodings.Raw, groupAddr);
+            retranslator.Connect();
+            retranslator.FramebufferUpdateRequest();
+        });
     }
 
     private void StartProxyServer(object? sender, RoutedEventArgs e)
@@ -101,7 +104,7 @@ public partial class MainWindow : Window
                 $"{GroupMulticastAddressTb.Text}");
         Console.WriteLine($"Hide window = {isHideWinCheckBox.IsChecked}");
 #endif
-        Run();
+        RunAppAsync();
     }
 
     private void StopProxyServer(object? sender, RoutedEventArgs e)
