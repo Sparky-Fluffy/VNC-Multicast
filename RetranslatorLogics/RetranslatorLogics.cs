@@ -384,13 +384,19 @@ public class Retranslator
 
     public void CloseAndFree()
     {
-        socket.Disconnect(true);
-        socket.Shutdown(SocketShutdown.Both);
-        socket.Close();
-        socket.Dispose();
+        try
+        {
+            socket.Disconnect(true);
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+            socket.Dispose();
 
-        multicastSocket.Disconnect(true);
-        multicastSocket.Close();
-        multicastSocket.Dispose();
+            multicastSocket.Disconnect(true);
+            multicastSocket.Close();
+            multicastSocket.Dispose();
+        } catch (Exception e)
+        {
+            ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
+        }
     }
 }

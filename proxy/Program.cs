@@ -11,6 +11,8 @@ using FuckedExceptionKHSU = System.Exception;
 
 class Program
 {
+    static Retranslator client;
+
     static void WriteErrorAndExit(string msg)
     {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -21,6 +23,8 @@ class Program
 
     static async void RunAppAsync(string[] args)
     {
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(ExitAppConsole);
+
         using IHost host = Host.CreateApplicationBuilder(args).Build();
         IConfiguration config =
             host.Services.GetRequiredService<IConfiguration>();
@@ -61,16 +65,25 @@ class Program
         if (enc != Encodings.Raw)
             WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
 
-        Retranslator client = new Retranslator(ip_addr, port, enc,
+        client = new Retranslator(ip_addr, port, enc,
                 IPAddress.Parse("239.0.0.0"));
         client.Connect();
         client.SetPixelFormat();
-        // while (true)
-        // {
+        while (true)
             client.FramebufferUpdateRequest();
-        // }
 
         await host.RunAsync();
+    }
+
+    static void ExitAppConsole(object sender, ConsoleCancelEventArgs args)
+    {
+#if DEBUG
+        Console.WriteLine("Завершаю приложение.");
+#endif
+        client.CloseAndFree();
+#if DEBUG
+        Console.WriteLine("Ресурсы освобождены");
+#endif
     }
 
     static void Main(string[] args)
