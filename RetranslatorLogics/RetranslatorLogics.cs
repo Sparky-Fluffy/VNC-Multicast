@@ -391,7 +391,6 @@ public class Retranslator
             socket.Close();
             socket.Dispose();
 
-            multicastSocket.Disconnect(true);
             multicastSocket.Close();
             multicastSocket.Dispose();
         } catch (Exception e)
