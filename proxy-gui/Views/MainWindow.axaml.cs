@@ -87,10 +87,11 @@ public partial class MainWindow : Window
             bStop.IsEnabled = true;
         }
 
+        Retranslator retranslator = new Retranslator(serverAddr, portConnection,
+                Encodings.Raw, groupAddr);
+
         await Task.Run(() =>
         {
-            Retranslator retranslator = new Retranslator(serverAddr,
-                    portConnection, Encodings.Raw, groupAddr);
             retranslator.Connect();
             retranslator.FramebufferUpdateRequest();
         });
