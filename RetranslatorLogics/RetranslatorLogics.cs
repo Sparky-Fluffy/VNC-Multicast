@@ -381,4 +381,16 @@ public class Retranslator
         ServerInit();
         SetEncoding();
     }
+
+    public void CloseAndFree()
+    {
+        socket.Disconnect(true);
+        socket.Shutdown(SocketShutdown.Both);
+        socket.Close();
+        socket.Dispose();
+
+        multicastSocket.Disconnect(true);
+        multicastSocket.Close();
+        multicastSocket.Dispose();
+    }
 }
