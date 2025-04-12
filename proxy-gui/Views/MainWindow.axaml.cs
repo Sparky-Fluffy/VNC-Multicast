@@ -35,7 +35,7 @@ public partial class MainWindow : Window
         return BitConverter.ToUInt32(bytes, 0);
     }
 
-    private async Task SetAddresses()
+    private async Task<bool> SetAddresses()
     {
         string servAddrStr = ServerAddressTb.Text;
         string groupAddrStr = GroupMulticastAddressTb.Text;
@@ -73,12 +73,16 @@ public partial class MainWindow : Window
         hideWin = isHideWinCheckBox.IsChecked;
 
         if (box != null)
+        {
             await box.ShowWindowDialogAsync(this);
+            return false;
+        }
+        return true;
     }
 
     private async void RunAppAsync()
     {
-        await SetAddresses();
+        if (!await SetAddresses()) return;
 
         if (hideWin.Value) Hide();
         else
