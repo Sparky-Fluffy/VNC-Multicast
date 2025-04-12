@@ -17,6 +17,7 @@ public partial class MainWindow : Window
     private int portConnection;
     private bool? hideWin;
     private Encodings encoding;
+    private Retranslator retranslator;
     private const uint minMulticastAddr = 3758096384;
     private const uint maxMulticastAddr = 4026531839;
 
@@ -91,7 +92,7 @@ public partial class MainWindow : Window
             bStop.IsEnabled = true;
         }
 
-        Retranslator retranslator = new Retranslator(serverAddr, portConnection,
+        retranslator = new Retranslator(serverAddr, portConnection,
                 Encodings.Raw, groupAddr);
 
         await Task.Run(() =>
