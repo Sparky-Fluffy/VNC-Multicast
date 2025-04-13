@@ -13,6 +13,7 @@ public partial class MainWindow : Window
 {
     private bool? hideWindow;
     private int port;
+    private byte[] protocolVersion38 = new byte[12];
 
     public MainWindow()
     {
