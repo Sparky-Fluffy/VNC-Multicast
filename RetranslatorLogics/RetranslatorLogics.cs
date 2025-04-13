@@ -387,12 +387,34 @@ public class Retranslator
         try
         {
             socket.Disconnect(true);
+#if DEBUG
+            Console.WriteLine("TCP сокет отключен");
+#endif
+
             socket.Shutdown(SocketShutdown.Both);
+#if DEBUG
+            Console.WriteLine("Shutdown tcp сделан");
+#endif
+
             socket.Close();
+#if DEBUG
+            Console.WriteLine("Close tcp сделан");
+#endif
+
             socket.Dispose();
+#if DEBUG
+            Console.WriteLine("Dispose tcp сделан");
+#endif
 
             multicastSocket.Close();
+#if DEBUG
+            Console.WriteLine("multicastSocket Close сделан");
+#endif
+
             multicastSocket.Dispose();
+#if DEBUG
+            Console.WriteLine("multicastSocket Dispose сделан");
+#endif
         } catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.FailedSuck);
