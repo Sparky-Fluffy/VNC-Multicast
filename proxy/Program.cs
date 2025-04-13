@@ -77,6 +77,13 @@ class Program
         client = new Retranslator(serverIPAddr, serverPort, enc,
                 multicastGroupIPAddr, multicastGroupPort);
         client.Connect();
+#if !DEBUG
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Соединение с сервером {serverIP} установлено...");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Для остановки работы нажмите Ctrl-C");
+        Console.ForegroundColor = ConsoleColor.White;
+#endif
         client.SetPixelFormat();
         while (true)
             client.FramebufferUpdateRequest();
