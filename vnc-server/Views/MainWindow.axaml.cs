@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -15,10 +17,17 @@ public partial class MainWindow : Window
     private int port;
     private byte[] protocolVersion38 = new byte[12] { 82, 70, 66, 32, 48, 48,
                                                     51, 46, 48, 48, 56, 10 };
+    private Socket socket;
 
     public MainWindow()
     {
         InitializeComponent();
+    }
+
+    private void InitializeSocket()
+    {
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
+                ProtocolType.Tcp);
     }
 
     private async Task SetParamsAsync()
