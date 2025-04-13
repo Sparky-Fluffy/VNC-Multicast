@@ -29,14 +29,17 @@ class Program
         IConfiguration config =
             host.Services.GetRequiredService<IConfiguration>();
 
-        string? ip = config.GetValue<string?>("ip");
-        int port = config.GetValue<int>("port");
+        string? serverIP = config.GetValue<string?>("ServerIP");
+        int serverPort = config.GetValue<int>("ServerPort");
         string? encoding = config.GetValue<string?>("encoding");
+        string? multicastGroupIP = config.GetValue<string?>("multicastGroupIP");
+        int multicastGroupPort = config.GetValue<int>("multicastGroupPort");
 
-        IPAddress ip_addr = null;
+        IPAddress serverIPAddr = null;
+        IPAddress multicastGroupIPAddr = null;
         Encodings enc = Encodings.Raw;
 
-        if (ip == string.Empty || ip == null)
+        if (serverIP == string.Empty || serverIP == null)
             WriteErrorAndExit("Строка параметра 'ip' не задана.");
         else if (encoding == string.Empty || encoding == null)
             WriteErrorAndExit("Кодировка не задана корректно.");
@@ -44,7 +47,8 @@ class Program
         {
             try
             {
-                ip_addr = IPAddress.Parse(ip);
+                serverIPAddr = IPAddress.Parse(serverIP);
+                multicastGroupIPAddr = IPAddress.Parse(multicastGroupIP);
                 enc = (Encodings)Enum.Parse(typeof(Encodings), encoding);
             } catch (FuckedExceptionKHSU e)
             {
@@ -52,21 +56,26 @@ class Program
             }
         }
 
-        if (port < 5900 || port > 5906)
+        if (serverPort < 5900 || serverPort > 5906)
             WriteErrorAndExit("Неподходящий порт в appsettings.json.");
+        else if (multicastGroupPort <= 1024)
+            WriteErrorAndExit($"Указанный порт {multicastGroupPort} " +
+                    "зарезервирован системой");
 
 #if DEBUG
-        Console.WriteLine($"ip = {ip}.");
-        Console.WriteLine($"port = {port}.");
+        Console.WriteLine($"Server IP = {serverIP}.");
+        Console.WriteLine($"Server port = {serverPort}.");
         Console.WriteLine($"Encoding = {encoding}.");
         Console.WriteLine($"Encoding enum = {(byte)enc}");
+        Console.WriteLine($"Multicast ip: {multicastGroupIP}");
+        Console.WriteLine($"Multicast port: {multicastGroupPort}");
 #endif
 
         if (enc != Encodings.Raw)
             WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
 
-        client = new Retranslator(ip_addr, port, enc,
-                IPAddress.Parse("239.0.0.0"));
+        client = new Retranslator(serverIPAddr, serverPort, enc,
+                multicastGroupIPAddr, multicastGroupPort);
         client.Connect();
         client.SetPixelFormat();
         while (true)

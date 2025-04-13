@@ -60,7 +60,7 @@ public class Retranslator
     public IPEndPoint endPoint { get; }
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType,
-            IPAddress multicastGroupAddress)
+            IPAddress multicastGroupAddress, int multicastPort)
     {
         this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.Tcp);
@@ -74,7 +74,7 @@ public class Retranslator
         multicastSocket.SetSocketOption(SocketOptionLevel.IP,
                                             SocketOptionName.AddMembership,
                                             mcastOption);
-        endPoint = new IPEndPoint(multicastGroupAddress, 8001);
+        endPoint = new IPEndPoint(multicastGroupAddress, multicastPort);
     }
 
     private void ServerInit()

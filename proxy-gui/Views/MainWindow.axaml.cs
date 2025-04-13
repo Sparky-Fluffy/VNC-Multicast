@@ -14,6 +14,7 @@ public partial class MainWindow : Window
 {
     private IPAddress serverAddr;
     private IPAddress groupAddr;
+    private int groupPort;
     private int portConnection;
     private bool? hideWin;
     private Encodings encoding;
@@ -69,6 +70,15 @@ public partial class MainWindow : Window
             box = MessageBoxManager.GetMessageBoxStandard("Недействительный " +
                     "диапазон", "Порт принимает значения от 5900 до 5906",
                     ButtonEnum.Ok);
+        } else if (!int.TryParse(GroupMulticastPortTb.Text, out groupPort))
+        {
+            box = MessageBoxManager.GetMessageBoxStandard("Некорректный порт",
+                    "Порт рассылки введён неверно", ButtonEnum.Ok);
+        } else if (groupPort <= 1024)
+        {
+            box = MessageBoxManager.GetMessageBoxStandard("Некорректный " +
+                    "диапазон", "Порт рассылки должен быть больше 1024",
+                    ButtonEnum.Ok);
         }
 
         hideWin = isHideWinCheckBox.IsChecked;
@@ -93,7 +103,7 @@ public partial class MainWindow : Window
         }
 
         retranslator = new Retranslator(serverAddr, portConnection,
-                Encodings.Raw, groupAddr);
+                Encodings.Raw, groupAddr, groupPort);
 
         await Task.Run(() =>
         {
