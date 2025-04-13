@@ -70,12 +70,12 @@ public partial class MainWindow : Window
 
     private void StartServer(object sender, RoutedEventArgs e)
     {
-        if (bStart.Content == "Старт")
-        {
-            PrepareData();
-            if (port >= 5900 && port <= 5906)
-                RunServer(hideWindow, port);
-        } else if (bStart.Content == "Остановить")
-            StopServer();
+        // if (bStart.Content == "Старт")
+        // {
+        //     PrepareData();
+        //     if (port >= 5900 && port <= 5906)
+        //         RunServer(hideWindow, port);
+        // } else if (bStart.Content == "Остановить")
+        //     StopServer();
     }
 }
