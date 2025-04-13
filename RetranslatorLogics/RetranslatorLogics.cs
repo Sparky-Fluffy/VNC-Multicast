@@ -182,7 +182,7 @@ public class Retranslator
 
             byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
-            multicastSocket.SendTo([countRects[4], countRects[3]], endPoint);
+            multicastSocket.SendTo([countRects[3], countRects[2]], endPoint);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("\nFrame Buffer Update Message Response: ");

@@ -11,14 +11,14 @@ public class Receiver
     public byte[] height { get; } = new byte[2];
     public byte[] pixelFormat { get; } = new byte[1];
 
-    Receiver(IPAddress multicastGroupAddress)
+    public Receiver(IPAddress multicastGroupAddress, ushort port)
     {
         multicastSocket = new Socket
         (
             AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp
         );
 
-        endPoint = new IPEndPoint(IPAddress.Any, 8001);
+        endPoint = new IPEndPoint(IPAddress.Any, port);
 
         multicastSocket.Bind(endPoint);
         
@@ -33,7 +33,7 @@ public class Receiver
         );
     }
 
-    void Connect()
+    public void Connect()
     {
         multicastSocket.Receive(width);
 
@@ -54,13 +54,13 @@ public class Receiver
         multicastSocket.Receive(pixelFormat);
 
 #if DEBUG
-        foreach (var t in height)
+        foreach (var t in pixelFormat)
             Console.WriteLine($"{t} ");
         Console.WriteLine();
 #endif
     }
 
-    ushort ReceiveRectCount()
+    public ushort ReceiveRectCount()
     {
         byte[] rectCount = new byte[2];
         multicastSocket.Receive(rectCount);
@@ -68,7 +68,7 @@ public class Receiver
         return BitConverter.ToUInt16(rectCount);
     }
 
-    ushort[] ReceiveRectData()
+    public ushort[] ReceiveRectData()
     {
         byte[] rectData = new byte[12];
         multicastSocket.Receive(rectData);
@@ -82,7 +82,7 @@ public class Receiver
         ];
     }
 
-    byte[] ReceivePixel()
+    public byte[] ReceivePixel()
     {
         byte[] pixelData = new byte[pixelFormat[0] / 8];
         multicastSocket.Receive(pixelData);
