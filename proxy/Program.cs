@@ -35,7 +35,6 @@ class Program
 
         string json = File.ReadAllText("appsettings.json");
         var data = JsonConvert.DeserializeObject<ConnectionData>(json);
-        Console.WriteLine(data.ServerIP);
 
         IPAddress serverIPAddr = null;
         IPAddress multicastGroupIPAddr = null;
