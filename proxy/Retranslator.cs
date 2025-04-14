@@ -1,7 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 
-namespace RetranslatorLogics;
+namespace proxy;
 
 using FuckedExceptionKHSU = System.Exception;
 

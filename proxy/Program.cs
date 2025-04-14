@@ -2,7 +2,6 @@
 using System.Net;
 using Newtonsoft.Json;
 using System.IO;
-using RetranslatorLogics;
 
 namespace proxy;
 
