@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Net;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System.IO;
 using RetranslatorLogics;
 
 namespace proxy;
 
 using FuckedExceptionKHSU = System.Exception;
+
+struct ConnectionData
+{
+    public string ServerIP { get; set; }
+    public int ServerPort { get; set; }
+    public string encoding { get; set; }
+    public string multicastGroupIP { get; set; }
+    public int multicastGroupPort { get; set; }
+}
 
 class Program
 {
@@ -21,65 +29,60 @@ class Program
         Environment.Exit(1);
     }
 
-    static async void RunAppAsync(string[] args)
+    static void RunAppAsync()
     {
         Console.CancelKeyPress += new ConsoleCancelEventHandler(ExitAppConsole);
 
-        using IHost host = Host.CreateApplicationBuilder(args).Build();
-        IConfiguration config =
-            host.Services.GetRequiredService<IConfiguration>();
-
-        string? serverIP = config.GetValue<string?>("ServerIP");
-        int serverPort = config.GetValue<int>("ServerPort");
-        string? encoding = config.GetValue<string?>("encoding");
-        string? multicastGroupIP = config.GetValue<string?>("multicastGroupIP");
-        int multicastGroupPort = config.GetValue<int>("multicastGroupPort");
+        string json = File.ReadAllText("appsettings.json");
+        var data = JsonConvert.DeserializeObject<ConnectionData>(json);
+        Console.WriteLine(data.ServerIP);
 
         IPAddress serverIPAddr = null;
         IPAddress multicastGroupIPAddr = null;
         Encodings enc = Encodings.Raw;
 
-        if (serverIP == string.Empty || serverIP == null)
+        if (data.ServerIP == string.Empty || data.ServerIP == null)
             WriteErrorAndExit("Строка параметра 'ip' не задана.");
-        else if (encoding == string.Empty || encoding == null)
+        else if (data.encoding == string.Empty || data.encoding == null)
             WriteErrorAndExit("Кодировка не задана корректно.");
         else
         {
             try
             {
-                serverIPAddr = IPAddress.Parse(serverIP);
-                multicastGroupIPAddr = IPAddress.Parse(multicastGroupIP);
-                enc = (Encodings)Enum.Parse(typeof(Encodings), encoding);
+                serverIPAddr = IPAddress.Parse(data.ServerIP);
+                multicastGroupIPAddr = IPAddress.Parse(data.multicastGroupIP);
+                enc = (Encodings)Enum.Parse(typeof(Encodings), data.encoding);
             } catch (FuckedExceptionKHSU e)
             {
                 WriteErrorAndExit(e.Message);
             }
         }
 
-        if (serverPort < 5900 || serverPort > 5906)
+        if (data.ServerPort < 5900 || data.ServerPort > 5906)
             WriteErrorAndExit("Неподходящий порт в appsettings.json.");
-        else if (multicastGroupPort <= 1024)
-            WriteErrorAndExit($"Указанный порт {multicastGroupPort} " +
+        else if (data.multicastGroupPort <= 1024)
+            WriteErrorAndExit($"Указанный порт {data.multicastGroupPort} " +
                     "зарезервирован системой");
 
 #if DEBUG
-        Console.WriteLine($"Server IP = {serverIP}.");
-        Console.WriteLine($"Server port = {serverPort}.");
-        Console.WriteLine($"Encoding = {encoding}.");
+        Console.WriteLine($"Server IP = {data.ServerIP}.");
+        Console.WriteLine($"Server port = {data.ServerPort}.");
+        Console.WriteLine($"Encoding = {data.encoding}.");
         Console.WriteLine($"Encoding enum = {(byte)enc}");
-        Console.WriteLine($"Multicast ip: {multicastGroupIP}");
-        Console.WriteLine($"Multicast port: {multicastGroupPort}");
+        Console.WriteLine($"Multicast ip: {data.multicastGroupIP}");
+        Console.WriteLine($"Multicast port: {data.multicastGroupPort}");
 #endif
 
         if (enc != Encodings.Raw)
             WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
 
-        client = new Retranslator(serverIPAddr, serverPort, enc,
-                multicastGroupIPAddr, multicastGroupPort);
+        client = new Retranslator(serverIPAddr, data.ServerPort, enc,
+                multicastGroupIPAddr, data.multicastGroupPort);
         client.Connect();
 #if !DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Соединение с сервером {serverIP} установлено...");
+        Console.WriteLine($"Соединение с сервером {data.ServerIP} " +
+                "установлено...");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Для остановки работы нажмите Ctrl-C");
         Console.ForegroundColor = ConsoleColor.White;
@@ -87,8 +90,6 @@ class Program
         client.SetPixelFormat();
         while (true)
             client.FramebufferUpdateRequest();
-
-        await host.RunAsync();
     }
 
     static void ExitAppConsole(object sender, ConsoleCancelEventArgs args)
@@ -104,6 +105,6 @@ class Program
 
     static void Main(string[] args)
     {
-        RunAppAsync(args);
+        RunAppAsync();
     }
 }
