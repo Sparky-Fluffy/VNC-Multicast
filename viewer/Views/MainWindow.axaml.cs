@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,6 +15,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using receiver;
+using SkiaSharp;
 using viewer.ViewModels;
 
 namespace viewer.Views;
@@ -62,11 +65,17 @@ public partial class MainWindow : Window
         ThemeSwitch.Content = ThemeSwitchText;
     }
 
-    private void Select_OnClick(object? sender, RoutedEventArgs e)
+    private async void Select_OnClick(object? sender, RoutedEventArgs e)
     {
         Page1.IsVisible = false;
         Page2.IsVisible = true;
-        JopaZamenitely();
+        await Task.Run(JopaZamenitely);
+        
+        ScreenViewImage.Background = new ImageBrush()
+        {
+            Source = screenViewBitmap,
+            Stretch = Stretch.Fill
+        };
     }
 
     private void Audio_OnClick(object? sender, RoutedEventArgs e)
@@ -117,67 +126,45 @@ public partial class MainWindow : Window
         ViewHeader.IsVisible = false;
     }
 
-    private async void JopaZamenitely()
+    private async Task JopaZamenitely()
     {
         Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
 
         receiver.Connect();
-        screenViewBitmap = new Bitmap(PixelFormat.Rgba8888, AlphaFormat.Opaque, 0, 4, 100, 4);
+
+        SKBitmap bitmap = new SKBitmap
+        (
+            receiver.Width, receiver.Height,
+            SKColorType.Bgra8888,
+            SKAlphaType.Premul
+        );
+
+        nint pixels = bitmap.GetPixels();
+        byte[] source = new byte[bitmap.ByteCount];
+
         ushort rectCount = receiver.ReceiveRectCount();
         
         for (ushort i = 0; i < rectCount; i++)
         {
-            ushort[] rectData = receiver.ReceiveRectData(); // x, y, width, height
-            for (ushort y = 0; y < rectData[3]; y++)
-            {
-                for (ushort x = 0; x < rectData[2]; x++)
-                {
-                    byte[] pixel = receiver.ReceivePixel();
-                    SetPixel(ref screenViewBitmap, x + rectData[0], y + rectData[1], pixel[0], pixel[1], pixel[2], pixel[3]);
+            ushort[] rectData = receiver.ReceiveRectData();
 
-                    ScreenViewImage.Background = new ImageBrush()
-                    {
-                        Source = screenViewBitmap,
-                        Stretch = Stretch.Fill
-                    };
-                }
+            for (int p = 0; p < rectData[2] * rectData[3]; p++)
+                SetPixel(ref bitmap, p, receiver.ReceivePixel(), pixels);
+        }
+
+        using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+        {
+            using (var ms = new MemoryStream())
+            {
+                enc.SaveTo(ms);
+                ms.Position = 0;
+                screenViewBitmap = new Bitmap(ms);
             }
         }
     }
 
-    private unsafe void SetPixel
-    (
-        ref Bitmap bmp, int x, int y, byte r,
-        byte g, byte b, byte? a = default, int quality = 100
-    )
+    private void SetPixel(ref SKBitmap bitmap, int p, byte[] pixel, nint pixels)
     {
-        WriteableBitmap wbmp;
-        using (var ms = new MemoryStream())
-        {
-            bmp.Save(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            wbmp = WriteableBitmap.Decode(ms);
-            
-            using (var lockedBitmap = wbmp.Lock())
-            {
-                byte* bmpPtr = (byte*)lockedBitmap.Address;
-
-                int stride = a.HasValue ? 4 : 3;
-                int offset = stride * (wbmp.PixelSize.Width * y + x);
-
-                *(bmpPtr + offset + 0) = b;
-                *(bmpPtr + offset + 1) = g;
-                *(bmpPtr + offset + 2) = r;
-                if (a.HasValue)
-                    *(bmpPtr + offset + 3) = a.Value;
-            }
-        }
-
-        using (var outStream = new MemoryStream())
-        {
-            wbmp.Save(outStream, quality);
-            outStream.Seek(0, SeekOrigin.Begin);
-            bmp = new Bitmap(outStream);
-        }
+        Marshal.Copy(pixel, 0, pixels + p * pixel.Length, pixel.Length);
     }
 }

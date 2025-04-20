@@ -7,8 +7,13 @@ public class Receiver
 {
     public Socket multicastSocket { get; }
     public IPEndPoint endPoint { get; }
+
+    public ushort Width { get => BitConverter.ToUInt16([width[1], width[0]]); }
+    public ushort Height { get => BitConverter.ToUInt16([height[1], height[0]]); }
+
     public byte[] width { get; } = new byte[2];
     public byte[] height { get; } = new byte[2];
+
     public byte[] pixelFormat { get; } = new byte[1];
 
     public Receiver(IPAddress multicastGroupAddress, ushort port)
