@@ -87,22 +87,15 @@ public class Retranslator
             Console.ForegroundColor = ConsoleColor.Yellow;
 #endif
 
-            byte[] w = new byte[2];
-            socket.Receive(w, w.Length, 0);
-
-            width[0] = w[0];
-            width[1] = w[1];
+            socket.Receive(width, width.Length, 0);
+            multicastSocket.SendTo(width, endPoint);
 
 #if DEBUG
             foreach (byte s in width)
                 Console.Write($"{s} ");
 #endif
-
-            byte[] h = new byte[2];
-            socket.Receive(h, h.Length, 0);
-
-            height[0] = h[0];
-            height[1] = h[1];
+            socket.Receive(height, height.Length, 0);
+            multicastSocket.SendTo(height, endPoint);
 
 #if DEBUG
             foreach (byte s in height)
@@ -110,6 +103,7 @@ public class Retranslator
 #endif
 
             socket.Receive(pixelFormat, pixelFormat.Length, 0);
+            multicastSocket.SendTo([pixelFormat[0]], endPoint);
 
 #if DEBUG
             foreach (byte s in pixelFormat)
@@ -164,7 +158,7 @@ public class Retranslator
         }
     }
 
-    public void FramebufferUpdateRequest(byte incremental = 0, ushort
+    public async Task FramebufferUpdateRequest(byte incremental = 0, ushort
             XPosition = 0, ushort YPosition = 0)
     {
         try
@@ -188,6 +182,7 @@ public class Retranslator
 
             byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
+            multicastSocket.SendTo([countRects[3], countRects[2]], endPoint);
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("\nFrame Buffer Update Message Response: ");
@@ -212,6 +207,7 @@ public class Retranslator
             for (ushort i = 0; i < numberOfRectangles; i++)
             {
                 socket.Receive(rectData, rectData.Length, 0);
+                multicastSocket.SendTo(rectData, endPoint);
                 ushort width = BitConverter.ToUInt16([rectData[5], rectData[4]]);
                 ushort height = BitConverter.ToUInt16([rectData[7], rectData[6]]);
 #if DEBUG
@@ -239,7 +235,7 @@ public class Retranslator
 #endif
                 for (int j = 0; j < width * height; j++)
                 {
-                    socket.Receive(pixelData, pixelData.Length, 0);
+                    await socket.ReceiveAsync(pixelData, 0);
                     multicastSocket.SendTo(pixelData, endPoint);
                 }
             }

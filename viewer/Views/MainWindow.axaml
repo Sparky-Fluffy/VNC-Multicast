@@ -34,7 +34,7 @@
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
-                        <Image Source="avares://viewer/Assets/vnc-viewer.png"/>
+                        <Canvas Name="ScreenViewImage"/>
                     </Border>
                 </Grid>
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
