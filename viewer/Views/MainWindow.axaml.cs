@@ -40,6 +40,7 @@ public partial class MainWindow : Window
     private string ThemeSwitchText => IsDark ? "Light" : "Dark";
 
     private Bitmap? screenViewBitmap;
+    Task jopa;
 
     public MainWindow()
     {
@@ -69,7 +70,8 @@ public partial class MainWindow : Window
     {
         Page1.IsVisible = false;
         Page2.IsVisible = true;
-        await Task.Run(JopaZamenitely);
+        jopa = Task.Run(JopaZamenitely);
+        await jopa;
         
         ScreenViewImage.Background = new ImageBrush()
         {
@@ -128,43 +130,70 @@ public partial class MainWindow : Window
 
     private async Task JopaZamenitely()
     {
-        Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
-
-        receiver.Connect();
-
-        SKBitmap bitmap = new SKBitmap
-        (
-            receiver.Width, receiver.Height,
-            SKColorType.Bgra8888,
-            SKAlphaType.Premul
-        );
-
-        nint pixels = bitmap.GetPixels();
-        byte[] source = new byte[bitmap.ByteCount];
-
-        ushort rectCount = receiver.ReceiveRectCount();
-        
-        for (ushort i = 0; i < rectCount; i++)
+        try
         {
-            ushort[] rectData = receiver.ReceiveRectData();
+            Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
 
-            for (int p = 0; p < rectData[2] * rectData[3]; p++)
-                SetPixel(ref bitmap, p, receiver.ReceivePixel(), pixels);
-        }
+            //receiver.Connect();
+            //ushort rectCount = receiver.ReceiveRectCount();
+            //Console.WriteLine(rectCount);
 
-        using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
-        {
-            using (var ms = new MemoryStream())
+            receiver.ReceiveRectData();
+
+            ushort w = receiver.rectWidth;
+            ushort h = receiver.rectHeight;
+            ushort x = receiver.rectX;
+            ushort y = receiver.rectY;
+
+            SKBitmap bitmap = new SKBitmap
+            (
+                w * 10, h * 10,
+                SKColorType.Bgra8888,
+                SKAlphaType.Premul
+            );
+
+            nint pixels = bitmap.GetPixels();
+
+            SetPixels(y * w * 10 + x, receiver.ReceivePixels(), pixels);
+            Console.WriteLine(y * w * 10 + x);
+
+            using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
             {
-                enc.SaveTo(ms);
-                ms.Position = 0;
-                screenViewBitmap = new Bitmap(ms);
+                using (var ms = new MemoryStream())
+                {
+                    enc.SaveTo(ms);
+                    ms.Position = 0;
+                    screenViewBitmap = new Bitmap(ms);
+                }
             }
+
+            while (true)
+            {
+                receiver.ReceiveRectData();
+
+                SetPixels(y * w * 10 + x, receiver.ReceivePixels(), pixels);
+                Console.WriteLine(y * w * 10 + x);
+
+                using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        enc.SaveTo(ms);
+                        ms.Position = 0;
+                        screenViewBitmap = new Bitmap(ms);
+                    }
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            Console.WriteLine(ex);
         }
     }
 
-    private void SetPixel(ref SKBitmap bitmap, int p, byte[] pixel, nint pixels)
+    private void SetPixels(int offset, byte[] pixels, nint pixelsDest)
     {
-        Marshal.Copy(pixel, 0, pixels + p * pixel.Length, pixel.Length);
+        Marshal.Copy(pixels, 0, pixelsDest + offset, pixels.Length);
     }
 }

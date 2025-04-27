@@ -65,13 +65,13 @@ public class Retranslator
         this.ip = ip;
         this.port = port;
         this.encodingType = encodingType;
+
         multicastSocket = new Socket(AddressFamily.InterNetwork,
                 SocketType.Dgram, ProtocolType.Udp);
         MulticastOption mcastOption = new
             MulticastOption(multicastGroupAddress);
         multicastSocket.SetSocketOption(SocketOptionLevel.IP,
-                                            SocketOptionName.AddMembership,
-                                            mcastOption);
+                SocketOptionName.AddMembership, mcastOption);
         endPoint = new IPEndPoint(multicastGroupAddress, multicastPort);
     }
 
@@ -84,7 +84,7 @@ public class Retranslator
             byte[] protocolVersion = new byte[12];
             socket.Receive(protocolVersion, protocolVersion.Length, 0);
 #if DEBUG
-            PrintBytes("\nProtocolVersion: ", protocolVersion);
+            Print("\nProtocol version: ", protocolVersion);
 #endif
             socket.Send(protocolVersion, protocolVersion.Length, 0);
         } catch (Exception e)
@@ -102,8 +102,8 @@ public class Retranslator
         socket.Receive(securityTypes, securityTypes.Length, 0);
 
 #if DEBUG
-        PrintBytes("\nNumber of security types: ", numberOfSecurity);
-        PrintBytes("Security types: ", securityTypes);
+        Print("\nNumber of security types: ", numberOfSecurity);
+        Print("Security types: ", securityTypes);
 #endif
         return securityTypes;
     }
@@ -113,21 +113,19 @@ public class Retranslator
         try
         {
 #if DEBUG
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nПопытка подключения к серверу...");
-            Console.ForegroundColor = ConsoleColor.White;
+            Print("\nПопытка подключения к серверу...");
 #endif
             SetProtocolVersion();
             GetSecurityTypes();
 
-            byte[] securityType = new byte[] { 1 };
+            byte[] securityType = [ 1 ];
             socket.Send(securityType, securityType.Length, 0);
 
             byte[] securityHandshake = new byte[4];
             socket.Receive(securityHandshake, securityHandshake.Length, 0);
 #if DEBUG
-            PrintBytes("\nSecurity type from client: ", securityType);
-            PrintBytes("\nSecurity handshake: ", securityHandshake);
+            Print("\nSecurity type from client: ", securityType);
+            Print("\nSecurity handshake: ", securityHandshake);
 #endif
         } catch (Exception ex)
         {
@@ -137,7 +135,7 @@ public class Retranslator
 
     private void ClientInit()
     {
-        byte[] sharedFlag = new byte[1] { 0 };
+        byte[] sharedFlag = [ 0 ];
         try
         {
             socket.Send(sharedFlag, sharedFlag.Length, 0);
@@ -152,13 +150,13 @@ public class Retranslator
         try
         {
             socket.Receive(width, width.Length, 0);
-            multicastSocket.SendTo(width, endPoint);
+            //multicastSocket.SendTo(width, endPoint);
 
             socket.Receive(height, height.Length, 0);
-            multicastSocket.SendTo(height, endPoint);
+            //multicastSocket.SendTo(height, endPoint);
 
             socket.Receive(pixelFormat, pixelFormat.Length, 0);
-            multicastSocket.SendTo([pixelFormat[0]], endPoint);
+            //multicastSocket.SendTo([pixelFormat[0]], endPoint);
 
             byte[] nameLenght = new byte[4];
 
@@ -171,7 +169,7 @@ public class Retranslator
             socket.Receive(nameString, nameString.Length, 0);
 
 #if DEBUG
-            PrintBytes("\nServer Init message data: ", [.. width, .. height, .. pixelFormat, .. nameLenght, .. nameString]);
+            Print("\nServer Init message data: ", [.. width, .. height, .. pixelFormat, .. nameLenght, .. nameString]);
 #endif
         } catch (Exception e)
         {
@@ -183,11 +181,11 @@ public class Retranslator
     {
         try
         {
-            byte[] numberOfEncodings = new byte[] {
-                (byte)ClientMessageTypes.SetEncodings, 0, 0, 1 };
+            byte[] numberOfEncodings = [
+                (byte)ClientMessageTypes.SetEncodings, 0, 0, 1 ];
             socket.Send(numberOfEncodings, numberOfEncodings.Length, 0);
 
-            byte[] encodingTypeMsg = new byte[] { 0, 0, 0, (byte)encodingType };
+            byte[] encodingTypeMsg = [ 0, 0, 0, (byte)encodingType ];
             socket.Send(encodingTypeMsg, encodingTypeMsg.Length, 0);
         } catch (Exception e)
         {
@@ -199,13 +197,13 @@ public class Retranslator
     {
         try
         {
-            byte[] msg = new byte[] {
+            byte[] msg = [
                 (byte)ClientMessageTypes.SetPixelFormat, 0, 0, 0,
                 pixelFormat[0], pixelFormat[1], pixelFormat[2], pixelFormat[3],
                 pixelFormat[4], pixelFormat[5], pixelFormat[6], pixelFormat[7],
                 pixelFormat[8], pixelFormat[9], pixelFormat[10],
                 pixelFormat[11], pixelFormat[12], pixelFormat[13],
-                pixelFormat[14], pixelFormat[15] };
+                pixelFormat[14], pixelFormat[15] ];
             socket.Send(msg, msg.Length, 0);
 
         } catch (Exception e)
@@ -214,63 +212,63 @@ public class Retranslator
         }
     }
 
-    public async Task FramebufferUpdateRequest(byte incremental = 0, ushort
-            XPosition = 0, ushort YPosition = 0)
+    public void FramebufferUpdateRequest(byte incremental = 0, ushort
+            XPosition = 0, ushort YPosition = 0,
+            ushort rectWidth = 200, ushort rectHeight = 200)
     {
         try
         {
-            byte[] updateRequest = new byte[]
-            {
+            byte[] updateRequest = [
                 (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
                 (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-                (byte)YPosition, width[0], width[1], height[0], height[1]
-            };
+                (byte)YPosition, (byte)(rectWidth >> 8), (byte)rectWidth,
+                (byte)(rectHeight >> 8), (byte)rectHeight
+            ];
 
             socket.Send(updateRequest, updateRequest.Length, 0);
 
             byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
-            multicastSocket.SendTo([countRects[3], countRects[2]], endPoint);
+            //multicastSocket.SendTo([countRects[3], countRects[2]], endPoint);
 #if DEBUG
-            PrintBytes("\nFrame Buffer Update Message Response: ", countRects);
-            PrintBytes("\nFrame buffer update request: ", updateRequest);
+            Print("\nFrame Buffer Update Message Response: ", countRects);
+            Print("\nFrame buffer update request: ", updateRequest);
 #endif
-
             ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
                     countRects[2]], 0);
 
             byte[] rectData = new byte[12];
-            byte[] pixelData = new byte[pixelFormat[0] / 8];
+            byte[] pixelData;
+            ushort w = 0;
+            ushort h = 0;
 #if DEBUG
-            Console.WriteLine($"numberOfRectangles = {numberOfRectangles}");
-            Console.WriteLine($"pixelData.Length = {pixelData.Length}");
+            Print($"Rect number: ", numberOfRectangles);
 #endif
-            for (ushort i = 0; i < numberOfRectangles; i++)
+            while (numberOfRectangles-- > 0)
             {
                 socket.Receive(rectData, rectData.Length, 0);
-                multicastSocket.SendTo(rectData, endPoint);
-                ushort width = BitConverter.ToUInt16([rectData[5], rectData[4]]);
-                ushort height = BitConverter.ToUInt16([rectData[7], rectData[6]]);
+                //multicastSocket.SendTo(rectData, endPoint);
+                w = BitConverter.ToUInt16([rectData[5], rectData[4]]);
+                h = BitConverter.ToUInt16([rectData[7], rectData[6]]);
+                pixelData = new byte[pixelFormat[0] / 8 * w];
 #if DEBUG
-                PrintBytes("\nRectangle header: ", rectData);
-                
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Rectangle width and height: ");
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"{width}x{height}");
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Rectangle pixel data is in prostration");
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("В дело вступает мультикаст сокет.");
+                Print("\nRect header: ", rectData);
+                Print("Rect width x height: ", $"{w}x{h}");
 #endif
-                for (int j = 0; j < width * height; j++)
+                for (ushort i = 0; i < h; i++)
                 {
-                    await socket.ReceiveAsync(pixelData, 0);
+                    socket.Receive(pixelData, 0);
+
+                    //multicastSocket.SendTo([pixelFormat[0]], endPoint);
+                    multicastSocket.SendTo([..rectData, pixelFormat[0]], endPoint);
                     multicastSocket.SendTo(pixelData, endPoint);
+
+                    if (rectData[3] + 1 == 256)
+                    {
+                        rectData[3] = 0;
+                        rectData[2]++;
+                    }
+                    else rectData[3] += 1;
                 }
             }
         } catch (Exception e)
@@ -294,14 +292,19 @@ public class Retranslator
     }
 
 #if DEBUG
-    private void PrintBytes(string msg, byte[] bytes)
+    public void Print<T>(string msg, T? val) =>
+        Print(msg, () => Console.Write(val));
+
+    public void Print<T>(string msg, T[] val) =>
+        Print(msg, () => { foreach (var s in val) Console.Write($"{s} "); });
+
+    public void Print(string msg, Action? action = null)
     {
         Console.ForegroundColor = ConsoleColor.Green;
         Console.Write(msg);
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        foreach (byte s in bytes)
-            Console.Write($"{s} ");
+        action?.Invoke();
 
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;
