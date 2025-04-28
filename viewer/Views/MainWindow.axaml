@@ -34,7 +34,7 @@
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
-                        <Canvas Name="ScreenViewImage"/>
+                        <Image Name="ScreenViewImage"/>
                     </Border>
                 </Grid>
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
@@ -52,33 +52,4 @@
             <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
         </Grid>
     </Border>
-
-    <!--StackPanel>
-        <Grid RowDefinitions="Auto, *" Classes="mainContainer">
-            <Border Classes="header" Grid.Row="0">
-                <StackPanel Classes="title">
-                    <TextBlock Classes="title"> MO </TextBlock>
-                    <TextBlock Classes="titleYellow"> VIEW </TextBlock>
-                    <TextBlock Classes="title"> ER </TextBlock>
-                    <Image/>
-                </StackPanel>
-            </Border>
-            <Border Classes="header" Grid.Row="1">
-                <Button Classes="header">Calculate</Button>
-            </Border>
-        </Grid>
-
-        <Grid Margin="5"
-            ColumnDefinitions="120, 100" 
-            RowDefinitions="Auto, Auto, Auto">
-            <Label Grid.Row="0" Grid.Column="0" Margin="10">Celsius</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Margin="0 5" Text="0" Name="celsius"/>
-            <Label Grid.Row="1" Grid.Column="0" Margin="10">Fahrenheit</Label>
-            <TextBox Grid.Row="1"  Grid.Column="1" Margin="0 5" Text="0" Name="fahrenheit" IsReadOnly="True"/>
-            <Button Grid.Row="2" Grid.Column="1"
-                Margin="0 5" Click="Button_OnClick">
-                Calculate
-            </Button>
-        </Grid>
-    </StackPanel!-->
 </Window>

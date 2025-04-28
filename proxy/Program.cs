@@ -92,9 +92,9 @@ class Program
         ushort rectW = (ushort)(width / 10);
         ushort rectH = (ushort)(height / 10);
 
-        for (ushort y = 0; y < 10; y++)
+        for (ushort x = 0; x < 10; x++)
         {
-            for (ushort x = 0; x < 10; x++)
+            for (ushort y = 0; y < 10; y++)
             {
                 client.FramebufferUpdateRequest(0, (ushort)(x * rectW), (ushort)(y * rectH), rectW, rectH);
             }

@@ -150,13 +150,8 @@ public class Retranslator
         try
         {
             socket.Receive(width, width.Length, 0);
-            //multicastSocket.SendTo(width, endPoint);
-
             socket.Receive(height, height.Length, 0);
-            //multicastSocket.SendTo(height, endPoint);
-
             socket.Receive(pixelFormat, pixelFormat.Length, 0);
-            //multicastSocket.SendTo([pixelFormat[0]], endPoint);
 
             byte[] nameLenght = new byte[4];
 
@@ -229,7 +224,6 @@ public class Retranslator
 
             byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
-            //multicastSocket.SendTo([countRects[3], countRects[2]], endPoint);
 #if DEBUG
             Print("\nFrame Buffer Update Message Response: ", countRects);
             Print("\nFrame buffer update request: ", updateRequest);
@@ -237,8 +231,12 @@ public class Retranslator
             ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
                     countRects[2]], 0);
 
+            byte p = (byte)(pixelFormat[0] / 8);
+
             byte[] rectData = new byte[12];
-            byte[] pixelData;
+            byte[] pixelData = new byte[p * rectWidth * rectHeight];
+            ushort x = 0;
+            ushort y = 0;
             ushort w = 0;
             ushort h = 0;
 #if DEBUG
@@ -247,29 +245,29 @@ public class Retranslator
             while (numberOfRectangles-- > 0)
             {
                 socket.Receive(rectData, rectData.Length, 0);
-                //multicastSocket.SendTo(rectData, endPoint);
+                x = BitConverter.ToUInt16([rectData[1], rectData[0]]);
+                y = BitConverter.ToUInt16([rectData[3], rectData[2]]);
                 w = BitConverter.ToUInt16([rectData[5], rectData[4]]);
                 h = BitConverter.ToUInt16([rectData[7], rectData[6]]);
-                pixelData = new byte[pixelFormat[0] / 8 * w];
 #if DEBUG
                 Print("\nRect header: ", rectData);
                 Print("Rect width x height: ", $"{w}x{h}");
 #endif
-                for (ushort i = 0; i < h; i++)
+                socket.Receive(pixelData, (y % rectHeight * w + x % rectWidth) * p, w * h * p, 0);
+            }
+
+            for (ushort i = 0; i < rectHeight; i++)
+            {
+                multicastSocket.SendTo([..rectData, pixelFormat[0]], endPoint);
+                multicastSocket.SendTo(pixelData, rectWidth * i * p, rectWidth * p, 0, endPoint);
+
+                if (rectData[3] + 1 == 256)
                 {
-                    socket.Receive(pixelData, 0);
-
-                    //multicastSocket.SendTo([pixelFormat[0]], endPoint);
-                    multicastSocket.SendTo([..rectData, pixelFormat[0]], endPoint);
-                    multicastSocket.SendTo(pixelData, endPoint);
-
-                    if (rectData[3] + 1 == 256)
-                    {
-                        rectData[3] = 0;
-                        rectData[2]++;
-                    }
-                    else rectData[3] += 1;
+                    rectData[3] = 0;
+                    rectData[2]++;
                 }
+                else rectData[3] += 1;
+                Print("Sent rect data: ", rectData);
             }
         } catch (Exception e)
         {

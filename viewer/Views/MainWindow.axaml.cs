@@ -40,7 +40,7 @@ public partial class MainWindow : Window
     private string ThemeSwitchText => IsDark ? "Light" : "Dark";
 
     private Bitmap? screenViewBitmap;
-    Task jopa;
+    Task receivingTask;
 
     public MainWindow()
     {
@@ -70,14 +70,9 @@ public partial class MainWindow : Window
     {
         Page1.IsVisible = false;
         Page2.IsVisible = true;
-        jopa = Task.Run(JopaZamenitely);
-        await jopa;
-        
-        ScreenViewImage.Background = new ImageBrush()
-        {
-            Source = screenViewBitmap,
-            Stretch = Stretch.Fill
-        };
+        receivingTask = Task.Run(ReceiveBitmap);
+        await receivingTask;
+        ScreenViewImage.Source = screenViewBitmap;
     }
 
     private void Audio_OnClick(object? sender, RoutedEventArgs e)
@@ -128,66 +123,58 @@ public partial class MainWindow : Window
         ViewHeader.IsVisible = false;
     }
 
-    private async Task JopaZamenitely()
+    private async Task ReceiveBitmap()
     {
         try
         {
             Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
-
-            //receiver.Connect();
-            //ushort rectCount = receiver.ReceiveRectCount();
-            //Console.WriteLine(rectCount);
-
             receiver.ReceiveRectData();
 
-            ushort w = receiver.rectWidth;
-            ushort h = receiver.rectHeight;
+            int W = receiver.rectWidth * 10;
+            int H = receiver.rectHeight * 10;
             ushort x = receiver.rectX;
             ushort y = receiver.rectY;
 
             SKBitmap bitmap = new SKBitmap
             (
-                w * 10, h * 10,
+                W, H,
                 SKColorType.Bgra8888,
                 SKAlphaType.Premul
             );
 
+            SKData enc;
+            MemoryStream ms;
+
             nint pixels = bitmap.GetPixels();
 
-            SetPixels(y * w * 10 + x, receiver.ReceivePixels(), pixels);
-            Console.WriteLine(y * w * 10 + x);
+            receiver.ReceivePixels();
+            SetPixels(y * W + x, receiver.pixelData, pixels);
 
-            using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+            int iter = H * (10 - x / receiver.rectWidth) - y;
+
+            while (iter-- > 1)
             {
-                using (var ms = new MemoryStream())
+                receiver.ReceiveRectData();
+
+                x = receiver.rectX;
+                y = receiver.rectY;
+
+                receiver.ReceivePixels();
+                SetPixels(y * W + x, receiver.pixelData, pixels);
+            }
+
+            using(enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+            {
+                using (ms = new MemoryStream())
                 {
                     enc.SaveTo(ms);
                     ms.Position = 0;
                     screenViewBitmap = new Bitmap(ms);
                 }
             }
-
-            while (true)
-            {
-                receiver.ReceiveRectData();
-
-                SetPixels(y * w * 10 + x, receiver.ReceivePixels(), pixels);
-                Console.WriteLine(y * w * 10 + x);
-
-                using (var enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        enc.SaveTo(ms);
-                        ms.Position = 0;
-                        screenViewBitmap = new Bitmap(ms);
-                    }
-                }
-            }
         }
         catch(Exception ex)
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
             Console.WriteLine(ex);
         }
     }
