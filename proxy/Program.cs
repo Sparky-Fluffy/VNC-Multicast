@@ -85,18 +85,20 @@ class Program
         Console.ForegroundColor = ConsoleColor.White;
 #endif
         client.SetPixelFormat();
-        //while (true)
 
         ushort width = BitConverter.ToUInt16([client.width[1], client.width[0]]);
         ushort height = BitConverter.ToUInt16([client.height[1], client.height[0]]);
         ushort rectW = (ushort)(width / 10);
         ushort rectH = (ushort)(height / 10);
 
-        for (ushort x = 0; x < 10; x++)
+        while (true)
         {
-            for (ushort y = 0; y < 10; y++)
+            for (ushort x = 0; x < 10; x++)
             {
-                client.FramebufferUpdateRequest(0, (ushort)(x * rectW), (ushort)(y * rectH), rectW, rectH);
+                for (ushort y = 0; y < 10; y++)
+                {
+                    client.FramebufferUpdateRequest(0, (ushort)(x * rectW), (ushort)(y * rectH), rectW, rectH);
+                }
             }
         }
     }

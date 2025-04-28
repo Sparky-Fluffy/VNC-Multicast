@@ -83,9 +83,9 @@ public class Retranslator
 
             byte[] protocolVersion = new byte[12];
             socket.Receive(protocolVersion, protocolVersion.Length, 0);
-#if DEBUG
-            Print("\nProtocol version: ", protocolVersion);
-#endif
+// #if DEBUG
+//             Print("\nProtocol version: ", protocolVersion);
+// #endif
             socket.Send(protocolVersion, protocolVersion.Length, 0);
         } catch (Exception e)
         {
@@ -101,10 +101,10 @@ public class Retranslator
         byte[] securityTypes = new byte[numberOfSecurity[0]];
         socket.Receive(securityTypes, securityTypes.Length, 0);
 
-#if DEBUG
-        Print("\nNumber of security types: ", numberOfSecurity);
-        Print("Security types: ", securityTypes);
-#endif
+// #if DEBUG
+//         Print("\nNumber of security types: ", numberOfSecurity);
+//         Print("Security types: ", securityTypes);
+// #endif
         return securityTypes;
     }
 
@@ -112,9 +112,9 @@ public class Retranslator
     {
         try
         {
-#if DEBUG
-            Print("\nПопытка подключения к серверу...");
-#endif
+// #if DEBUG
+//             Print("\nПопытка подключения к серверу...");
+// #endif
             SetProtocolVersion();
             GetSecurityTypes();
 
@@ -123,10 +123,10 @@ public class Retranslator
 
             byte[] securityHandshake = new byte[4];
             socket.Receive(securityHandshake, securityHandshake.Length, 0);
-#if DEBUG
-            Print("\nSecurity type from client: ", securityType);
-            Print("\nSecurity handshake: ", securityHandshake);
-#endif
+// #if DEBUG
+//             Print("\nSecurity type from client: ", securityType);
+//             Print("\nSecurity handshake: ", securityHandshake);
+// #endif
         } catch (Exception ex)
         {
             ExitProcessRetranslator(ex.Message, CloseProxyStatus.Failed);
@@ -163,9 +163,9 @@ public class Retranslator
             byte[] nameString = new byte[nameLenghtNumber];
             socket.Receive(nameString, nameString.Length, 0);
 
-#if DEBUG
-            Print("\nServer Init message data: ", [.. width, .. height, .. pixelFormat, .. nameLenght, .. nameString]);
-#endif
+// #if DEBUG
+//             Print("\nServer Init message data: ", [.. width, .. height, .. pixelFormat, .. nameLenght, .. nameString]);
+// #endif
         } catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
@@ -224,10 +224,10 @@ public class Retranslator
 
             byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
-#if DEBUG
-            Print("\nFrame Buffer Update Message Response: ", countRects);
-            Print("\nFrame buffer update request: ", updateRequest);
-#endif
+// #if DEBUG
+//             Print("\nFrame Buffer Update Message Response: ", countRects);
+//             Print("\nFrame buffer update request: ", updateRequest);
+// #endif
             ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
                     countRects[2]], 0);
 
@@ -239,9 +239,9 @@ public class Retranslator
             ushort y = 0;
             ushort w = 0;
             ushort h = 0;
-#if DEBUG
-            Print($"Rect number: ", numberOfRectangles);
-#endif
+// #if DEBUG
+//             Print($"Rect number: ", numberOfRectangles);
+// #endif
             while (numberOfRectangles-- > 0)
             {
                 socket.Receive(rectData, rectData.Length, 0);
@@ -267,7 +267,9 @@ public class Retranslator
                     rectData[2]++;
                 }
                 else rectData[3] += 1;
-                Print("Sent rect data: ", rectData);
+// #if DEBUG
+//                Print("Sent rect data: ", rectData);
+// #endif
             }
         } catch (Exception e)
         {
@@ -314,34 +316,34 @@ public class Retranslator
         try
         {
             socket.Disconnect(true);
-#if DEBUG
-            Console.WriteLine("TCP сокет отключен");
-#endif
+// #if DEBUG
+//             Console.WriteLine("TCP сокет отключен");
+// #endif
 
             socket.Shutdown(SocketShutdown.Both);
-#if DEBUG
-            Console.WriteLine("Shutdown tcp сделан");
-#endif
+// #if DEBUG
+//             Console.WriteLine("Shutdown tcp сделан");
+// #endif
 
             socket.Close();
-#if DEBUG
-            Console.WriteLine("Close tcp сделан");
-#endif
+// #if DEBUG
+//             Console.WriteLine("Close tcp сделан");
+// #endif
 
             socket.Dispose();
-#if DEBUG
-            Console.WriteLine("Dispose tcp сделан");
-#endif
+// #if DEBUG
+//             Console.WriteLine("Dispose tcp сделан");
+// #endif
 
             multicastSocket.Close();
-#if DEBUG
-            Console.WriteLine("multicastSocket Close сделан");
-#endif
+// #if DEBUG
+//             Console.WriteLine("multicastSocket Close сделан");
+// #endif
 
             multicastSocket.Dispose();
-#if DEBUG
-            Console.WriteLine("multicastSocket Dispose сделан");
-#endif
+// #if DEBUG
+//             Console.WriteLine("multicastSocket Dispose сделан");
+// #endif
         } catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);

@@ -18,10 +18,10 @@ public class Receiver
 
     public ushort rectWidth { get; private set; } = 0;
     public ushort rectHeight { get; private set; } = 0;
-    public ushort rectX { get; private set; } = 0;
-    public ushort rectY { get; private set; } = 0;
+    public ushort rectX = 0;
+    public ushort rectY = 0;
 
-    public byte pixelFormat { get; private set; } = 0;
+    public byte pixelFormat = 0;
 
     public Receiver(IPAddress multicastGroupAddress, ushort port)
     {

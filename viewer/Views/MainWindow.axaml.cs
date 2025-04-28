@@ -14,6 +14,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using receiver;
 using SkiaSharp;
 using viewer.ViewModels;
@@ -40,7 +41,7 @@ public partial class MainWindow : Window
     private string ThemeSwitchText => IsDark ? "Light" : "Dark";
 
     private Bitmap? screenViewBitmap;
-    Task receivingTask;
+    private Task? receivingTask;
 
     public MainWindow()
     {
@@ -72,7 +73,6 @@ public partial class MainWindow : Window
         Page2.IsVisible = true;
         receivingTask = Task.Run(ReceiveBitmap);
         await receivingTask;
-        ScreenViewImage.Source = screenViewBitmap;
     }
 
     private void Audio_OnClick(object? sender, RoutedEventArgs e)
@@ -123,54 +123,71 @@ public partial class MainWindow : Window
         ViewHeader.IsVisible = false;
     }
 
+    private void SetScreenViewImage()
+    {
+        ScreenViewImage.Source = screenViewBitmap;
+    }
+
     private async Task ReceiveBitmap()
     {
         try
         {
             Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
-            receiver.ReceiveRectData();
 
-            int W = receiver.rectWidth * 10;
-            int H = receiver.rectHeight * 10;
-            ushort x = receiver.rectX;
-            ushort y = receiver.rectY;
+            int W = 0;
+            int H = 0;
+            ref ushort x = ref receiver.rectX;
+            ref ushort y = ref receiver.rectY;
+            ref byte[] pixelData = ref receiver.pixelData;
+            ref byte p = ref receiver.pixelFormat;
 
-            SKBitmap bitmap = new SKBitmap
-            (
-                W, H,
-                SKColorType.Bgra8888,
-                SKAlphaType.Premul
-            );
-
+            SKBitmap bitmap;
             SKData enc;
             MemoryStream ms;
+            nint pixels;
 
-            nint pixels = bitmap.GetPixels();
+            int iter;
+            int i = 1;
 
-            receiver.ReceivePixels();
-            SetPixels(y * W + x, receiver.pixelData, pixels);
-
-            int iter = H * (10 - x / receiver.rectWidth) - y;
-
-            while (iter-- > 1)
+            while (true)
             {
                 receiver.ReceiveRectData();
 
-                x = receiver.rectX;
-                y = receiver.rectY;
+                W = receiver.rectWidth * 10;
+                H = receiver.rectHeight * 10;
+                
+                bitmap = new SKBitmap
+                (
+                    W, H,
+                    SKColorType.Bgra8888,
+                    SKAlphaType.Premul
+                );
+
+                pixels = bitmap.GetPixels();
 
                 receiver.ReceivePixels();
-                SetPixels(y * W + x, receiver.pixelData, pixels);
-            }
+                SetPixels(p * (y * W + x), pixelData, pixels);
 
-            using(enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
-            {
-                using (ms = new MemoryStream())
+                iter = H * (10 - x / receiver.rectWidth) - y;
+
+                while (iter-- > 1)
                 {
-                    enc.SaveTo(ms);
-                    ms.Position = 0;
-                    screenViewBitmap = new Bitmap(ms);
+                    receiver.ReceiveRectData();
+                    receiver.ReceivePixels();
+                    SetPixels(p * (y * W + x), pixelData, pixels);
                 }
+
+                using(enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+                {
+                    using (ms = new MemoryStream())
+                    {
+                        enc.SaveTo(ms);
+                        ms.Position = 0;
+                        screenViewBitmap = new Bitmap(ms);
+                    }
+                }
+
+                Dispatcher.UIThread.Invoke(SetScreenViewImage);
             }
         }
         catch(Exception ex)
