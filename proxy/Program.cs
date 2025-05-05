@@ -6,13 +6,15 @@ using RetranslatorLogics;
 
 namespace proxy;
 
-struct ConnectionData
+public struct ConnectionData
 {
     public string ServerIP { get; set; }
     public int ServerPort { get; set; }
     public string encoding { get; set; }
     public string multicastGroupIP { get; set; }
     public int multicastGroupPort { get; set; }
+    public string localIP { get; set; }
+    public int interfaceIndex { get; set; }
 }
 
 class Program
@@ -35,13 +37,17 @@ class Program
         var data = JsonConvert.DeserializeObject<ConnectionData>(json);
 
         IPAddress serverIPAddr = null;
+        IPAddress localIP = null;
         IPAddress multicastGroupIPAddr = null;
         Encodings enc = Encodings.Raw;
 
-        if (data.ServerIP == string.Empty || data.ServerIP == null)
+        if (data.ServerIP == string.Empty || data.ServerIP == null ||
+                data.localIP == string.Empty || data.localIP == null)
             WriteErrorAndExit("Строка параметра 'ip' не задана.");
         else if (data.encoding == string.Empty || data.encoding == null)
             WriteErrorAndExit("Кодировка не задана корректно.");
+        else if (data.interfaceIndex <= 0)
+            WriteErrorAndExit("Интерфейс меньше, сука, блять, нуля, дебил.");
         else
         {
             try
@@ -49,6 +55,7 @@ class Program
                 serverIPAddr = IPAddress.Parse(data.ServerIP);
                 multicastGroupIPAddr = IPAddress.Parse(data.multicastGroupIP);
                 enc = (Encodings)Enum.Parse(typeof(Encodings), data.encoding);
+                localIP = IPAddress.Parse(data.localIP);
             } catch (Exception e)
             {
                 WriteErrorAndExit(e.Message);
@@ -74,7 +81,8 @@ class Program
             WriteErrorAndExit("Нельзя выбрать кодировку не Raw.");
 
         client = new Retranslator(serverIPAddr, data.ServerPort, enc,
-                multicastGroupIPAddr, data.multicastGroupPort);
+                multicastGroupIPAddr, data.multicastGroupPort, localIP,
+                data.interfaceIndex);
         client.Connect();
 #if !DEBUG
         Console.ForegroundColor = ConsoleColor.Green;
