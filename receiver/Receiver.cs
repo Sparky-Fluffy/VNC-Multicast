@@ -3,26 +3,28 @@ using System.Net.Sockets;
 
 namespace receiver;
 
+public enum McastMessageType : byte
+{
+    ScreenBounds = 0,
+    RectXY = 1,
+    RectBounds = 2,
+    pixelFormat = 3,
+    PixelValue = 4
+}
+
 public class Receiver
 {
     public Socket multicastSocket { get; }
     public IPEndPoint endPoint { get; }
+    public byte[] data = new byte[5];
 
-    public ushort Width { get => BitConverter.ToUInt16([width[1], width[0]]); }
-    public ushort Height { get => BitConverter.ToUInt16([height[1], height[0]]); }
-
-    public byte[] width { get; } = new byte[2];
-    public byte[] height { get; } = new byte[2];
-
-    public byte[] pixelData;
-
-    public ushort rectWidth { get; private set; } = 0;
-    public ushort rectHeight { get; private set; } = 0;
+    public ushort rectWidth = 0;
+    public ushort rectHeight = 0;
     public ushort rectX = 0;
     public ushort rectY = 0;
-
+    public ushort Width = 0;
+    public ushort Height = 0;
     public byte pixelFormat = 0;
-
     public Receiver(IPAddress multicastGroupAddress, ushort port)
     {
         multicastSocket = new Socket
@@ -33,7 +35,7 @@ public class Receiver
         endPoint = new IPEndPoint(IPAddress.Any, port);
 
         multicastSocket.Bind(endPoint);
-        
+
         MulticastOption mcastOption = new MulticastOption
         (
             multicastGroupAddress, IPAddress.Any
@@ -45,35 +47,36 @@ public class Receiver
         );
     }
 
-    public void ReceivePixelFormat()
-    {
-        multicastSocket.Receive([pixelFormat]);
-
-#if DEBUG
-        Console.WriteLine(pixelFormat);
-#endif
-    }
-
     public void ReceiveRectData()
     {
-        byte[] rectData = new byte[13];
-        multicastSocket.Receive(rectData);
+        byte[] data = new byte[5];
 
-        foreach (var item in rectData)
-            Console.Write(item + " ");
-        Console.WriteLine();
+        do multicastSocket.Receive(data);
+        while (data[0] != (byte)McastMessageType.ScreenBounds);
 
-        if (rectWidth == 0)
+        if (Width == 0)
         {
-            rectWidth = BitConverter.ToUInt16([rectData[5], rectData[4]]);
-            rectHeight = BitConverter.ToUInt16([rectData[7], rectData[6]]);
-            pixelFormat = (byte)(rectData[12] / 8);
-            pixelData = new byte[pixelFormat * rectWidth];
+            Width = BitConverter.ToUInt16([data[2], data[1]]);
+            Height = BitConverter.ToUInt16([data[4], data[3]]);
         }
 
-        rectX = BitConverter.ToUInt16([rectData[1], rectData[0]]);
-        rectY = BitConverter.ToUInt16([rectData[3], rectData[2]]);
+        do multicastSocket.Receive(data);
+        while (data[0] != (byte)McastMessageType.RectXY);
+
+        rectX = BitConverter.ToUInt16([data[2], data[1]]);
+        rectY = BitConverter.ToUInt16([data[4], data[3]]);
+
+        do multicastSocket.Receive(data);
+        while (data[0] != (byte)McastMessageType.RectBounds);
+
+        rectWidth = BitConverter.ToUInt16([data[2], data[1]]);
+        rectHeight = BitConverter.ToUInt16([data[4], data[3]]);
+
+        do multicastSocket.Receive(data);
+        while (data[0] != (byte)McastMessageType.pixelFormat);
+
+        if (pixelFormat == 0) pixelFormat = (byte)(data[1] / 8);
     }
 
-    public void ReceivePixels() => multicastSocket.ReceiveAsync(pixelData);
+    public void ReceivePixel() => multicastSocket.Receive(data);
 }

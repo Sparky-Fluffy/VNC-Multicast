@@ -134,50 +134,40 @@ public partial class MainWindow : Window
         {
             Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
 
-            int W = 0;
-            int H = 0;
+            ref ushort W = ref receiver.Width;
+            ref ushort H = ref receiver.Height;
+            ref ushort w = ref receiver.rectWidth;
+            ref ushort h = ref receiver.rectHeight;
             ref ushort x = ref receiver.rectX;
             ref ushort y = ref receiver.rectY;
-            ref byte[] pixelData = ref receiver.pixelData;
+            ref byte[] pixelData = ref receiver.data;
             ref byte p = ref receiver.pixelFormat;
 
-            SKBitmap bitmap;
             SKData enc;
             MemoryStream ms;
-            nint pixels;
+            
+            receiver.ReceiveRectData();
 
-            int iter;
-            int i = 1;
+            SKBitmap bitmap = new SKBitmap
+            (
+                W, H,
+                SKColorType.Bgra8888,
+                SKAlphaType.Premul
+            );
+            nint pixels = bitmap.GetPixels();
 
             while (true)
             {
-                receiver.ReceiveRectData();
-
-                W = receiver.rectWidth * 10;
-                H = receiver.rectHeight * 10;
-                
-                bitmap = new SKBitmap
-                (
-                    W, H,
-                    SKColorType.Bgra8888,
-                    SKAlphaType.Premul
-                );
-
-                pixels = bitmap.GetPixels();
-
-                receiver.ReceivePixels();
-                SetPixels(p * (y * W + x), pixelData, pixels);
-
-                iter = H * (10 - x / receiver.rectWidth) - y;
-
-                while (iter-- > 1)
+                for (int i = 0; i < h; i++)
                 {
-                    receiver.ReceiveRectData();
-                    receiver.ReceivePixels();
-                    SetPixels(p * (y * W + x), pixelData, pixels);
+                    for (int j = 0; j < w; j++)
+                    {
+                        receiver.ReceivePixel();
+                        SetPixels(p * (y * W + i * W + x + j), pixelData, p, pixels);
+                    }
                 }
 
-                using(enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
+                using (enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
                 {
                     using (ms = new MemoryStream())
                     {
@@ -188,6 +178,7 @@ public partial class MainWindow : Window
                 }
 
                 Dispatcher.UIThread.Invoke(SetScreenViewImage);
+                receiver.ReceiveRectData();
             }
         }
         catch(Exception ex)
@@ -196,8 +187,8 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SetPixels(int offset, byte[] pixels, nint pixelsDest)
+    private void SetPixels(int offset, byte[] pixels, int size, nint pixelsDest)
     {
-        Marshal.Copy(pixels, 0, pixelsDest + offset, pixels.Length);
+        Marshal.Copy(pixels, 1, pixelsDest + offset, size);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace RetranslatorLogics;
 
@@ -45,6 +46,15 @@ public enum Encodings
     DesktopSizePseudoEncoding = -223
 }
 
+public enum McastMessageType : byte
+{
+    ScreenBounds = 0,
+    RectXY = 1,
+    RectBounds = 2,
+    pixelFormat = 3,
+    PixelValue = 4
+}
+
 public class Retranslator
 {
     public int port { get; }
@@ -80,7 +90,8 @@ public class Retranslator
 
             multicastSocket.SetSocketOption(SocketOptionLevel.IP,
                     SocketOptionName.AddMembership, mcastOption);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -95,7 +106,8 @@ public class Retranslator
             byte[] protocolVersion = new byte[12];
             socket.Receive(protocolVersion, protocolVersion.Length, 0);
             socket.Send(protocolVersion, protocolVersion.Length, 0);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -119,12 +131,13 @@ public class Retranslator
             SetProtocolVersion();
             GetSecurityTypes();
 
-            byte[] securityType = [ 1 ];
+            byte[] securityType = [1];
             socket.Send(securityType, securityType.Length, 0);
 
             byte[] securityHandshake = new byte[4];
             socket.Receive(securityHandshake, securityHandshake.Length, 0);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             ExitProcessRetranslator(ex.Message, CloseProxyStatus.Failed);
         }
@@ -132,11 +145,12 @@ public class Retranslator
 
     private void ClientInit()
     {
-        byte[] sharedFlag = [ 0 ];
+        byte[] sharedFlag = [0];
         try
         {
             socket.Send(sharedFlag, sharedFlag.Length, 0);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             ExitProcessRetranslator(ex.Message, CloseProxyStatus.Failed);
         }
@@ -153,13 +167,14 @@ public class Retranslator
             byte[] nameLenght = new byte[4];
 
             socket.Receive(nameLenght, nameLenght.Length, 0);
-            
+
             Array.Reverse(nameLenght);
             int nameLenghtNumber = BitConverter.ToInt32(nameLenght, 0);
 
             byte[] nameString = new byte[nameLenghtNumber];
             socket.Receive(nameString, nameString.Length, 0);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -173,9 +188,10 @@ public class Retranslator
                 (byte)ClientMessageTypes.SetEncodings, 0, 0, 1 ];
             socket.Send(numberOfEncodings, numberOfEncodings.Length, 0);
 
-            byte[] encodingTypeMsg = [ 0, 0, 0, (byte)encodingType ];
+            byte[] encodingTypeMsg = [0, 0, 0, (byte)encodingType];
             socket.Send(encodingTypeMsg, encodingTypeMsg.Length, 0);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -194,7 +210,8 @@ public class Retranslator
                 pixelFormat[14], pixelFormat[15] ];
             socket.Send(msg, msg.Length, 0);
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -221,41 +238,67 @@ public class Retranslator
                     countRects[2]], 0);
 
             byte p = (byte)(pixelFormat[0] / 8);
-
-            byte[] rectData = new byte[12];
             byte[] pixelData = new byte[p * rectWidth * rectHeight];
-            ushort x = 0;
-            ushort y = 0;
+            byte[] rectData = new byte[12];
             ushort w = 0;
             ushort h = 0;
+            byte[] mcastMessage = [ 0, 0, 0, 0, 0 ];
+            int i;
 
             while (numberOfRectangles-- > 0)
             {
-                socket.Receive(rectData, rectData.Length, 0);
-                x = BitConverter.ToUInt16([rectData[1], rectData[0]]);
-                y = BitConverter.ToUInt16([rectData[3], rectData[2]]);
+                socket.Receive(rectData, 0);
                 w = BitConverter.ToUInt16([rectData[5], rectData[4]]);
                 h = BitConverter.ToUInt16([rectData[7], rectData[6]]);
 #if DEBUG
                 Print("\nRect header: ", rectData);
                 Print("Rect width x height: ", $"{w}x{h}");
 #endif
-                socket.Receive(pixelData, (y % rectHeight * w + x % rectWidth) * p, w * h * p, 0);
-            }
+                mcastMessage[0] = 0;
+                mcastMessage[1] = width[0];
+                mcastMessage[2] = width[1];
+                mcastMessage[3] = height[0];
+                mcastMessage[4] = height[1];
 
-            for (ushort i = 0; i < rectHeight; i++)
-            {
-                multicastSocket.SendTo([..rectData, pixelFormat[0]], endPoint);
-                multicastSocket.SendTo(pixelData, rectWidth * i * p, rectWidth * p, 0, endPoint);
+                multicastSocket.SendTo(mcastMessage, endPoint);
 
-                if (rectData[3] + 1 == 256)
+                mcastMessage[0]++;
+                mcastMessage[1] = rectData[0];
+                mcastMessage[2] = rectData[1];
+                mcastMessage[3] = rectData[2];
+                mcastMessage[4] = rectData[3];
+
+                multicastSocket.SendTo(mcastMessage, endPoint);
+
+                mcastMessage[0]++;
+                mcastMessage[1] = rectData[4];
+                mcastMessage[2] = rectData[5];
+                mcastMessage[3] = rectData[6];
+                mcastMessage[4] = rectData[7];
+                
+                multicastSocket.SendTo(mcastMessage, endPoint);
+
+                mcastMessage[0]++;
+                mcastMessage[1] = pixelFormat[0];
+
+                multicastSocket.SendTo(mcastMessage, endPoint);
+
+                mcastMessage[0]++;
+                i = w * h;
+                socket.Receive(pixelData, w * h * p, 0);
+
+                while (i < w * h)
                 {
-                    rectData[3] = 0;
-                    rectData[2]++;
+                    mcastMessage[1] = pixelData[i * p];
+                    mcastMessage[2] = pixelData[i * p + 1];
+                    mcastMessage[3] = pixelData[i * p + 2];
+                    mcastMessage[4] = pixelData[i * p + 3];
+                    multicastSocket.SendTo(mcastMessage, endPoint);
+                    i++;
                 }
-                else rectData[3] += 1;
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
@@ -269,6 +312,7 @@ public class Retranslator
         SetEncoding();
     }
 
+#region ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
     private void ExitProcessRetranslator(string msg, CloseProxyStatus st)
     {
         Console.WriteLine(msg);
@@ -305,9 +349,11 @@ public class Retranslator
             socket.Dispose();
             multicastSocket.Close();
             multicastSocket.Dispose();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ExitProcessRetranslator(e.Message, CloseProxyStatus.Failed);
         }
     }
 }
+#endregion
