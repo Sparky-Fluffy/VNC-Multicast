@@ -8,7 +8,7 @@ public enum McastMessageType : byte
     ScreenBounds = 0,
     RectXY = 1,
     RectBounds = 2,
-    pixelFormat = 3,
+    PixelFormat = 3,
     PixelValue = 4
 }
 
@@ -73,10 +73,14 @@ public class Receiver
         rectHeight = BitConverter.ToUInt16([data[4], data[3]]);
 
         do multicastSocket.Receive(data);
-        while (data[0] != (byte)McastMessageType.pixelFormat);
+        while (data[0] != (byte)McastMessageType.PixelFormat);
 
         if (pixelFormat == 0) pixelFormat = (byte)(data[1] / 8);
     }
 
-    public void ReceivePixel() => multicastSocket.Receive(data);
+    public void ReceivePixel()
+    {
+        do multicastSocket.Receive(data);
+        while (data[0] != (byte)McastMessageType.PixelValue);
+    }
 }
