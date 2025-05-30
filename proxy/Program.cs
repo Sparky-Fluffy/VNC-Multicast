@@ -94,8 +94,8 @@ class Program
 #endif
         client.SetPixelFormat();
 
-        ushort width = BitConverter.ToUInt16([client.width[1], client.width[0]]);
-        ushort height = BitConverter.ToUInt16([client.height[1], client.height[0]]);
+        ushort width = client.ScreenWidth;
+        ushort height = client.ScreenHeight;
 
         while (true)
             client.FramebufferUpdateRequest(1, 0, 0, width, height);

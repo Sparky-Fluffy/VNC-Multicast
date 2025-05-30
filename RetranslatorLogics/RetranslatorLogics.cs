@@ -61,11 +61,31 @@ public class Retranslator
     public IPAddress ip { get; }
     public Socket socket { get; }
     public Encodings encodingType { get; }
-    public byte[] width { get; } = new byte[2];
-    public byte[] height { get; } = new byte[2];
-    public byte[] pixelFormat { get; } = new byte[16];
+
     public Socket multicastSocket { get; }
     public IPEndPoint endPoint { get; }
+
+    private byte[] updateRequest = [ (byte)ClientMessageTypes.FramebufferUpdateRequest,
+                                        0, 0, 0,0, 0, 0, 0, 0, 0 ];
+    byte[] countRects = new byte[4];
+    ushort numberOfRectangles = 0;
+
+    private byte[] width { get; } = new byte[2];
+    private byte[] height { get; } = new byte[2];
+    private byte[] pixelFormat { get; } = new byte[16];
+
+    public ushort ScreenWidth { get; private set; } = 0;
+    public ushort ScreenHeight { get; private set; } = 0;
+    private ushort rectWidth = 0;
+    private ushort rectHeight = 0;
+    public byte Bpp { get; private set; } = 0;
+    private byte[] screenBoundsMsg = [(byte)McastMessageType.ScreenBounds, 0, 0, 0, 0];
+    private byte[] rectXYMsg = [(byte)McastMessageType.RectXY, 0, 0, 0, 0];
+    private byte[] rectBoundsMsg = [(byte)McastMessageType.RectBounds, 0, 0, 0, 0];
+    private byte[] pixelFormatMsg = [(byte)McastMessageType.PixelFormat, 0, 0, 0, 0];
+    private byte[] pixelValueMsg = [(byte)McastMessageType.PixelValue, 0, 0, 0, 0];
+    private byte[] encodingMsg = new byte[4];
+    private byte[] pixelData;
 
     public Retranslator(IPAddress ip, int port, Encodings encodingType,
             IPAddress multicastGroupAddress, int multicastPort, IPAddress
@@ -161,8 +181,21 @@ public class Retranslator
         try
         {
             socket.Receive(width, width.Length, 0);
+            ScreenWidth = (ushort)(width[1] + (ushort)(width[0] << 8));
+
             socket.Receive(height, height.Length, 0);
+            ScreenHeight = (ushort)(height[1] + (ushort)(height[0] << 8));
+
             socket.Receive(pixelFormat, pixelFormat.Length, 0);
+            Bpp = (byte)(pixelFormat[0] / 8);
+
+            screenBoundsMsg[1] = width[0];
+            screenBoundsMsg[2] = width[1];
+            screenBoundsMsg[3] = height[0];
+            screenBoundsMsg[4] = height[1];
+
+            pixelFormatMsg[1] = Bpp;
+            pixelData = new byte[Bpp * ScreenWidth * ScreenHeight];
 
             byte[] nameLenght = new byte[4];
 
@@ -219,76 +252,58 @@ public class Retranslator
 
     public unsafe void FramebufferUpdateRequest(byte incremental = 0, ushort
             XPosition = 0, ushort YPosition = 0,
-            ushort rectWidth = 200, ushort rectHeight = 200)
+            ushort frameWidth = 200, ushort frameHeight = 200)
     {
         try
         {
-            byte[] updateRequest = [
-                (byte)ClientMessageTypes.FramebufferUpdateRequest, incremental,
-                (byte)(XPosition >> 8), (byte)XPosition, (byte)(YPosition >> 8),
-                (byte)YPosition, (byte)(rectWidth >> 8), (byte)rectWidth,
-                (byte)(rectHeight >> 8), (byte)rectHeight
-            ];
+            updateRequest[1] = incremental;
+            updateRequest[2] = (byte)(XPosition >> 8);
+            updateRequest[3] = (byte)XPosition;
+            updateRequest[4] = (byte)(YPosition >> 8);
+            updateRequest[5] = (byte)YPosition;
+            updateRequest[6] = (byte)(frameWidth >> 8);
+            updateRequest[7] = (byte)frameWidth;
+            updateRequest[8] = (byte)(frameHeight >> 8);
+            updateRequest[9] = (byte)frameHeight;
 
             socket.Send(updateRequest, updateRequest.Length, 0);
-
-            byte[] countRects = new byte[4];
             socket.Receive(countRects, countRects.Length, 0);
-            ushort numberOfRectangles = BitConverter.ToUInt16([countRects[3],
-                    countRects[2]], 0);
-
-            byte p = (byte)(pixelFormat[0] / 8);
-            ushort w = 0;
-            ushort h = 0;
-
-            byte[] screenBoundsMsg = [(byte)McastMessageType.ScreenBounds, .. width, .. height];
-            byte[] rectXYMsg = [(byte)McastMessageType.RectXY, 0, 0, 0, 0];
-            byte[] rectBoundsMsg = [(byte)McastMessageType.RectBounds, 0, 0, 0, 0];
-            byte[] pixelFormatMsg = [(byte)McastMessageType.PixelFormat, pixelFormat[0], 0, 0, 0];
-            byte[] pixelValueMsg = [(byte)McastMessageType.PixelValue, 0, 0, 0, 0];
-            byte[] encodingMsg = new byte[4];
-            byte[] pixelData = new byte[p * 1920 * 1080];
+            numberOfRectangles = (ushort)(countRects[3] + (ushort)(countRects[2] << 8));
 
             int buf = 0;
-            int i = 0;
             while (numberOfRectangles-- > 0)
             {
-                Print("aaaaaaa");
+                //Print("aaaaaaa");
                 socket.Receive(rectXYMsg, 1, 4, 0);
                 socket.Receive(rectBoundsMsg, 1, 4, 0);
                 socket.Receive(encodingMsg);
 
-                w = (ushort)(rectBoundsMsg[2] + (ushort)(rectBoundsMsg[1] << 8));
-                h = (ushort)(rectBoundsMsg[4] + (ushort)(rectBoundsMsg[3] << 8));
-                buf = w * h * p;
+                rectWidth = (ushort)(rectBoundsMsg[2] + (ushort)(rectBoundsMsg[1] << 8));
+                rectHeight = (ushort)(rectBoundsMsg[4] + (ushort)(rectBoundsMsg[3] << 8));
+                buf = rectWidth * rectHeight;
 #if DEBUG
-                Print("Rect width x height: ", $"{w}x{h}");
-                Print("Rect XY: ", rectXYMsg);
-                Print("Rect bounds: ", rectBoundsMsg);
+                Print("Rect width x height: ", $"{rectWidth}x{rectHeight}");
+                //Print("Rect XY: ", rectXYMsg);
+                //Print("Rect bounds: ", rectBoundsMsg);
 #endif
+                //socket.Receive(pixelData, buf, 0);
+                multicastSocket.SendTo(screenBoundsMsg, endPoint);
+                multicastSocket.SendTo(rectXYMsg, endPoint);
+                multicastSocket.SendTo(rectBoundsMsg, endPoint);
+                multicastSocket.SendTo(pixelFormatMsg, endPoint);
+                while (buf-- > 0)
+                {
+                    socket.Receive(pixelValueMsg, 1, 4, 0);
+                    multicastSocket.SendTo(pixelValueMsg, endPoint);
+                }
+                // Task.Run
+                // (
+                //     () =>
+                //     {
 
-                socket.Receive(pixelData, buf, 0);
-                Task.Run
-                (
-                    () =>
-                    {
-                        multicastSocket.SendTo(screenBoundsMsg, endPoint);
-                        multicastSocket.SendTo(rectXYMsg, endPoint);
-                        multicastSocket.SendTo(rectBoundsMsg, endPoint);
-                        multicastSocket.SendTo(pixelFormatMsg, endPoint);
-                        i = 0;
-                        while (i < buf)
-                        {
-                            pixelValueMsg[1] = pixelData[i];
-                            pixelValueMsg[2] = pixelData[i + 1];
-                            pixelValueMsg[3] = pixelData[i + 2];
-                            pixelValueMsg[4] = pixelData[i + 3];
-                            multicastSocket.SendTo(pixelValueMsg, endPoint);
-                            i += p;
-                        }
-                    }
-                );
-                Print("bbbbbbb");
+                //     }
+                // );
+                //Print("bbbbbbb");
             }
         }
         catch (Exception e)
@@ -305,7 +320,7 @@ public class Retranslator
         SetEncoding();
     }
 
-    #region ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+#region ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
     private void ExitProcessRetranslator(string msg, CloseProxyStatus st)
     {
         Console.WriteLine(msg);

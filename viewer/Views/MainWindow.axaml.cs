@@ -154,7 +154,9 @@ public partial class MainWindow : Window
                 SKColorType.Bgra8888,
                 SKAlphaType.Premul
             );
+            Console.WriteLine(bitmap.ByteCount);
             nint pixels = bitmap.GetPixels();
+
 
             while (true)
             {
