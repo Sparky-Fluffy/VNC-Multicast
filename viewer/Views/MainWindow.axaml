@@ -24,10 +24,22 @@
                         <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
                     </StackPanel>
                 </Border>
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
-                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
-                    </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick" HotKey="W"/>
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, auto" Grid.Row="1">
+                    <!-- <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                    </ListBox> -->
+                    <Border Classes="rounded form" Grid.Column="1">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="IP"/>
+                                <TextBox Name="IpInput"></TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Port"/>
+                                <TextBox Name="PortInput"></TextBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
                 </Grid>
             </Grid>
             <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">

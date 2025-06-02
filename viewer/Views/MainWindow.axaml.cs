@@ -61,8 +61,8 @@ public partial class MainWindow : Window
             Height = screenHeight * vm.PercentHeight;
         }
 
-        SessionPicker.ItemsSource = new string[]
-                                    {"cat", "camel", "cow", "chameleon", "mouse", "lion", "zebra" }.OrderBy(x => x);
+        //SessionPicker.ItemsSource = new string[]
+        //{"cat", "camel", "cow", "chameleon", "mouse", "lion", "zebra" }.OrderBy(x => x);
 
         ThemeSwitch.Content = ThemeSwitchText;
     }

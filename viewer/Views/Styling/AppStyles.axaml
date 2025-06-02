@@ -62,6 +62,22 @@
     <Setter Property="Foreground" Value="{DynamicResource SCyan}"/>
 </Style>
 
+<!--TEXTBOX-->
+
+<Style Selector="TextBox">
+    <Setter Property="FontSize" Value="32"/>
+    <Setter Property="Margin" Value="4 0"/>
+</Style>
+
+<Style Selector="Border.form">
+    <Setter Property="Background" Value="{DynamicResource SGrey}"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="MinWidth" Value="300"/>
+    <Setter Property="MaxWidth" Value="500"/>
+    <Setter Property="Margin" Value="0 50 0 20"/>
+    <Setter Property="Padding" Value="10"/>
+</Style>
+
 <!--LISTBOX-->
 
 <Style Selector="ListBox">
@@ -118,7 +134,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="MinWidth" Value="300"/>
         <Setter Property="MaxWidth" Value="340"/>
-        <Setter Property="Margin" Value="70 0 70 50"/>
+        <Setter Property="Margin" Value="70 40 70 50"/>
     </Style>
 
     <Style Selector="^ > Path">
