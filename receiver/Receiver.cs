@@ -75,7 +75,7 @@ public class Receiver
         do multicastSocket.Receive(data);
         while (data[0] != (byte)McastMessageType.PixelFormat);
 
-        if (pixelFormat == 0) pixelFormat = (byte)(data[1] / 8);
+        if (pixelFormat == 0) pixelFormat = data[1];
     }
 
     public void ReceivePixel()
