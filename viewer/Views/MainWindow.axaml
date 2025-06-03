@@ -24,21 +24,24 @@
                         <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
                     </StackPanel>
                 </Border>
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, auto" Grid.Row="1">
-                    <!-- <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
-                    </ListBox> -->
-                    <Border Classes="rounded form" Grid.Column="1">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IP"/>
-                                <TextBox Name="IpInput"></TextBox>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="Port"/>
-                                <TextBox Name="PortInput"></TextBox>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                        <ListBoxItem Classes="form">
+                            <Grid ColumnDefinitions="1*, 1*, 1*, 1*, 1*">
+                                <Label Classes="roundedMin" Content="IP" Grid.Column="0"/>
+                                <TextBox Name="IpInput" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="1"/>
+                                <TextBox Name="IpInput1" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="2"/>
+                                <TextBox Name="IpInput2" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="3"/>
+                                <TextBox Name="IpInput3" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="4"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem Classes="form">
+                            <Grid ColumnDefinitions="1*, 4*">
+                                <Label Classes="roundedMin" Content="Port" Grid.Column="0"/>
+                                <TextBox Name="PortInput" Classes="roundedMin" Watermark="65535" MaxLength="5" Grid.Column="1"/>
+                            </Grid>
+                        </ListBoxItem>
+                    </ListBox>
                     <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
                 </Grid>
             </Grid>
@@ -65,3 +68,8 @@
         </Grid>
     </Border>
 </Window>
+
+<!-- <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1" VerticalAlignment="Center">
+    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+    </ListBox>
+</Grid> -->

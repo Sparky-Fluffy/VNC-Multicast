@@ -43,6 +43,9 @@ public partial class MainWindow : Window
     private Bitmap? screenViewBitmap;
     private Task? receivingTask;
 
+    private IPAddress mcastIP;
+    private ushort mcastPort;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -69,10 +72,13 @@ public partial class MainWindow : Window
 
     private async void Select_OnClick(object? sender, RoutedEventArgs e)
     {
-        Page1.IsVisible = false;
-        Page2.IsVisible = true;
-        receivingTask = Task.Run(ReceiveBitmap);
-        await receivingTask;
+        if (IPAddress.TryParse($"{IpInput.Text}.{IpInput1.Text}.{IpInput2.Text}.{IpInput3.Text}", out mcastIP) && ushort.TryParse(PortInput.Text, out mcastPort))
+        {
+            Page1.IsVisible = false;
+            Page2.IsVisible = true;
+            receivingTask = Task.Run(ReceiveBitmap);
+            await receivingTask;
+        }
     }
 
     private void Audio_OnClick(object? sender, RoutedEventArgs e)
@@ -132,7 +138,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            Receiver receiver = new Receiver(IPAddress.Parse("239.0.0.0"), 8001);
+            Receiver receiver = new Receiver(mcastIP, mcastPort);
 
             int W = 0;
             int H = 0;

@@ -7,6 +7,7 @@
             <SolidColorBrush x:Key="TGrey">#d5dbf5</SolidColorBrush>
             <SolidColorBrush x:Key="TBlue">#a5b3f0</SolidColorBrush>
             <SolidColorBrush x:Key="FGrey">#757c9c</SolidColorBrush>
+            <SolidColorBrush x:Key="ISGrey">#383d52</SolidColorBrush>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key='Dark'>
@@ -15,6 +16,7 @@
             <SolidColorBrush x:Key="TGrey">#434b66</SolidColorBrush>
             <SolidColorBrush x:Key="TBlue">#748cf7</SolidColorBrush>
             <SolidColorBrush x:Key="FGrey">#22242e</SolidColorBrush>
+            <SolidColorBrush x:Key="ISGrey">#e1e5f5</SolidColorBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

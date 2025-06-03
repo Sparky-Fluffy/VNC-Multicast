@@ -31,6 +31,10 @@
     <Style Selector="^.roundedMax">
         <Setter Property="CornerRadius" Value="30"/>
     </Style>
+
+    <Style Selector="^.roundedMin">
+        <Setter Property="CornerRadius" Value="7"/>
+    </Style>
 </Style>
 
 <Style Selector="Border.rounded">
@@ -62,20 +66,39 @@
     <Setter Property="Foreground" Value="{DynamicResource SCyan}"/>
 </Style>
 
-<!--TEXTBOX-->
+<!--FORM-->
 
-<Style Selector="TextBox">
-    <Setter Property="FontSize" Value="32"/>
-    <Setter Property="Margin" Value="4 0"/>
+<Style Selector="Label, TextBox">
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
 </Style>
 
-<Style Selector="Border.form">
-    <Setter Property="Background" Value="{DynamicResource SGrey}"/>
-    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-    <Setter Property="MinWidth" Value="300"/>
-    <Setter Property="MaxWidth" Value="500"/>
-    <Setter Property="Margin" Value="0 50 0 20"/>
-    <Setter Property="Padding" Value="10"/>
+<Style Selector="Label">
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+    <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="MinWidth" Value="58"/>
+    <Setter Property="Margin" Value="7 0"/>
+    <Setter Property="Padding" Value="7"/>
+</Style>
+
+<Style Selector="TextBox">
+    <Setter Property="Background" Value="{DynamicResource MWhite}"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="TextAlignment" Value="Left"/>
+    <Setter Property="MinWidth" Value="10"/>
+    <Setter Property="Margin" Value="3 0"/>
+    <Setter Property="Padding" Value="5 7 0 7"/>
+
+    <Style Selector="^:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="^ :is(TemplatedControl)">
+        <Setter Property="Foreground" Value="{DynamicResource ISGrey}"/>
+    </Style>
 </Style>
 
 <!--LISTBOX-->
@@ -83,6 +106,7 @@
 <Style Selector="ListBox">
     <Setter Property="Background" Value="{DynamicResource SGrey}"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MaxWidth" Value="500"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
@@ -97,17 +121,26 @@
     <Setter Property="Margin" Value="0 0 0 10"/>
     <Setter Property="Padding" Value="10"/>
 
+    <Style Selector="^.form">
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style> 
+
+    <Style Selector="^.form:selected /template/ ContentPresenter,
+                    ^.form:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource TGrey}"/>
+    </Style>      
+
     <Style Selector="^:selected /template/ ContentPresenter,
                     ^:pointerover /template/ ContentPresenter">
         <Setter Property="FontWeight" Value="DemiBold"/>
     </Style>
 
-    <Style Selector="^:selected /template/ ContentPresenter">
+    <Style Selector="^:selected:not(.form) /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource MBlue}"/>
         <Setter Property="Padding" Value="15"/>
     </Style>
 
-    <Style Selector="^:pointerover /template/ ContentPresenter">
+    <Style Selector="^:pointerover:not(.form) /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource TBlue}"/>
     </Style>
 </Style>
@@ -135,6 +168,7 @@
         <Setter Property="MinWidth" Value="300"/>
         <Setter Property="MaxWidth" Value="340"/>
         <Setter Property="Margin" Value="70 40 70 50"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
     </Style>
 
     <Style Selector="^ > Path">
