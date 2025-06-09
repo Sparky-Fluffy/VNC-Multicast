@@ -99,6 +99,26 @@
     <Style Selector="^ :is(TemplatedControl)">
         <Setter Property="Foreground" Value="{DynamicResource ISGrey}"/>
     </Style>
+
+    <Style Selector="^.ipInput">
+        <Setter Property="MaxLength" Value="3"/>
+
+        <Style Selector="^ /template/ TextBlock#PART_Watermark">
+            <Setter Property="Text" Value="255"/>
+        </Style>
+    </Style>
+
+    <Style Selector="^.portInput">
+        <Setter Property="MaxLength" Value="5"/>
+
+        <Style Selector="^ /template/ TextBlock#PART_Watermark">
+            <Setter Property="Text" Value="65535"/>
+        </Style>
+    </Style>
+</Style>
+
+<Style Selector="ListBoxItem.form :is(TemplatedControl)">
+    <Setter Property="CornerRadius" Value="7"/>
 </Style>
 
 <!--LISTBOX-->
@@ -120,6 +140,7 @@
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Margin" Value="0 0 0 10"/>
     <Setter Property="Padding" Value="10"/>
+    <Setter Property="ClipToBounds" Value="False"/>
 
     <Style Selector="^.form">
         <Setter Property="FontWeight" Value="DemiBold"/>

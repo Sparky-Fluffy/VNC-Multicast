@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using receiver;
 using SkiaSharp;
 using viewer.ViewModels;
@@ -64,8 +66,8 @@ public partial class MainWindow : Window
             Height = screenHeight * vm.PercentHeight;
         }
 
-        //SessionPicker.ItemsSource = new string[]
-        //{"cat", "camel", "cow", "chameleon", "mouse", "lion", "zebra" }.OrderBy(x => x);
+        SessionPicker.ItemsSource = new string[]
+        {"cat", "camel", "cow", "chameleon", "mouse", "lion", "zebra" }.OrderBy(x => x);
 
         ThemeSwitch.Content = ThemeSwitchText;
     }
@@ -74,8 +76,8 @@ public partial class MainWindow : Window
     {
         if (IPAddress.TryParse($"{IpInput.Text}.{IpInput1.Text}.{IpInput2.Text}.{IpInput3.Text}", out mcastIP) && ushort.TryParse(PortInput.Text, out mcastPort))
         {
-            Page1.IsVisible = false;
-            Page2.IsVisible = true;
+            FormPage.IsVisible = false;
+            ViewPage.IsVisible = true;
             receivingTask = Task.Run(ReceiveBitmap);
             await receivingTask;
         }
@@ -88,8 +90,8 @@ public partial class MainWindow : Window
 
     private void Cancel_OnClick(object? sender, RoutedEventArgs e)
     {
-        Page1.IsVisible = true;
-        Page2.IsVisible = false;
+        FormPage.IsVisible = true;
+        ViewPage.IsVisible = false;
         SetWindowNormal();
     }
 

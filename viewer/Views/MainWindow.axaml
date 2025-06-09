@@ -17,53 +17,94 @@
 
     <Border Classes="window">
         <Grid>
-            <Grid Name="Page1" RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="True">
+            <!--#region FORM PAGE-->
+            <Grid Name="FormPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
+                <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
                         <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
                         <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
                     </StackPanel>
                 </Border>
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center">
-                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                <!--#endregion-->
+
+                <!--#region FORM-->
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center" IsVisible="False">
+                    <ListBox Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 1*, 1*, 1*, 1*">
                                 <Label Classes="roundedMin" Content="IP" Grid.Column="0"/>
-                                <TextBox Name="IpInput" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="1"/>
-                                <TextBox Name="IpInput1" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="2"/>
-                                <TextBox Name="IpInput2" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="3"/>
-                                <TextBox Name="IpInput3" Classes="roundedMin" Watermark="255" MaxLength="3" Grid.Column="4"/>
+                                <TextBox Name="IpInput" Classes="ipInput" Grid.Column="1"/>
+                                <TextBox Name="IpInput1" Classes="ipInput" Grid.Column="2"/>
+                                <TextBox Name="IpInput2" Classes="ipInput" Grid.Column="3"/>
+                                <TextBox Name="IpInput3" Classes="ipInput" Grid.Column="4"/>
                             </Grid>
                         </ListBoxItem>
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 4*">
                                 <Label Classes="roundedMin" Content="Port" Grid.Column="0"/>
-                                <TextBox Name="PortInput" Classes="roundedMin" Watermark="65535" MaxLength="5" Grid.Column="1"/>
+                                <TextBox Name="PortInput" Classes="portInput" Grid.Column="1"/>
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
                     <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
                 </Grid>
+                <!--#endregion-->
             </Grid>
-            <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
+            <!--#endregion-->
+
+            <!--#region List PAGE-->
+            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
+                <!--#region HEADER-->
+                <Border Classes="header" Grid.Row="0">
+                    <StackPanel Classes="title">
+                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                    </StackPanel>
+                </Border>
+                <!--#endregion-->
+                
+                <!--#region List-->
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1" VerticalAlignment="Center">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle"/>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
+                </Grid>
+                <!--#endregion-->
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region VIEW PAGE-->
+            <Grid Name="ViewPage" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
+                <!--#region HEADER-->
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
+                <!--#endregion-->
+
+                <!--#region SCREENVIEW-->
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
                         <Image Name="ScreenViewImage"/>
                     </Border>
                 </Grid>
+                <!--#endregion-->
+
+                <!--#region BUTTONS-->
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
                     <Button Classes="roundedMax" Content="Audio" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
                         <Path Data="{DynamicResource AudioImage}"/>
                     </Button>
+
                     <Button Classes="cancelButton roundedMax" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center">
                         <Path Data="{DynamicResource CancelImage}"/>
                     </Button>
+                    
                     <Button Classes="roundedMax" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
                         <Path Data="{DynamicResource ExpandImage}"/>
                     </Button>
                 </Grid>
+                <!--#endregion-->
             </Grid>
+            <!--#endregion-->
+
             <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
         </Grid>
     </Border>
