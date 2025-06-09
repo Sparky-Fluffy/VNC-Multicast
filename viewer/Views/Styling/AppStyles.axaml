@@ -130,7 +130,15 @@
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MaxWidth" Value="500"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
-    <Setter Property="Padding" Value="10"/>
+    <Setter Property="Padding" Value="10 10 10 50"/>
+
+    <Style Selector="^ /template/ ScrollContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="AliceBlue"/>
+    </Style>
+
+    <Style Selector="^#SessionPicker">
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </Style>
 </Style>
 
 <Style Selector="ListBoxItem">
@@ -140,7 +148,6 @@
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Margin" Value="0 0 0 10"/>
     <Setter Property="Padding" Value="10"/>
-    <Setter Property="ClipToBounds" Value="False"/>
 
     <Style Selector="^.form">
         <Setter Property="FontWeight" Value="DemiBold"/>

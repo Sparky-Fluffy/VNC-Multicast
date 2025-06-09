@@ -29,32 +29,32 @@
                 <!--#endregion-->
 
                 <!--#region FORM-->
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center" IsVisible="False">
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center">
                     <ListBox Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 1*, 1*, 1*, 1*">
                                 <Label Classes="roundedMin" Content="IP" Grid.Column="0"/>
-                                <TextBox Name="IpInput" Classes="ipInput" Grid.Column="1"/>
-                                <TextBox Name="IpInput1" Classes="ipInput" Grid.Column="2"/>
-                                <TextBox Name="IpInput2" Classes="ipInput" Grid.Column="3"/>
-                                <TextBox Name="IpInput3" Classes="ipInput" Grid.Column="4"/>
+                                <TextBox Name="IpInput" Classes="ipInput" Text="{Binding IpParts[0]}" Grid.Column="1"/>
+                                <TextBox Name="IpInput1" Classes="ipInput" Text="{Binding IpParts[1]}" Grid.Column="2"/>
+                                <TextBox Name="IpInput2" Classes="ipInput" Text="{Binding IpParts[2]}" Grid.Column="3"/>
+                                <TextBox Name="IpInput3" Classes="ipInput" Text="{Binding IpParts[3]}" Grid.Column="4"/>
                             </Grid>
                         </ListBoxItem>
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 4*">
                                 <Label Classes="roundedMin" Content="Port" Grid.Column="0"/>
-                                <TextBox Name="PortInput" Classes="portInput" Grid.Column="1"/>
+                                <TextBox Name="PortInput" Classes="portInput" Text="{Binding McastPortString}" Grid.Column="1"/>
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Command="{Binding Select}"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
             <!--#endregion-->
 
             <!--#region List PAGE-->
-            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
+            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="False">
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -65,9 +65,25 @@
                 <!--#endregion-->
                 
                 <!--#region List-->
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1" VerticalAlignment="Center">
-                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle"/>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick"/>
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle" ItemsSource="{Binding ListItems}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock HorizontalAlignment="Right">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0}:{1}">
+                                                <Binding Path="Ip"/>
+                                                <Binding Path="Port"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Command="{Binding Select}"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
@@ -109,8 +125,3 @@
         </Grid>
     </Border>
 </Window>
-
-<!-- <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1" VerticalAlignment="Center">
-    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
-    </ListBox>
-</Grid> -->
