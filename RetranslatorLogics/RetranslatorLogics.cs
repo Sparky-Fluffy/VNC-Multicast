@@ -76,8 +76,7 @@ public class Retranslator
 
     public ushort ScreenWidth { get; private set; } = 0;
     public ushort ScreenHeight { get; private set; } = 0;
-    private ushort rectWidth = 0;
-    private ushort rectHeight = 0;
+    private int bufferSize = 0;
     public byte Bpp { get; private set; } = 0;
     private byte[] screenBoundsMsg = [(byte)McastMessageType.ScreenBounds, 0, 0, 0, 0];
     private byte[] rectXYMsg = [(byte)McastMessageType.RectXY, 0, 0, 0, 0];
@@ -270,7 +269,6 @@ public class Retranslator
             socket.Receive(countRects, countRects.Length, 0);
             numberOfRectangles = (ushort)(countRects[3] + (ushort)(countRects[2] << 8));
 
-            int buf = 0;
             while (numberOfRectangles-- > 0)
             {
                 //Print("aaaaaaa");
@@ -278,23 +276,21 @@ public class Retranslator
                 socket.Receive(rectBoundsMsg, 1, 4, 0);
                 socket.Receive(encodingMsg);
 
-                rectWidth = (ushort)(rectBoundsMsg[2] + (ushort)(rectBoundsMsg[1] << 8));
-                rectHeight = (ushort)(rectBoundsMsg[4] + (ushort)(rectBoundsMsg[3] << 8));
-                buf = rectWidth * rectHeight;
+                bufferSize = (ushort)(rectBoundsMsg[2] + (ushort)(rectBoundsMsg[1] << 8)) * (ushort)(rectBoundsMsg[4] + (ushort)(rectBoundsMsg[3] << 8));
 #if DEBUG
-                Print("Rect width x height: ", $"{rectWidth}x{rectHeight}");
+                //Print("Rect width x height: ", $"{rectWidth}x{rectHeight}");
                 //Print("Rect XY: ", rectXYMsg);
-                //Print("Rect bounds: ", rectBoundsMsg);
+                Print("Rect bounds: ", rectBoundsMsg);
 #endif
                 //socket.Receive(pixelData, buf, 0);
-                multicastSocket.SendTo(screenBoundsMsg, endPoint);
-                multicastSocket.SendTo(rectXYMsg, endPoint);
-                multicastSocket.SendTo(rectBoundsMsg, endPoint);
-                multicastSocket.SendTo(pixelFormatMsg, endPoint);
-                while (buf-- > 0)
+                multicastSocket.SendTo(screenBoundsMsg, 5, 0, endPoint);
+                multicastSocket.SendTo(rectXYMsg, 5, 0, endPoint);
+                multicastSocket.SendTo(rectBoundsMsg, 5, 0, endPoint);
+                multicastSocket.SendTo(pixelFormatMsg, 5, 0, endPoint);
+                while (bufferSize-- > 0)
                 {
                     socket.Receive(pixelValueMsg, 1, 4, 0);
-                    multicastSocket.SendTo(pixelValueMsg, endPoint);
+                    multicastSocket.SendTo(pixelValueMsg, 5, 0, endPoint);
                 }
                 // Task.Run
                 // (
