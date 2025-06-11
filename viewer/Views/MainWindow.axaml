@@ -18,7 +18,8 @@
     <Border Classes="window">
         <Grid>
             <!--#region FORM PAGE-->
-            <Grid Name="FormPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0">
+            <Grid Name="FormPage" RowDefinitions="Auto, *" Classes="body"
+            Grid.Row="0" IsVisible="{Binding PartsVisible[0]}">
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -47,14 +48,16 @@
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Command="{Binding Select}"/>
+                    <Button Classes="selectButton rounded" Content="SELECT"
+                    Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
             <!--#endregion-->
 
             <!--#region List PAGE-->
-            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="False">
+            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body"
+            Grid.Row="0" IsVisible="{Binding PartsVisible[1]}">
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -83,14 +86,16 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Command="{Binding Select}"/>
+                    <Button Classes="selectButton rounded" Content="SELECT"
+                    Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
             <!--#endregion-->
 
             <!--#region VIEW PAGE-->
-            <Grid Name="ViewPage" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
+            <Grid Name="ViewPage" RowDefinitions="Auto, *, Auto" Classes="body"
+            Grid.Row="1" IsVisible="{Binding PartsVisible[2]}">
                 <!--#region HEADER-->
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
                 <!--#endregion-->
@@ -109,7 +114,8 @@
                         <Path Data="{DynamicResource AudioImage}"/>
                     </Button>
 
-                    <Button Classes="cancelButton roundedMax" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center">
+                    <Button Classes="cancelButton roundedMax" Content="Cancel"
+                    Click="Cancel_OnClick" Command="{Binding CancelSession}" Grid.Column="2" HorizontalAlignment="Center">
                         <Path Data="{DynamicResource CancelImage}"/>
                     </Button>
                     

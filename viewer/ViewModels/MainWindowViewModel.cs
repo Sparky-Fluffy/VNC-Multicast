@@ -22,8 +22,16 @@ public partial class MainWindowViewModel : ViewModelBase
     public string AppTitleSecond => "Viewer";
     public int AppTitleFontSize => 0;
 
-    public double PercentWidth { get => percentWidth; set => percentWidth = value; }
-    public double PercentHeight { get => percentHeight; set => percentHeight = value; }
+    public double PercentWidth
+    {
+        get => percentWidth;
+        set => percentWidth = value;
+    }
+    public double PercentHeight
+    {
+        get => percentHeight;
+        set => percentHeight = value;
+    }
 
     private ObservableCollection<string> ipParts;
     public ObservableCollection<string> IpParts
@@ -48,21 +56,22 @@ public partial class MainWindowViewModel : ViewModelBase
     public string McastPortString
     {
         get => mcastPortString;
-        set => this.RaiseAndSetIfChanged(ref mcastPortString,  value);
+        set => this.RaiseAndSetIfChanged(ref mcastPortString, value);
     }
 
-    private string isVisible;
+    private ObservableCollection<bool> partsVisible;
 
-    public string IsVisible
+    public ObservableCollection<bool> PartsVisible
     {
-        get => isVisible;
-        set => this.RaiseAndSetIfChanged(ref isVisible, value);
+        get => partsVisible;
+        set => this.RaiseAndSetIfChanged(ref partsVisible, value);
     }
 
     public MainWindowViewModel()
     {
         ListItems = FetchItems();
         IpParts = new ObservableCollection<string> { "", "", "", "" };
+        PartsVisible = new ObservableCollection<bool> { true, false, false };
     }
 
     public ObservableCollection<AddressHolder> FetchItems()
@@ -71,22 +80,29 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             new AddressHolder
             {
-                Name = "aaaa",
-                Ip = "127.0.0.1",
-                Port = 1111
+                Name = "teacher_main",
+                Ip = "239.0.0.0",
+                Port = 8001
             }
         };
     }
 
-    public void Select()
+    public async void SelectSession()
     {
         if (IPAddress.TryParse($"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}", out mcastIP) && ushort.TryParse(McastPortString, out mcastPort))
         {
-            //FormPage.IsVisible = false;
-            //ViewPage.IsVisible = true;
-            //receivingTask = Task.Run(ReceiveBitmap);
-            //await receivingTask;
+            PartsVisible[0] = false;
+            PartsVisible[1] = false;
+            PartsVisible[2] = true;
+            receivingTask = Task.Run(ReceiveBitmap);
+            await receivingTask;
         }
+    }
+
+    public void CancelSession()
+    {
+        PartsVisible[1] = true;
+        PartsVisible[2] = false;
     }
     
     private async Task ReceiveBitmap()

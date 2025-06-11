@@ -52,8 +52,6 @@ public partial class MainWindow : Window
 
     private void Cancel_OnClick(object? sender, RoutedEventArgs e)
     {
-        FormPage.IsVisible = true;
-        ViewPage.IsVisible = false;
         SetWindowNormal();
     }
 
