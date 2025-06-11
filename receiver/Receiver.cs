@@ -38,7 +38,7 @@ public class Receiver
         (
             multicastGroupAddress, IPAddress.Any
         );
-
+        mcastOption.InterfaceIndex = 1;
         multicastSocket.SetSocketOption
         (
             SocketOptionLevel.IP, SocketOptionName.AddMembership, mcastOption

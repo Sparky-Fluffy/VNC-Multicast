@@ -103,7 +103,8 @@
                 <!--#region SCREENVIEW-->
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
-                        <Image Name="ScreenViewImage"/>
+                        <Image Name="ScreenViewImage" Source="{Binding
+                        ScreenImage}"/>
                     </Border>
                 </Grid>
                 <!--#endregion-->

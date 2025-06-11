@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Net;
 using System.Reactive;
 using System.Runtime.InteropServices;
@@ -10,6 +11,8 @@ using Avalonia.Media.Imaging;
 using ReactiveUI;
 using receiver;
 using SkiaSharp;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace viewer.ViewModels;
 
@@ -48,6 +51,11 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     private Bitmap? screenViewBitmap;
+    public Bitmap? ScreenImage
+    {
+        get => screenViewBitmap;
+        set => this.RaiseAndSetIfChanged(ref screenViewBitmap, value);
+    }
     private Task? receivingTask;
 
     private IPAddress mcastIP;
@@ -94,8 +102,30 @@ public partial class MainWindowViewModel : ViewModelBase
             PartsVisible[0] = false;
             PartsVisible[1] = false;
             PartsVisible[2] = true;
+            string path = @"addresses.json";
+            if (!HasJson(path)) CreateJson(path);
+
+            JObject f = JObject.Parse(File.ReadAllText(path));
+            JArray addressList = new JArray();
+            JObject address = (JObject)JToken.FromObject(new AddressHolder
+                    { Name = "teacher_main", Ip = mcastIP.ToString(), Port = mcastPort });
+            addressList.Add(address);
+            f["addr-list"] = addressList; 
+            File.WriteAllText(path, f.ToString());
             receivingTask = Task.Run(ReceiveBitmap);
             await receivingTask;
+        }
+    }
+
+    private bool HasJson(string path) => File.Exists(path) && File.ReadAllText(path) != string.Empty;
+
+    private void CreateJson(string path)
+    {
+        using (FileStream fs = File.Create(path))
+        {
+            Byte[] info =
+                new UTF8Encoding(true).GetBytes(@"{}");
+            fs.Write(info, 0, info.Length);
         }
     }
 
