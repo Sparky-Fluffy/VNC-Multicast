@@ -1,9 +1,0 @@
-{
-  "addr-list": [
-    {
-      "Name": "teacher_main",
-      "Ip": "239.0.0.0",
-      "Port": 8001
-    }
-  ]
-}
