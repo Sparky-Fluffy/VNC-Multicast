@@ -19,7 +19,7 @@
         <Grid>
             <!--#region FORM PAGE-->
             <Grid Name="FormPage" RowDefinitions="Auto, *" Classes="body"
-            Grid.Row="0" IsVisible="{Binding PartsVisible[0]}">
+            Grid.Row="0" IsVisible="{Binding PagesVisible[0]}">
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -48,8 +48,8 @@
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT"
-                    Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
+                    <Button Classes="selectButton rounded" Content="ADD"
+                    Grid.Row="1" Grid.Column="1" Command="{Binding AddSession}"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
@@ -57,7 +57,7 @@
 
             <!--#region List PAGE-->
             <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body"
-            Grid.Row="0" IsVisible="{Binding PartsVisible[1]}">
+            Grid.Row="0" IsVisible="{Binding PagesVisible[1]}">
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
@@ -69,19 +69,12 @@
                 
                 <!--#region List-->
                 <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1">
-                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle" ItemsSource="{Binding ListItems}">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle" ItemsSource="{Binding ListItems}" SelectedItem="{Binding SelectedListItem}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <TextBlock Text="{Binding Name}"/>
-                                    <TextBlock HorizontalAlignment="Right">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}:{1}">
-                                                <Binding Path="Ip"/>
-                                                <Binding Path="Port"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
+                                    <TextBlock Text="{Binding Ip}"/>
+                                    <TextBlock Text="{Binding Port}" HorizontalAlignment="Right"/>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -95,7 +88,7 @@
 
             <!--#region VIEW PAGE-->
             <Grid Name="ViewPage" RowDefinitions="Auto, *, Auto" Classes="body"
-            Grid.Row="1" IsVisible="{Binding PartsVisible[2]}">
+            Grid.Row="1" IsVisible="{Binding PagesVisible[2]}">
                 <!--#region HEADER-->
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
                 <!--#endregion-->
@@ -129,6 +122,21 @@
             <!--#endregion-->
 
             <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
+
+            <StackPanel Name="ListButtons">
+                <Button Classes="rounded" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[0]}">
+                    <Path Data="{DynamicResource ReturnImage}"/>
+                </Button>
+                <Button Classes="rounded" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[1]}">
+                    <Path Data="{DynamicResource ReloadImage}"/>
+                </Button>
+                <Button Classes="rounded" Command="{Binding OpenNewSessionForm}" IsVisible="{Binding ListButtonsVisible[2]}">
+                    <Path Data="{DynamicResource PlusImage}"/>
+                </Button>
+                <Button Classes="rounded cancelButton" Command="{Binding DeleteSession}" IsVisible="{Binding ListButtonsVisible[2]}">
+                    <Path Data="{DynamicResource DeleteImage}"/>
+                </Button>
+            </StackPanel>
         </Grid>
     </Border>
 </Window>
