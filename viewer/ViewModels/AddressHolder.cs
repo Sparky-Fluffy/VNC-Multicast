@@ -4,14 +4,8 @@ namespace viewer.ViewModels;
 
 public class AddressHolder : ObservableObject
 {
-    private string name, ip;
-    private ushort port;
-
-    public string Name
-    {
-        get => name;
-        set => SetProperty(ref name, value);
-    }
+    private string ip = "";
+    private ushort port = 0;
 
     public string Ip
     {

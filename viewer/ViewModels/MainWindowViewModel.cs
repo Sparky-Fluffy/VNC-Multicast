@@ -13,52 +13,58 @@ using receiver;
 using SkiaSharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Threading;
 
 namespace viewer.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    #region APP PARAMETERS
+
     private double percentWidth = 0.5;
-    private double percentHeight = 0.7;
-
-    public string AppTitleFirst => "VNC";
-    public string AppTitleSecond => "Viewer";
-    public int AppTitleFontSize => 0;
-
     public double PercentWidth
     {
         get => percentWidth;
         set => percentWidth = value;
     }
+
+    private double percentHeight = 0.7;
     public double PercentHeight
     {
         get => percentHeight;
         set => percentHeight = value;
     }
 
+    public string AppTitleFirst => "VNC";
+    public string AppTitleSecond => "Viewer";
+    public int AppTitleFontSize => 0;
+
+    #endregion
+
+    #region PAGES PARAMETERS
+
+    private ObservableCollection<bool> pagesVisible;
+    public ObservableCollection<bool> PagesVisible
+    {
+        get => pagesVisible;
+        set => this.RaiseAndSetIfChanged(ref pagesVisible, value);
+    }
+
+    #endregion
+
+    #region FORM VARIABLES
+
+    private IPAddress mcastIP;
     private ObservableCollection<string> ipParts;
     public ObservableCollection<string> IpParts
     {
         get => ipParts;
         set => this.RaiseAndSetIfChanged(ref ipParts, value);
     }
-    
-    private ObservableCollection<AddressHolder> listItems;
-    public ObservableCollection<AddressHolder> ListItems
-    {
-        get => listItems;
-        set => this.RaiseAndSetIfChanged(ref listItems, value);
-    }
 
-    private Bitmap? screenViewBitmap;
-    public Bitmap? ScreenImage
-    {
-        get => screenViewBitmap;
-        set => this.RaiseAndSetIfChanged(ref screenViewBitmap, value);
-    }
-    private Task? receivingTask;
-
-    private IPAddress mcastIP;
     private ushort mcastPort;
     private string mcastPortString;
     public string McastPortString
@@ -67,79 +73,302 @@ public partial class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref mcastPortString, value);
     }
 
-    private ObservableCollection<bool> partsVisible;
+    #endregion
 
-    public ObservableCollection<bool> PartsVisible
+    #region LIST VARIABLES
+
+    private AddressHolder selectedListItem;
+    public AddressHolder SelectedListItem
     {
-        get => partsVisible;
-        set => this.RaiseAndSetIfChanged(ref partsVisible, value);
+        get => selectedListItem;
+        set => this.RaiseAndSetIfChanged(ref selectedListItem, value);
     }
+
+    private ObservableCollection<AddressHolder> listItems;
+    public ObservableCollection<AddressHolder> ListItems
+    {
+        get => listItems;
+        set => this.RaiseAndSetIfChanged(ref listItems, value);
+    }
+
+    private ObservableCollection<bool> listButtonsVisible;
+    public ObservableCollection<bool> ListButtonsVisible
+    {
+        get => listButtonsVisible;
+        set => this.RaiseAndSetIfChanged(ref listButtonsVisible, value);
+    }
+
+    #endregion
+
+    #region SCREENVIEW VARIABLES
+
+    private Task? receivingTask;
+    private CancellationTokenSource tokenSrc = new CancellationTokenSource();
+    private CancellationToken cancelToken;
+
+    private Bitmap? screenViewBitmap;
+    public Bitmap? ScreenImage
+    {
+        get => screenViewBitmap;
+        set => this.RaiseAndSetIfChanged(ref screenViewBitmap, value);
+    }
+
+    #endregion
+
+    #region COMMANDS
+
+    public ReactiveCommand<Unit, Unit> SelectSession { get; }
+    public ReactiveCommand<Unit, Unit> AddSession { get; }
+    public ReactiveCommand<Unit, Unit> DeleteSession { get; }
+
+    #endregion
+
+    private string jsonPath = @"addresses.json";
 
     public MainWindowViewModel()
     {
-        ListItems = FetchItems();
+        PagesVisible = new ObservableCollection<bool> { false, false, false };
+        ListButtonsVisible = new ObservableCollection<bool> { false, false, false, false };
         IpParts = new ObservableCollection<string> { "", "", "", "" };
-        PartsVisible = new ObservableCollection<bool> { true, false, false };
+
+        cancelToken = tokenSrc.Token;
+
+        IObservable<bool> isFilledForm = this.WhenAnyValue
+        (
+            x => x.IpParts[0],
+            x => x.IpParts[1],
+            x => x.IpParts[2],
+            x => x.IpParts[3],
+            x => x.McastPortString,
+            (ip0_s, ip1_s, ip2_s, ip3_s, port_s) =>
+                byte.TryParse(ip0_s, out byte ip0) &&
+                ip0 >= 224 && ip0 <= 239 &&
+                byte.TryParse(ip1_s, out _) &&
+                byte.TryParse(ip2_s, out _) &&
+                byte.TryParse(ip3_s, out _) &&
+                ushort.TryParse(port_s, out ushort port) &&
+                port >= 1024
+        );
+
+        AddSession = ReactiveCommand.Create(Add, isFilledForm);
+
+        IObservable<bool> isSelected =
+            this.WhenAnyValue<MainWindowViewModel, bool, AddressHolder>
+            (
+                x => x.SelectedListItem,
+                x => x != null
+            );
+
+        SelectSession = ReactiveCommand.Create(Select, isSelected);
+        DeleteSession = ReactiveCommand.Create(Delete, isSelected);
+
+        UpdateSessionList();
     }
 
-    public ObservableCollection<AddressHolder> FetchItems()
+    #region MAIN METHODS
+
+    private void Add()
     {
-        return new ObservableCollection<AddressHolder>
+        if (IPAddress.TryParse($"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}", out mcastIP)
+            && ushort.TryParse(McastPortString, out mcastPort))
         {
-            new AddressHolder
+            IpParts = new ObservableCollection<string> { "", "", "", "" };
+            McastPortString = "";
+
+            JObject? mainNode = null;
+            JArray? addressList = null;
+
+            FileStream? file = null;
+
+            if (!File.Exists(jsonPath))
             {
-                Name = "teacher_main",
-                Ip = "239.0.0.0",
-                Port = 8001
+                file = File.Create(jsonPath);
+                file?.Close();
             }
-        };
-    }
 
-    public async void SelectSession()
-    {
-        if (IPAddress.TryParse($"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}", out mcastIP) && ushort.TryParse(McastPortString, out mcastPort))
-        {
-            PartsVisible[0] = false;
-            PartsVisible[1] = false;
-            PartsVisible[2] = true;
-            string path = @"addresses.json";
-            if (!HasJson(path)) CreateJson(path);
+            else mainNode = TryParseJson(jsonPath);
 
-            JObject f = JObject.Parse(File.ReadAllText(path));
-            JArray addressList = new JArray();
-            JObject address = (JObject)JToken.FromObject(new AddressHolder
-                    { Name = "teacher_main", Ip = mcastIP.ToString(), Port = mcastPort });
-            addressList.Add(address);
-            f["addr-list"] = addressList; 
-            File.WriteAllText(path, f.ToString());
-            receivingTask = Task.Run(ReceiveBitmap);
-            await receivingTask;
+            if (mainNode == null) mainNode = new JObject();
+            else addressList = (JArray?)mainNode["addr-list"];
+
+            if (addressList == null) addressList = new JArray();
+
+            addressList.Add
+            (
+                (JObject)JToken.FromObject
+                (
+                    new AddressHolder
+                    {
+                        Ip = mcastIP.ToString(),
+                        Port = mcastPort
+                    }
+                )
+            );
+
+            mainNode["addr-list"] = addressList;
+
+            File.WriteAllText(jsonPath, mainNode.ToString());
+
+            StartSession();
         }
     }
 
-    private bool HasJson(string path) => File.Exists(path) && File.ReadAllText(path) != string.Empty;
-
-    private void CreateJson(string path)
+    private void Select()
     {
-        using (FileStream fs = File.Create(path))
+        mcastIP = IPAddress.Parse(selectedListItem.Ip);
+        mcastPort = selectedListItem.Port;
+
+        StartSession();
+    }
+
+    private void Delete()
+    {
+        if (File.Exists(jsonPath))
         {
-            Byte[] info =
-                new UTF8Encoding(true).GetBytes(@"{}");
-            fs.Write(info, 0, info.Length);
+            JObject? mainNode = null;
+            JArray? addressList = null;
+            mainNode = TryParseJson(jsonPath);
+            addressList = (JArray?)mainNode?["addr-list"];
+            if (addressList != null)
+            {
+                JToken t = JToken.FromObject(SelectedListItem);
+                int index = -1;
+                for (int i = 0; i < addressList.Count; i++)
+                {
+                    if ((string?)addressList[i]["Ip"] == (string)t["Ip"] &&
+                        (ushort?)addressList[i]["Port"] == (ushort)t["Port"])
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                addressList.RemoveAt(index);
+                mainNode["addr-list"] = addressList;
+                File.WriteAllText(jsonPath, mainNode.ToString());
+            }
         }
+        UpdateSessionList();
+    }
+
+    public void OpenNewSessionForm()
+    {
+        SetVisible(ref listButtonsVisible, 0);
+        SetPage(0);
+    }
+
+    private async void StartSession()
+    {
+        SetVisible(ref listButtonsVisible, -1);
+        SetPage(2);
+
+        tokenSrc = new CancellationTokenSource();
+        cancelToken = tokenSrc.Token;
+
+        receivingTask = Task.Run(ReceiveBitmap, cancelToken);
+        await receivingTask;
     }
 
     public void CancelSession()
     {
-        PartsVisible[1] = true;
-        PartsVisible[2] = false;
+        tokenSrc.Cancel();
+        tokenSrc.Dispose();
+        UpdateSessionList();
     }
-    
+
+    public void UpdateSessionList()
+    {
+        if (TryFetchAddresses())
+        {
+            SetVisible(ref listButtonsVisible, 0, true);
+            SetPage(1);
+            return;
+        }
+
+        SetVisible(ref listButtonsVisible, 1);
+        SetPage(0);
+        ListItems = new ObservableCollection<AddressHolder>();
+    }
+
+    public void SetPage(sbyte index)
+    {
+        SetVisible(ref pagesVisible, index);
+    }
+
+    private void SetVisible
+    (
+        ref ObservableCollection<bool> boolSheet,
+        sbyte index, bool isReverse = false
+    )
+    {
+        for (byte i = 0; i < boolSheet.Count; i++)
+        {
+            if (i == index)
+            {
+                boolSheet[i] = !isReverse;
+                continue;
+            }
+            boolSheet[i] = isReverse;
+        }
+    }
+
+    #endregion
+
+    #region JSON METHODS
+
+    private JObject? TryParseJson(string path)
+    {
+        try { return JObject.Parse(File.ReadAllText(path)); }
+        catch { return null; }
+    }
+
+    private bool TryFetchAddresses()
+    {
+        if (!File.Exists(jsonPath)) return false;
+
+        JObject? mainNode = null;
+        mainNode = TryParseJson(jsonPath);
+        if (mainNode == null) return false;
+
+        JArray? addressList = (JArray?)mainNode["addr-list"];
+        if (addressList == null) return false;
+
+        if (addressList?.Count < 1) return false;
+
+        ListItems = new ObservableCollection<AddressHolder>
+        (
+            addressList
+            .Where(a => a["Ip"] != null && a["Port"] != null)
+            .Select
+            (
+                a => new AddressHolder
+                {
+                    Ip = (string)a["Ip"],
+                    Port = (ushort)a["Port"],
+                }
+            )
+        );
+        return true;
+    }
+
+    #endregion
+
+    #region SESSION METHODS
+
     private async Task ReceiveBitmap()
     {
         try
         {
+            cancelToken.ThrowIfCancellationRequested();
+
             Receiver receiver = new Receiver(mcastIP, mcastPort);
+            cancelToken.Register(receiver.Close);
+
+            if (cancelToken.IsCancellationRequested)
+            {
+                receiver.Close();
+                cancelToken.ThrowIfCancellationRequested();
+            }
 
             int W = 0;
             int H = 0;
@@ -158,6 +387,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
             while (true)
             {
+                if (cancelToken.IsCancellationRequested)
+                {
+                    receiver.Close();
+                    cancelToken.ThrowIfCancellationRequested();
+                }
+
                 receiver.ReceiveRectData();
 
                 W = receiver.rectWidth * 10;
@@ -172,20 +407,42 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 pixels = bitmap.GetPixels();
 
+                if (cancelToken.IsCancellationRequested)
+                {
+                    receiver.Close();
+                    cancelToken.ThrowIfCancellationRequested();
+                }
+
                 receiver.ReceivePixels();
+
                 SetPixels(p * (y * W + x), pixelData, pixels);
 
                 iter = H * (10 - x / receiver.rectWidth) - y;
 
                 while (iter-- > 1)
                 {
+                    if (cancelToken.IsCancellationRequested)
+                    {
+                        receiver.Close();
+                        cancelToken.ThrowIfCancellationRequested();
+                    }
+
                     receiver.ReceiveRectData();
+
+                    if (cancelToken.IsCancellationRequested)
+                    {
+                        receiver.Close();
+                        cancelToken.ThrowIfCancellationRequested();
+                    }
+
                     receiver.ReceivePixels();
+
                     SetPixels(p * (y * W + x), pixelData, pixels);
                 }
 
                 using (enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
                 {
+
                     using (ms = new MemoryStream())
                     {
                         enc.SaveTo(ms);
@@ -205,4 +462,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Marshal.Copy(pixels, 0, pixelsDest + offset, pixels.Length);
     }
+
+    #endregion
 }

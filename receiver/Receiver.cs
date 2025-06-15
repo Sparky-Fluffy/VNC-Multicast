@@ -33,7 +33,7 @@ public class Receiver
         endPoint = new IPEndPoint(IPAddress.Any, port);
 
         multicastSocket.Bind(endPoint);
-        
+
         MulticastOption mcastOption = new MulticastOption
         (
             multicastGroupAddress, IPAddress.Any
@@ -76,4 +76,11 @@ public class Receiver
     }
 
     public void ReceivePixels() => multicastSocket.ReceiveAsync(pixelData);
+
+    public void Close()
+    {
+        multicastSocket.Shutdown(SocketShutdown.Receive);
+        multicastSocket.Close();
+        multicastSocket.Dispose();
+    }
 }
