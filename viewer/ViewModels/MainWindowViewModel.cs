@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Net;
 using System.Reactive;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using ReactiveUI;
-using receiver;
-using SkiaSharp;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Threading;
 
 namespace viewer.ViewModels;
 
@@ -102,10 +90,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #region SCREENVIEW VARIABLES
 
-    private Task? receivingTask;
-    private CancellationTokenSource tokenSrc = new CancellationTokenSource();
-    private CancellationToken cancelToken;
-
+    private Session mainSession;
     private Bitmap? screenViewBitmap;
     public Bitmap? ScreenImage
     {
@@ -130,8 +115,6 @@ public partial class MainWindowViewModel : ViewModelBase
         PagesVisible = new ObservableCollection<bool> { false, false, false };
         ListButtonsVisible = new ObservableCollection<bool> { false, false, false, false };
         IpParts = new ObservableCollection<string> { "", "", "", "" };
-
-        cancelToken = tokenSrc.Token;
 
         IObservable<bool> isFilledForm = this.WhenAnyValue
         (
@@ -162,6 +145,8 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectSession = ReactiveCommand.Create(Select, isSelected);
         DeleteSession = ReactiveCommand.Create(Delete, isSelected);
 
+        mainSession = new Session(ref screenViewBitmap);
+
         UpdateSessionList();
     }
 
@@ -175,40 +160,7 @@ public partial class MainWindowViewModel : ViewModelBase
             IpParts = new ObservableCollection<string> { "", "", "", "" };
             McastPortString = "";
 
-            JObject? mainNode = null;
-            JArray? addressList = null;
-
-            FileStream? file = null;
-
-            if (!File.Exists(jsonPath))
-            {
-                file = File.Create(jsonPath);
-                file?.Close();
-            }
-
-            else mainNode = TryParseJson(jsonPath);
-
-            if (mainNode == null) mainNode = new JObject();
-            else addressList = (JArray?)mainNode["addr-list"];
-
-            if (addressList == null) addressList = new JArray();
-
-            addressList.Add
-            (
-                (JObject)JToken.FromObject
-                (
-                    new AddressHolder
-                    {
-                        Ip = mcastIP.ToString(),
-                        Port = mcastPort
-                    }
-                )
-            );
-
-            mainNode["addr-list"] = addressList;
-
-            File.WriteAllText(jsonPath, mainNode.ToString());
-
+            JsonManager.Add(jsonPath, mcastIP, mcastPort);
             StartSession();
         }
     }
@@ -223,31 +175,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Delete()
     {
-        if (File.Exists(jsonPath))
-        {
-            JObject? mainNode = null;
-            JArray? addressList = null;
-            mainNode = TryParseJson(jsonPath);
-            addressList = (JArray?)mainNode?["addr-list"];
-            if (addressList != null)
-            {
-                JToken t = JToken.FromObject(SelectedListItem);
-                int index = -1;
-                for (int i = 0; i < addressList.Count; i++)
-                {
-                    if ((string?)addressList[i]["Ip"] == (string)t["Ip"] &&
-                        (ushort?)addressList[i]["Port"] == (ushort)t["Port"])
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-
-                addressList.RemoveAt(index);
-                mainNode["addr-list"] = addressList;
-                File.WriteAllText(jsonPath, mainNode.ToString());
-            }
-        }
+        JsonManager.Delete(jsonPath, SelectedListItem);
         UpdateSessionList();
     }
 
@@ -257,29 +185,24 @@ public partial class MainWindowViewModel : ViewModelBase
         SetPage(0);
     }
 
-    private async void StartSession()
+    private void StartSession()
     {
+        mainSession.Start(mcastIP, mcastPort);
         SetVisible(ref listButtonsVisible, -1);
         SetPage(2);
-
-        tokenSrc = new CancellationTokenSource();
-        cancelToken = tokenSrc.Token;
-
-        receivingTask = Task.Run(ReceiveBitmap, cancelToken);
-        await receivingTask;
     }
 
     public void CancelSession()
     {
-        tokenSrc.Cancel();
-        tokenSrc.Dispose();
+        mainSession.Cancel();
         UpdateSessionList();
     }
 
     public void UpdateSessionList()
     {
-        if (TryFetchAddresses())
+        if (JsonManager.TryFetchAddresses(jsonPath, out IList<AddressHolder> items))
         {
+            ListItems = new ObservableCollection<AddressHolder>(items);
             SetVisible(ref listButtonsVisible, 0, true);
             SetPage(1);
             return;
@@ -310,157 +233,6 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             boolSheet[i] = isReverse;
         }
-    }
-
-    #endregion
-
-    #region JSON METHODS
-
-    private JObject? TryParseJson(string path)
-    {
-        try { return JObject.Parse(File.ReadAllText(path)); }
-        catch { return null; }
-    }
-
-    private bool TryFetchAddresses()
-    {
-        if (!File.Exists(jsonPath)) return false;
-
-        JObject? mainNode = null;
-        mainNode = TryParseJson(jsonPath);
-        if (mainNode == null) return false;
-
-        JArray? addressList = (JArray?)mainNode["addr-list"];
-        if (addressList == null) return false;
-
-        if (addressList?.Count < 1) return false;
-
-        ListItems = new ObservableCollection<AddressHolder>
-        (
-            addressList
-            .Where(a => a["Ip"] != null && a["Port"] != null)
-            .Select
-            (
-                a => new AddressHolder
-                {
-                    Ip = (string)a["Ip"],
-                    Port = (ushort)a["Port"],
-                }
-            )
-        );
-        return true;
-    }
-
-    #endregion
-
-    #region SESSION METHODS
-
-    private async Task ReceiveBitmap()
-    {
-        try
-        {
-            cancelToken.ThrowIfCancellationRequested();
-
-            Receiver receiver = new Receiver(mcastIP, mcastPort);
-            cancelToken.Register(receiver.Close);
-
-            if (cancelToken.IsCancellationRequested)
-            {
-                receiver.Close();
-                cancelToken.ThrowIfCancellationRequested();
-            }
-
-            int W = 0;
-            int H = 0;
-            ref ushort x = ref receiver.rectX;
-            ref ushort y = ref receiver.rectY;
-            ref byte[] pixelData = ref receiver.pixelData;
-            ref byte p = ref receiver.pixelFormat;
-
-            SKBitmap bitmap;
-            SKData enc;
-            MemoryStream ms;
-            nint pixels;
-
-            int iter;
-            int i = 1;
-
-            while (true)
-            {
-                if (cancelToken.IsCancellationRequested)
-                {
-                    receiver.Close();
-                    cancelToken.ThrowIfCancellationRequested();
-                }
-
-                receiver.ReceiveRectData();
-
-                W = receiver.rectWidth * 10;
-                H = receiver.rectHeight * 10;
-
-                bitmap = new SKBitmap
-                (
-                    W, H,
-                    SKColorType.Bgra8888,
-                    SKAlphaType.Premul
-                );
-
-                pixels = bitmap.GetPixels();
-
-                if (cancelToken.IsCancellationRequested)
-                {
-                    receiver.Close();
-                    cancelToken.ThrowIfCancellationRequested();
-                }
-
-                receiver.ReceivePixels();
-
-                SetPixels(p * (y * W + x), pixelData, pixels);
-
-                iter = H * (10 - x / receiver.rectWidth) - y;
-
-                while (iter-- > 1)
-                {
-                    if (cancelToken.IsCancellationRequested)
-                    {
-                        receiver.Close();
-                        cancelToken.ThrowIfCancellationRequested();
-                    }
-
-                    receiver.ReceiveRectData();
-
-                    if (cancelToken.IsCancellationRequested)
-                    {
-                        receiver.Close();
-                        cancelToken.ThrowIfCancellationRequested();
-                    }
-
-                    receiver.ReceivePixels();
-
-                    SetPixels(p * (y * W + x), pixelData, pixels);
-                }
-
-                using (enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
-                {
-
-                    using (ms = new MemoryStream())
-                    {
-                        enc.SaveTo(ms);
-                        ms.Position = 0;
-                        screenViewBitmap = new Bitmap(ms);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-
-    private void SetPixels(int offset, byte[] pixels, nint pixelsDest)
-    {
-        Marshal.Copy(pixels, 0, pixelsDest + offset, pixels.Length);
     }
 
     #endregion
