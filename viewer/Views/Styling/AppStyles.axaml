@@ -192,12 +192,19 @@
         <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
     </Style>
 
-    <Style Selector="^.selectButton">
+    <Style Selector="^.formButton">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="MinWidth" Value="160"/>
         <Setter Property="MaxWidth" Value="340"/>
         <Setter Property="Margin" Value="70 40 70 50"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
+
+        <Style Selector="^.selectButton">
+            <Setter Property="Margin" Value="70 40 70 50"/>
+        </Style>
+        <Style Selector="^.addButton">
+            <Setter Property="Margin" Value="70 12 70 50"/>
+        </Style>
     </Style>
 
     <Style Selector="^ > Path">

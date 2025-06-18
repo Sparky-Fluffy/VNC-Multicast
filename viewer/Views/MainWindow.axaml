@@ -30,7 +30,7 @@
                 <!--#endregion-->
 
                 <!--#region FORM-->
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, 1*" Grid.Row="1" VerticalAlignment="Center">
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, Auto" Grid.Row="1" VerticalAlignment="Center">
                     <ListBox Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 1*, 1*, 1*, 1*">
@@ -48,7 +48,7 @@
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="ADD"
+                    <Button Classes="formButton addButton rounded" Content="ADD"
                     Grid.Row="1" Grid.Column="1" Command="{Binding AddSession}"/>
                 </Grid>
                 <!--#endregion-->
@@ -79,7 +79,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT"
+                    <Button Classes="formButton selectButton rounded" Content="SELECT"
                     Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
                 </Grid>
                 <!--#endregion-->
@@ -104,16 +104,15 @@
 
                 <!--#region BUTTONS-->
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
-                    <Button Classes="roundedMax" Content="Audio" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
+                    <Button Classes="roundedMax" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
                         <Path Data="{DynamicResource AudioImage}"/>
                     </Button>
 
-                    <Button Classes="cancelButton roundedMax" Content="Cancel"
-                    Click="Cancel_OnClick" Command="{Binding CancelSession}" Grid.Column="2" HorizontalAlignment="Center">
+                    <Button Classes="cancelButton roundedMax" Click="Cancel_OnClick" Command="{Binding CancelSession}" Grid.Column="2" HorizontalAlignment="Center">
                         <Path Data="{DynamicResource CancelImage}"/>
                     </Button>
                     
-                    <Button Classes="roundedMax" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
+                    <Button Classes="roundedMax" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
                         <Path Data="{DynamicResource ExpandImage}"/>
                     </Button>
                 </Grid>
