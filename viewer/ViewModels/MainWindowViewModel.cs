@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Net;
-using System.Reactive;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Styling;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reactive;
 
 namespace viewer.ViewModels;
 
@@ -26,9 +25,36 @@ public partial class MainWindowViewModel : ViewModelBase
         set => percentHeight = value;
     }
 
-    public string AppTitleFirst => "VNC";
-    public string AppTitleSecond => "Viewer";
+    private string themeName;
+    public string ThemeName
+    {
+        get => themeName;
+        set => this.RaiseAndSetIfChanged(ref themeName, value);
+    }
+
+    private ThemeVariant theme;
+    public ThemeVariant Theme
+    {
+        get => theme;
+        set => this.RaiseAndSetIfChanged(ref theme, value);
+    }
+    public bool IsDark => theme == ThemeVariant.Dark;
+
+    public Lang Lang
+    {
+        get => Lang.Instance;
+        set => this.RaiseAndSetIfChanged(ref Lang.Instance, value);
+    }
+
     public int AppTitleFontSize => 0;
+
+    private int netInterface = 0;
+    private string netInterfaceName;
+    public string NetInterfaceName
+    {
+        get => netInterfaceName;
+        set => this.RaiseAndSetIfChanged(ref netInterfaceName, value);
+    }
 
     #endregion
 
@@ -45,7 +71,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #region FORM VARIABLES
 
-    private IPAddress mcastIP;
+    private string mcastIP;
     private ObservableCollection<string> ipParts;
     public ObservableCollection<string> IpParts
     {
@@ -90,13 +116,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #region SCREENVIEW VARIABLES
 
-    private Session mainSession;
-    private Bitmap? screenViewBitmap;
-    public Bitmap? ScreenImage
-    {
-        get => screenViewBitmap;
-        set => this.RaiseAndSetIfChanged(ref screenViewBitmap, value);
-    }
+    private Session mainSession = new Session();
+    public Session MainSession => mainSession;
 
     #endregion
 
@@ -109,14 +130,41 @@ public partial class MainWindowViewModel : ViewModelBase
     #endregion
 
     private string jsonPath = @"addresses.json";
+    //private string langPath = @"language/";
+    private string settingsPath = @"settings.json";
 
     public MainWindowViewModel()
     {
+        Lang.GetLocalizations();
+
+        if
+        (
+            JsonManager.TryFetchSettings(settingsPath, out var items) &&
+            items.TryGetValue("Lang", out var langStr) &&
+            items.TryGetValue("Theme", out var themeStr) &&
+            items.TryGetValue("NetInterface", out var ifaceStr)
+        )
+        {
+            if (themeStr == "Light") Theme = ThemeVariant.Light;
+            else if (themeStr == "Dark") Theme = ThemeVariant.Dark;
+
+            Lang.cultureID = langStr;
+            NetInterfaceName = ifaceStr;
+
+            Lang.Localize();
+        }
+        else
+        {
+            Theme = ThemeVariant.Dark;
+            Lang.LocalizeNext();
+        }
+        ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+
         PagesVisible = new ObservableCollection<bool> { false, false, false };
         ListButtonsVisible = new ObservableCollection<bool> { false, false, false, false };
         IpParts = new ObservableCollection<string> { "", "", "", "" };
 
-        IObservable<bool> isFilledForm = this.WhenAnyValue
+        var isFilledForm = this.WhenAnyValue
         (
             x => x.IpParts[0],
             x => x.IpParts[1],
@@ -135,17 +183,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
         AddSession = ReactiveCommand.Create(Add, isFilledForm);
 
-        IObservable<bool> isSelected =
-            this.WhenAnyValue<MainWindowViewModel, bool, AddressHolder>
-            (
-                x => x.SelectedListItem,
-                x => x != null
-            );
+        var isSelected = this.WhenAnyValue<MainWindowViewModel, bool, AddressHolder>
+        (
+            x => x.SelectedListItem,
+            x => x != null
+        );
 
         SelectSession = ReactiveCommand.Create(Select, isSelected);
         DeleteSession = ReactiveCommand.Create(Delete, isSelected);
-
-        mainSession = new Session(ref screenViewBitmap);
 
         UpdateSessionList();
     }
@@ -154,20 +199,19 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Add()
     {
-        if (IPAddress.TryParse($"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}", out mcastIP)
-            && ushort.TryParse(McastPortString, out mcastPort))
-        {
-            IpParts = new ObservableCollection<string> { "", "", "", "" };
-            McastPortString = "";
+        IpParts = new ObservableCollection<string> { "", "", "", "" };
+        McastPortString = "";
 
-            JsonManager.Add(jsonPath, mcastIP, mcastPort);
-            StartSession();
-        }
+        mcastIP = $"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}";
+        mcastPort = ushort.Parse(McastPortString);
+
+        JsonManager.Add(jsonPath, mcastIP, mcastPort);
+        StartSession();
     }
 
     private void Select()
     {
-        mcastIP = IPAddress.Parse(selectedListItem.Ip);
+        mcastIP = selectedListItem.Ip;
         mcastPort = selectedListItem.Port;
 
         StartSession();
@@ -179,17 +223,12 @@ public partial class MainWindowViewModel : ViewModelBase
         UpdateSessionList();
     }
 
-    public void OpenNewSessionForm()
-    {
-        SetVisible(ref listButtonsVisible, 0);
-        SetPage(0);
-    }
+    public void OpenNewSessionForm() => SetPage(0, 0);
 
     private void StartSession()
     {
-        mainSession.Start(mcastIP, mcastPort);
-        SetVisible(ref listButtonsVisible, -1);
-        SetPage(2);
+        mainSession.Start(mcastIP, mcastPort, netInterface);
+        SetPage(2, -1);
     }
 
     public void CancelSession()
@@ -203,36 +242,38 @@ public partial class MainWindowViewModel : ViewModelBase
         if (JsonManager.TryFetchAddresses(jsonPath, out IList<AddressHolder> items))
         {
             ListItems = new ObservableCollection<AddressHolder>(items);
-            SetVisible(ref listButtonsVisible, 0, true);
-            SetPage(1);
+            SetPage(1, 0, true);
             return;
         }
 
-        SetVisible(ref listButtonsVisible, 1);
-        SetPage(0);
+        SetPage(0, 1);
         ListItems = new ObservableCollection<AddressHolder>();
     }
 
-    public void SetPage(sbyte index)
+    public void SetPage(sbyte index, sbyte buttonsIndex, bool reverse = false)
     {
-        SetVisible(ref pagesVisible, index);
+        SetVisible(PagesVisible, index, false);
+        SetVisible(ListButtonsVisible, buttonsIndex, reverse);
     }
 
-    private void SetVisible
-    (
-        ref ObservableCollection<bool> boolSheet,
-        sbyte index, bool isReverse = false
-    )
+    private void SetVisible(ObservableCollection<bool> boolSheet, sbyte index, bool reverse)
     {
         for (byte i = 0; i < boolSheet.Count; i++)
-        {
-            if (i == index)
-            {
-                boolSheet[i] = !isReverse;
-                continue;
-            }
-            boolSheet[i] = isReverse;
-        }
+            boolSheet[i] = i == index ? !reverse : reverse;
+    }
+
+    public void SwitchTheme()
+    {
+        Theme = IsDark ? ThemeVariant.Light : ThemeVariant.Dark;
+        ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+    }
+
+    public void SwitchNetworkInterface(bool add = true)
+    {
+        int index = NetIfaceManager.GetIndexInList(NetInterfaceName);
+        if (add) index = (index + 1) % NetIfaceManager.Count;
+
+        (NetInterfaceName, netInterface) = NetIfaceManager.GetNameAndIndex(index);
     }
 
     #endregion

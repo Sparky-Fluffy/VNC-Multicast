@@ -3,6 +3,7 @@
         xmlns:vm="using:viewer.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
         x:Class="viewer.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -128,9 +129,9 @@
             <!--#endregion-->
 
             <StackPanel Name="AppButtons" Classes="lowButtons">
-                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding SwitchLocalization}"/>
+                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding Lang.LocalizeNext}"/>
                 <Button Classes="roundedMax" Content="{Binding ThemeName}" Command="{Binding SwitchTheme}"/>
-                <Button Classes="roundedMax" Content="{Binding NetInterfaceName}" Command="{Binding SwitchNetworkInterface}"/>
+                <Button Classes="roundedMax" Content="{Binding NetInterfaceName}"/>
             </StackPanel>
 
             <StackPanel Name="ListButtons" Classes="lowButtons">

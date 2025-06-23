@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using Newtonsoft.Json.Linq;
 
 namespace viewer.ViewModels;
 
 public static class JsonManager
 {
-    public static JObject? TryParseJson(string path)
+    public static JToken? TryParseJson(string path)
     {
-        try { return JObject.Parse(File.ReadAllText(path)); }
+        try { return JToken.Parse(File.ReadAllText(path)); }
         catch { return null; }
     }
 
@@ -21,7 +20,7 @@ public static class JsonManager
         if (!File.Exists(path)) return false;
 
         JObject? mainNode = null;
-        mainNode = TryParseJson(path);
+        mainNode = (JObject?)TryParseJson(path);
         if (mainNode == null) return false;
 
         JArray? addressList = (JArray?)mainNode["addr-list"];
@@ -45,7 +44,43 @@ public static class JsonManager
         return true;
     }
 
-    public static void Add(string path, IPAddress ip, ushort port)
+    public static bool TryFetchTranslations(string path, out Dictionary<string, string> items)
+    {
+        items = null;
+
+        if (!File.Exists(path)) return false;
+
+        JArray? translationList = (JArray?)TryParseJson(path);
+        if (translationList == null || translationList?.Count < 1)
+            return false;
+
+        items = translationList
+            .Where(t => t["Name"] != null && t["Value"] != null)
+            ?.ToDictionary(t => (string)t["Name"], t => (string)t["Value"]);
+        
+        return items != null;
+    }
+
+    public static bool TryFetchSettings(string path, out Dictionary<string, string> items)
+    {
+        items = null;
+
+        if (!File.Exists(path)) return false;
+
+        JObject? settings = (JObject?)TryParseJson(path);
+        if (settings == null || settings?.Count < 1)
+            return false;
+
+        items = settings.Children().ToDictionary
+        (
+            t => (t as JProperty).Name,
+            t => (string)(t as JProperty).Value
+        );
+        
+        return items != null;
+    }
+
+    public static void Add(string path, string ip, ushort port)
     {
         JObject? mainNode = null;
         JArray? addressList = null;
@@ -57,8 +92,7 @@ public static class JsonManager
             file = File.Create(path);
             file?.Close();
         }
-
-        else mainNode = TryParseJson(path);
+        else mainNode = (JObject?)TryParseJson(path);
 
         if (mainNode == null) mainNode = new JObject();
         else addressList = (JArray?)mainNode["addr-list"];
@@ -67,18 +101,10 @@ public static class JsonManager
 
         addressList.Add
         (
-            (JObject)JToken.FromObject
-            (
-                new AddressHolder
-                {
-                    Ip = ip.ToString(),
-                    Port = port
-                }
-            )
+            (JObject)JToken.FromObject(new AddressHolder { Ip = ip, Port = port })
         );
 
         mainNode["addr-list"] = addressList;
-
         File.WriteAllText(path, mainNode.ToString());
     }
 
@@ -86,25 +112,20 @@ public static class JsonManager
     {
         if (File.Exists(path))
         {
-            JObject? mainNode = null;
-            JArray? addressList = null;
-            mainNode = JsonManager.TryParseJson(path);
-            addressList = (JArray?)mainNode?["addr-list"];
+            JObject? mainNode = (JObject?)TryParseJson(path);
+            JArray? addressList = (JArray?)mainNode?["addr-list"];
+            
             if (addressList != null)
             {
                 JToken t = JToken.FromObject(selected);
-                int index = -1;
-                for (int i = 0; i < addressList.Count; i++)
-                {
-                    if ((string?)addressList[i]["Ip"] == (string)t["Ip"] &&
-                        (ushort?)addressList[i]["Port"] == (ushort)t["Port"])
-                    {
-                        index = i;
-                        break;
-                    }
-                }
 
-                addressList.RemoveAt(index);
+                JToken? d = addressList.FirstOrDefault
+                (
+                    item => (string?)item["Ip"] == (string)t["Ip"]! &&
+                        (ushort?)item["Port"] == (ushort)t["Port"]!
+                );
+
+                if (d != null) addressList.Remove(d);
                 mainNode["addr-list"] = addressList;
                 File.WriteAllText(path, mainNode.ToString());
             }
