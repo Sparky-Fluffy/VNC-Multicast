@@ -23,7 +23,7 @@ public class Receiver
 
     public byte pixelFormat = 0;
 
-    public Receiver(IPAddress multicastGroupAddress, ushort port)
+    public Receiver(IPAddress multicastGroupAddress, ushort port, int ifaceIndex)
     {
         multicastSocket = new Socket
         (
@@ -38,7 +38,7 @@ public class Receiver
         (
             multicastGroupAddress, IPAddress.Any
         );
-        mcastOption.InterfaceIndex = 1;
+        mcastOption.InterfaceIndex = ifaceIndex;
         multicastSocket.SetSocketOption
         (
             SocketOptionLevel.IP, SocketOptionName.AddMembership, mcastOption

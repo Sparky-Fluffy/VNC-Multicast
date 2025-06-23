@@ -1,48 +1,53 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using ReactiveUI;
 using receiver;
 using SkiaSharp;
 
 namespace viewer.ViewModels;
 
-public class Session
+public class Session : ReactiveObject
 {
     private Task? receivingTask;
     private CancellationTokenSource tokenSrc = new CancellationTokenSource();
     private CancellationToken cancelToken;
 
     private Bitmap viewBitmap;
-    private IPAddress? mcastIP = null;
-    private ushort mcastPort = 0;
-
-    public Session(ref Bitmap bitmap)
+    public Bitmap ViewBitmap
     {
-        viewBitmap = bitmap;
+        get => viewBitmap;
+        set => this.RaiseAndSetIfChanged(ref viewBitmap, value);
     }
 
-    public async void Start(IPAddress ip, ushort port)
+    private IPAddress? mcastIP = null;
+    private ushort mcastPort = 0;
+    private int mcastIfaceIndex = 0;
+
+    public async void Start(string ip, ushort port, int ifaceIndex)
     {
         tokenSrc = new CancellationTokenSource();
         cancelToken = tokenSrc.Token;
 
-        if (mcastIP != null || mcastPort >= 1024)
+        if (IPAddress.TryParse(ip, out mcastIP) || port >= 1024 || ifaceIndex >= 0)
         {
             byte firstByte = mcastIP.GetAddressBytes()[0];
             if (firstByte < 224 || firstByte > 239) return;
-            
-            mcastIP = ip;
+
             mcastPort = port;
+            ViewBitmap = null;
 
             receivingTask = Task.Run(ReceiveBitmap, cancelToken);
             await receivingTask;
         }
-        else return;
     }
+
+    public void SetInterface(int ifaceIndex) => mcastIfaceIndex = ifaceIndex;
 
     public void Cancel()
     {
@@ -59,7 +64,7 @@ public class Session
         {
             cancelToken.ThrowIfCancellationRequested();
 
-            Receiver receiver = new Receiver(mcastIP, mcastPort);
+            Receiver receiver = new Receiver(mcastIP, mcastPort, mcastIfaceIndex);
             cancelToken.Register(receiver.Close);
 
             if (cancelToken.IsCancellationRequested)
@@ -145,7 +150,7 @@ public class Session
                     {
                         enc.SaveTo(ms);
                         ms.Position = 0;
-                        viewBitmap = new Bitmap(ms);
+                        ViewBitmap = new Bitmap(ms);
                     }
                 }
             }
