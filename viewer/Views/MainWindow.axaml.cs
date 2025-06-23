@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
-using Avalonia.Styling;
 using viewer.ViewModels;
 
 namespace viewer.Views;
@@ -19,10 +17,6 @@ public partial class MainWindow : Window
 
     public bool IsMaximized => WindowState == WindowState.Maximized;
     public bool IsFullScreen => WindowState == WindowState.FullScreen;
-
-    public bool IsDark => RequestedThemeVariant == ThemeVariant.Dark;
-
-    private string ThemeSwitchText => IsDark ? "Light" : "Dark";
 
     public MainWindow()
     {
@@ -41,8 +35,6 @@ public partial class MainWindow : Window
             Width = screenWidth * vm.PercentWidth;
             Height = screenHeight * vm.PercentHeight;
         }
-
-        ThemeSwitch.Content = ThemeSwitchText;
     }
 
     private void Audio_OnClick(object? sender, RoutedEventArgs e)
@@ -59,13 +51,6 @@ public partial class MainWindow : Window
     {
         if (IsFullScreen) SetWindowNormal();
         else SetWindowMaximized();
-    }
-
-    private void SwitchTheme_OnClick(object? sender, RoutedEventArgs e)
-    {
-        if (IsDark) RequestedThemeVariant = ThemeVariant.Light;
-        else RequestedThemeVariant = ThemeVariant.Dark;
-        ThemeSwitch.Content = ThemeSwitchText;
     }
 
     private void SetWindowNormal()

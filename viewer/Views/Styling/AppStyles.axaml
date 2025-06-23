@@ -279,27 +279,33 @@
     </Style>
 </Style>
 
-<Style Selector="Button#ThemeSwitch">
-    <Setter Property="HorizontalAlignment" Value="Right"/>
-    <Setter Property="VerticalAlignment" Value="Bottom"/>
-    <Setter Property="FontSize" Value="14"/>
-    <Setter Property="Padding" Value="5"/>
-    <Setter Property="Margin" Value="5"/>
-</Style>
-
-<Style Selector="StackPanel#ListButtons">
-    <Setter Property="HorizontalAlignment" Value="Left"/>
+<Style Selector="StackPanel.lowButtons">
     <Setter Property="VerticalAlignment" Value="Bottom"/>
     <Setter Property="Orientation" Value="Vertical"/>
     <Setter Property="Margin" Value="5"/>
     <Setter Property="Spacing" Value="5"/>
 
     <Style Selector="^ > Button">
-        <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="10"/>
-        <Setter Property="Width" Value="40"/>
+    </Style>
+
+    <Style Selector="^#ListButtons">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+
+        <Style Selector="^ > Button">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Width" Value="40"/>
+        </Style>
+    </Style>
+
+    <Style Selector="^#AppButtons">
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+
+        <Style Selector="^ > Button">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
     </Style>
 </Style>
 

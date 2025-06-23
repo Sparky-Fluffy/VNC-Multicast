@@ -10,7 +10,15 @@
         Title="VNC Viewer"
         MinWidth="320"
         MinHeight="480"
-        RequestedThemeVariant="Dark">
+        RequestedThemeVariant="{Binding Theme}">
+
+    <Window.Title>
+        <MultiBinding StringFormat="{}{0} {1}">
+            <Binding Path="Lang.TitleFirst"/>
+            <Binding Path="Lang.TitleSecond"/>
+        </MultiBinding>
+    </Window.Title>
+
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
@@ -23,8 +31,8 @@
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
-                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
-                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                        <TextBlock Classes="title special" Text="{Binding Lang.TitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding Lang.TitleFirst}"/>
                     </StackPanel>
                 </Border>
                 <!--#endregion-->
@@ -43,12 +51,12 @@
                         </ListBoxItem>
                         <ListBoxItem Classes="form">
                             <Grid ColumnDefinitions="1*, 4*">
-                                <Label Classes="roundedMin" Content="Port" Grid.Column="0"/>
+                                <Label Classes="roundedMin" Content="{Binding Lang.PortName}" Grid.Column="0"/>
                                 <TextBox Name="PortInput" Classes="portInput" Text="{Binding McastPortString}" Grid.Column="1"/>
                             </Grid>
                         </ListBoxItem>
                     </ListBox>
-                    <Button Classes="formButton addButton rounded" Content="ADD"
+                    <Button Classes="formButton addButton rounded" Content="{Binding Lang.AddName}"
                     Grid.Row="1" Grid.Column="1" Command="{Binding AddSession}"/>
                 </Grid>
                 <!--#endregion-->
@@ -61,8 +69,8 @@
                 <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
-                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
-                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                        <TextBlock Classes="title special" Text="{Binding Lang.TitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding Lang.TitleSecond}"/>
                     </StackPanel>
                 </Border>
                 <!--#endregion-->
@@ -79,7 +87,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Button Classes="formButton selectButton rounded" Content="SELECT"
+                    <Button Classes="formButton selectButton rounded" Content="{Binding Lang.SelectName}"
                     Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
                 </Grid>
                 <!--#endregion-->
@@ -96,8 +104,7 @@
                 <!--#region SCREENVIEW-->
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
-                        <Image Name="ScreenViewImage" Source="{Binding
-                        ScreenImage}"/>
+                        <Image Name="ScreenViewImage" Source="{Binding MainSession.ViewBitmap}"/>
                     </Border>
                 </Grid>
                 <!--#endregion-->
@@ -120,19 +127,23 @@
             </Grid>
             <!--#endregion-->
 
-            <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
+            <StackPanel Name="AppButtons" Classes="lowButtons">
+                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding SwitchLocalization}"/>
+                <Button Classes="roundedMax" Content="{Binding ThemeName}" Command="{Binding SwitchTheme}"/>
+                <Button Classes="roundedMax" Content="{Binding NetInterfaceName}" Command="{Binding SwitchNetworkInterface}"/>
+            </StackPanel>
 
-            <StackPanel Name="ListButtons">
-                <Button Classes="rounded" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[0]}">
+            <StackPanel Name="ListButtons" Classes="lowButtons">
+                <Button Classes="roundedMax" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[0]}">
                     <Path Data="{DynamicResource ReturnImage}"/>
                 </Button>
-                <Button Classes="rounded" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[1]}">
+                <Button Classes="roundedMax" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[1]}">
                     <Path Data="{DynamicResource ReloadImage}"/>
                 </Button>
-                <Button Classes="rounded" Command="{Binding OpenNewSessionForm}" IsVisible="{Binding ListButtonsVisible[2]}">
+                <Button Classes="roundedMax" Command="{Binding OpenNewSessionForm}" IsVisible="{Binding ListButtonsVisible[2]}">
                     <Path Data="{DynamicResource PlusImage}"/>
                 </Button>
-                <Button Classes="rounded cancelButton" Command="{Binding DeleteSession}" IsVisible="{Binding ListButtonsVisible[2]}">
+                <Button Classes="roundedMax cancelButton" Command="{Binding DeleteSession}" IsVisible="{Binding ListButtonsVisible[2]}">
                     <Path Data="{DynamicResource DeleteImage}"/>
                 </Button>
             </StackPanel>
