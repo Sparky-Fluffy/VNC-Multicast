@@ -1,0 +1,30 @@
+[
+    {
+        "Name": "TitleFirst",
+        "Value": "VNC"
+    },
+    {
+        "Name": "TitleSecond",
+        "Value": "Viewer"
+    },
+    {
+        "Name": "PortName",
+        "Value": "Port"
+    },
+    {
+        "Name": "AddName",
+        "Value": "ADD"
+    },
+    {
+        "Name": "SelectName",
+        "Value": "SELECT"
+    },
+    {
+        "Name": "LightThemeName",
+        "Value": "Light"
+    },
+    {
+        "Name": "DarkThemeName",
+        "Value": "Dark"
+    }
+]

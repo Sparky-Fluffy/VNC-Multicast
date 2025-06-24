@@ -1,0 +1,30 @@
+[
+    {
+        "Name": "TitleFirst",
+        "Value": "VNC"
+    },
+    {
+        "Name": "TitleSecond",
+        "Value": "Просмотрщик"
+    },
+    {
+        "Name": "PortName",
+        "Value": "Порт"
+    },
+    {
+        "Name": "AddName",
+        "Value": "ДОБАВИТЬ"
+    },
+    {
+        "Name": "SelectName",
+        "Value": "ВЫБРАТЬ"
+    },
+    {
+        "Name": "LightThemeName",
+        "Value": "Светлая"
+    },
+    {
+        "Name": "DarkThemeName",
+        "Value": "Темная"
+    }
+]
