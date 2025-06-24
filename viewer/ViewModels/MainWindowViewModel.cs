@@ -129,40 +129,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #endregion
 
-    private string jsonPath = @"addresses.json";
-    //private string langPath = @"language/";
+    private string addrPath = @"addresses.json";
+    private string langPath = @"language/";
     private string settingsPath = @"settings.json";
 
     public MainWindowViewModel()
     {
-        Lang.GetLocalizations();
-        
-        Dictionary<string, string>? settings;
-
-        JsonManager.TryFetchSettings(settingsPath, out settings);
-            
-        if (settings.TryGetValue("Theme", out var themeStr))
-        {
-            if (themeStr == "Light") Theme = ThemeVariant.Light;
-            else if (themeStr == "Dark") Theme = ThemeVariant.Dark;
-        }
-        else Theme = ThemeVariant.Dark;
-
-        if (settings.TryGetValue("Lang", out var langStr))
-        {
-            Lang.cultureID = langStr;
-            Lang.Localize();
-            ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
-        }
-        else SwitchLang();
-
-        if (settings.TryGetValue("NetInterface", out var ifaceStr))
-        {
-            NetIface.NetIfaceName = ifaceStr;
-            NetIface.SetCurrent();
-            mcastIface = NetIface.NetIface;
-        }
-        else SwitchNetIface();
+        GetSettings();
 
         PagesVisible = new ObservableCollection<bool> { false, false, false };
         ListButtonsVisible = new ObservableCollection<bool> { false, false, false, false };
@@ -199,17 +172,17 @@ public partial class MainWindowViewModel : ViewModelBase
         UpdateSessionList();
     }
 
-    #region MAIN METHODS
+    #region PAGES METHODS
 
     private void Add()
     {
-        IpParts = new ObservableCollection<string> { "", "", "", "" };
-        McastPortString = "";
-
         mcastIP = $"{IpParts[0]}.{IpParts[1]}.{IpParts[2]}.{IpParts[3]}";
         mcastPort = ushort.Parse(McastPortString);
 
-        JsonManager.Add(jsonPath, mcastIP, mcastPort);
+        IpParts = new ObservableCollection<string> { "", "", "", "" };
+        McastPortString = "";
+
+        JsonManager.Add(addrPath, mcastIP, mcastPort);
         StartSession();
     }
 
@@ -223,27 +196,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Delete()
     {
-        JsonManager.Delete(jsonPath, SelectedListItem);
+        JsonManager.Delete(addrPath, SelectedListItem);
         UpdateSessionList();
     }
 
     public void OpenNewSessionForm() => SetPage(0, 0);
 
-    private void StartSession()
-    {
-        mainSession.Start(mcastIP, mcastPort, mcastIface);
-        SetPage(2, -1);
-    }
-
-    public void CancelSession()
-    {
-        mainSession.Cancel();
-        UpdateSessionList();
-    }
-
     public void UpdateSessionList()
     {
-        if (JsonManager.TryFetchAddresses(jsonPath, out IList<AddressHolder> items))
+        if (JsonManager.TryFetchAddresses(addrPath, out IList<AddressHolder> items))
         {
             ListItems = new ObservableCollection<AddressHolder>(items);
             SetPage(1, 0, true);
@@ -266,24 +227,90 @@ public partial class MainWindowViewModel : ViewModelBase
             boolSheet[i] = i == index ? !reverse : reverse;
     }
 
+    #endregion
+
+    #region SESSION METHODS
+
+    private void StartSession()
+    {
+        mainSession.Start(mcastIP, mcastPort, mcastIface);
+        SetPage(2, -1);
+    }
+
+    public void CancelSession()
+    {
+        mainSession.Cancel();
+        UpdateSessionList();
+    }
+
+    #endregion
+
+    #region SETTINGS METHODS
+
+    private void GetSettings()
+    {
+        Lang.LangPath = langPath;
+        Lang.GetList();
+
+        Dictionary<string, string>? settings;
+
+        JsonManager.TryFetchSettings(settingsPath, out settings);
+
+        if (settings.TryGetValue("Theme", out var themeStr))
+        {
+            if (themeStr == "Light") Theme = ThemeVariant.Light;
+            else if (themeStr == "Dark") Theme = ThemeVariant.Dark;
+        }
+        else Theme = ThemeVariant.Dark;
+
+        if (settings.TryGetValue("Lang", out var langStr))
+        {
+            Lang.cultureID = langStr;
+            Lang.GetList();
+            Lang.SetCurrent();
+            ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+        }
+        else SwitchLang();
+
+        if (settings.TryGetValue("NetInterface", out var ifaceStr))
+        {
+            NetIface.NetIfaceName = ifaceStr;
+            NetIface.GetList();
+            NetIface.SetCurrent();
+            mcastIface = NetIface.NetIface;
+        }
+        else SwitchNetIface();
+    }
+
     public void SwitchLang()
     {
-        Lang.LocalizeNext();
+        Lang.SetNext();
         ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+        SaveSettings();
     }
 
     public void SwitchTheme()
     {
         Theme = IsDark ? ThemeVariant.Light : ThemeVariant.Dark;
         ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+        SaveSettings();
     }
 
     public void SwitchNetIface()
     {
+        NetIface.GetList();
         NetIface.SetNext();
         mcastIface = NetIface.NetIface;
-        Console.WriteLine(mcastIface);
+        SaveSettings();
     }
+
+    public void SaveSettings() =>
+        JsonManager.SaveSettings
+        (
+            settingsPath, Lang.cultureID,
+            IsDark ? "Dark" : "Light",
+            NetIface.NetIfaceName
+        );
 
     #endregion
 }

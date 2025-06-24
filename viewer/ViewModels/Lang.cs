@@ -1,67 +1,45 @@
+using DynamicData;
+using ReactiveUI;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using DynamicData;
-using ReactiveUI;
 
 namespace viewer.ViewModels;
 
-public class Lang : ReactiveObject
+public class Lang : SwitchManager<Lang, string>
 {
     public string cultureID = "";
     private CultureInfo? culture = null;
 
-    private string titleFirst = "VNC";
-    private string titleSecond = "Viewer";
-    private string portName = "Port";
-    private string addName = "ADD";
-    private string selectName = "SELECT";
-    private string lightThemeName = "Light";
-    private string darkThemeName = "Dark";
-    private string cultureName = "en-US";
-
     private FileSystemWatcher watcher;
     private string path = @"language/";
-    private string[] localizations;
-
-    public int Count
+    public string LangPath
     {
-        get;
-        private set;
+        get => path;
+        set => value = path;
     }
-
-    private int localizationIndex => localizations.IndexOf(path + cultureID + ".lang");
 
     private Lang()
     {
         watcher = new FileSystemWatcher(path);
-        watcher.NotifyFilter = NotifyFilters.FileName
-                            | NotifyFilters.LastWrite
-                            | NotifyFilters.Size;
+        watcher.NotifyFilter = NotifyFilters.LastWrite
+                             | NotifyFilters.Size
+                             | NotifyFilters.LastAccess;
 
+        watcher.Filter = "*.lang";
         watcher.Changed += OnDirectoryChanged;
         watcher.Created += OnDirectoryChanged;
         watcher.Deleted += OnDirectoryChanged;
         watcher.Renamed += OnDirectoryChanged;
+        watcher.EnableRaisingEvents = true;
     }
 
-    private static Lang? instance;
-    public static ref Lang Instance
+    protected override void SetItem(int index)
     {
-        get
-        {
-            if (instance == null) instance = new Lang();
-            return ref instance!;
-        }
-    }
-
-    public void Localize() => Localize(localizationIndex);
-    public void LocalizeNext() => Localize((localizationIndex + 1) % Count);
-
-    private void Localize(int index)
-    {
-        if (JsonManager.TryFetchTranslations(localizations.ElementAt(index), out var items))
+        if (list == null || index < 0) return;
+        
+        if (JsonManager.TryFetchTranslations(list.ElementAt(index), out var items))
         {
             TitleFirst = items["TitleFirst"] ?? TitleFirst;
             TitleSecond = items["TitleSecond"] ?? TitleSecond;
@@ -72,7 +50,7 @@ public class Lang : ReactiveObject
             DarkThemeName = items["DarkThemeName"] ?? DarkThemeName;
         }
 
-        cultureID = Path.GetFileNameWithoutExtension(localizations.ElementAt(index));
+        cultureID = Path.GetFileNameWithoutExtension(list.ElementAt(index));
         try
         {
             culture = new CultureInfo(cultureID);
@@ -85,13 +63,26 @@ public class Lang : ReactiveObject
         }
     }
 
-    private void OnDirectoryChanged(object sender, FileSystemEventArgs e) => GetLocalizations();
+    private void OnDirectoryChanged(object sender, FileSystemEventArgs e) => GetList(); 
 
-    public void GetLocalizations()
+    public override void GetList()
     {
-        localizations = Directory.EnumerateFiles(path).ToArray();
-        Count = localizations.Count();
+        list = Directory.EnumerateFiles(path).ToArray();
+        base.GetList();
     }
+
+    protected override int GetIndex() => list.IndexOf(path + cultureID + ".lang");
+
+    #region LOCALIZE STRINGS
+
+    private string titleFirst = "VNC";
+    private string titleSecond = "Viewer";
+    private string portName = "Port";
+    private string addName = "ADD";
+    private string selectName = "SELECT";
+    private string lightThemeName = "Light";
+    private string darkThemeName = "Dark";
+    private string cultureName = "en-US";
 
     public string CultureName
     {
@@ -140,4 +131,6 @@ public class Lang : ReactiveObject
         get => darkThemeName;
         set => this.RaiseAndSetIfChanged(ref darkThemeName, value);
     }
+
+    #endregion
 }

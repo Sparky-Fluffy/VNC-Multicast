@@ -19,14 +19,8 @@ public static class JsonManager
 
         if (!File.Exists(path)) return false;
 
-        JObject? mainNode = null;
-        mainNode = (JObject?)TryParseJson(path);
-        if (mainNode == null) return false;
-
-        JArray? addressList = (JArray?)mainNode["addr-list"];
-        if (addressList == null) return false;
-
-        if (addressList?.Count < 1) return false;
+        JArray? addressList = (JArray?)TryParseJson(path);
+        if (addressList == null || addressList.Count < 1) return false;
 
         items = new List<AddressHolder>
         (
@@ -80,22 +74,36 @@ public static class JsonManager
         return items != null;
     }
 
-    public static void Add(string path, string ip, ushort port)
+    public static void SaveSettings(string path, string lang, string theme, string netIface)
     {
-        JObject? mainNode = null;
-        JArray? addressList = null;
-
-        FileStream? file = null;
+        JObject? settings = null;
 
         if (!File.Exists(path))
         {
-            file = File.Create(path);
+            FileStream? file = File.Create(path);
             file?.Close();
         }
-        else mainNode = (JObject?)TryParseJson(path);
+        else settings = (JObject?)TryParseJson(path);
 
-        if (mainNode == null) mainNode = new JObject();
-        else addressList = (JArray?)mainNode["addr-list"];
+        if (settings == null) settings = new JObject();
+
+        settings["Lang"] = lang;
+        settings["Theme"] = theme;
+        settings["NetInterface"] = netIface;
+
+        File.WriteAllText(path, settings.ToString());
+    }
+
+    public static void Add(string path, string ip, ushort port)
+    {
+        JArray? addressList = null;
+
+        if (!File.Exists(path))
+        {
+            FileStream? file = File.Create(path);
+            file?.Close();
+        }
+        else addressList = (JArray?)TryParseJson(path);
 
         if (addressList == null) addressList = new JArray();
 
@@ -104,31 +112,26 @@ public static class JsonManager
             (JObject)JToken.FromObject(new AddressHolder { Ip = ip, Port = port })
         );
 
-        mainNode["addr-list"] = addressList;
-        File.WriteAllText(path, mainNode.ToString());
+        File.WriteAllText(path, addressList.ToString());
     }
 
     public static void Delete(string path, object selected)
     {
-        if (File.Exists(path))
-        {
-            JObject? mainNode = (JObject?)TryParseJson(path);
-            JArray? addressList = (JArray?)mainNode?["addr-list"];
-            
-            if (addressList != null)
-            {
-                JToken t = JToken.FromObject(selected);
+        if (!File.Exists(path)) return;
 
-                JToken? d = addressList.FirstOrDefault
-                (
-                    item => (string?)item["Ip"] == (string)t["Ip"]! &&
-                        (ushort?)item["Port"] == (ushort)t["Port"]!
-                );
+        JArray? addressList = (JArray?)TryParseJson(path);
 
-                if (d != null) addressList.Remove(d);
-                mainNode["addr-list"] = addressList;
-                File.WriteAllText(path, mainNode.ToString());
-            }
-        }
+        if (addressList == null) return;
+
+        JToken t = JToken.FromObject(selected);
+
+        JToken? d = addressList.FirstOrDefault
+        (
+            item => (string?)item["Ip"] == (string)t["Ip"]! &&
+                (ushort?)item["Port"] == (ushort)t["Port"]!
+        );
+
+        if (d != null) addressList.Remove(d);
+        File.WriteAllText(path, addressList.ToString());
     }
 }
