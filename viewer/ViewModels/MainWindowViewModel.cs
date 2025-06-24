@@ -40,6 +40,12 @@ public partial class MainWindowViewModel : ViewModelBase
     }
     public bool IsDark => theme == ThemeVariant.Dark;
 
+    public NetIfaceManager NetIface
+    {
+        get => NetIfaceManager.Instance;
+        set => this.RaiseAndSetIfChanged(ref NetIfaceManager.Instance, value);
+    }
+
     public Lang Lang
     {
         get => Lang.Instance;
@@ -47,14 +53,6 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     public int AppTitleFontSize => 0;
-
-    private int netInterface = 0;
-    private string netInterfaceName;
-    public string NetInterfaceName
-    {
-        get => netInterfaceName;
-        set => this.RaiseAndSetIfChanged(ref netInterfaceName, value);
-    }
 
     #endregion
 
@@ -70,6 +68,8 @@ public partial class MainWindowViewModel : ViewModelBase
     #endregion
 
     #region FORM VARIABLES
+
+    private int mcastIface = 0;
 
     private string mcastIP;
     private ObservableCollection<string> ipParts;
@@ -136,29 +136,33 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         Lang.GetLocalizations();
+        
+        Dictionary<string, string>? settings;
 
-        if
-        (
-            JsonManager.TryFetchSettings(settingsPath, out var items) &&
-            items.TryGetValue("Lang", out var langStr) &&
-            items.TryGetValue("Theme", out var themeStr) &&
-            items.TryGetValue("NetInterface", out var ifaceStr)
-        )
+        JsonManager.TryFetchSettings(settingsPath, out settings);
+            
+        if (settings.TryGetValue("Theme", out var themeStr))
         {
             if (themeStr == "Light") Theme = ThemeVariant.Light;
             else if (themeStr == "Dark") Theme = ThemeVariant.Dark;
-
-            Lang.cultureID = langStr;
-            NetInterfaceName = ifaceStr;
-
-            Lang.Localize();
         }
-        else
+        else Theme = ThemeVariant.Dark;
+
+        if (settings.TryGetValue("Lang", out var langStr))
         {
-            Theme = ThemeVariant.Dark;
-            Lang.LocalizeNext();
+            Lang.cultureID = langStr;
+            Lang.Localize();
+            ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
         }
-        ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+        else SwitchLang();
+
+        if (settings.TryGetValue("NetInterface", out var ifaceStr))
+        {
+            NetIface.NetIfaceName = ifaceStr;
+            NetIface.SetCurrent();
+            mcastIface = NetIface.NetIface;
+        }
+        else SwitchNetIface();
 
         PagesVisible = new ObservableCollection<bool> { false, false, false };
         ListButtonsVisible = new ObservableCollection<bool> { false, false, false, false };
@@ -227,7 +231,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void StartSession()
     {
-        mainSession.Start(mcastIP, mcastPort, netInterface);
+        mainSession.Start(mcastIP, mcastPort, mcastIface);
         SetPage(2, -1);
     }
 
@@ -262,18 +266,23 @@ public partial class MainWindowViewModel : ViewModelBase
             boolSheet[i] = i == index ? !reverse : reverse;
     }
 
+    public void SwitchLang()
+    {
+        Lang.LocalizeNext();
+        ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
+    }
+
     public void SwitchTheme()
     {
         Theme = IsDark ? ThemeVariant.Light : ThemeVariant.Dark;
         ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
     }
 
-    public void SwitchNetworkInterface(bool add = true)
+    public void SwitchNetIface()
     {
-        int index = NetIfaceManager.GetIndexInList(NetInterfaceName);
-        if (add) index = (index + 1) % NetIfaceManager.Count;
-
-        (NetInterfaceName, netInterface) = NetIfaceManager.GetNameAndIndex(index);
+        NetIface.SetNext();
+        mcastIface = NetIface.NetIface;
+        Console.WriteLine(mcastIface);
     }
 
     #endregion

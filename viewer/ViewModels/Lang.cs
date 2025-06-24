@@ -21,11 +21,11 @@ public class Lang : ReactiveObject
     private string darkThemeName = "Dark";
     private string cultureName = "en-US";
 
-    private string[] localizations;
     private FileSystemWatcher watcher;
     private string path = @"language/";
+    private string[] localizations;
 
-    public static int Count
+    public int Count
     {
         get;
         private set;
@@ -56,14 +56,6 @@ public class Lang : ReactiveObject
         }
     }
 
-    private void OnDirectoryChanged(object sender, FileSystemEventArgs e) => GetLocalizations();
-
-    public void GetLocalizations()
-    {
-        localizations = Directory.EnumerateFiles(path).ToArray();
-        Count = localizations.Count();
-    }
-
     public void Localize() => Localize(localizationIndex);
     public void LocalizeNext() => Localize((localizationIndex + 1) % Count);
 
@@ -91,6 +83,14 @@ public class Lang : ReactiveObject
             culture = null;
             CultureName = cultureID;
         }
+    }
+
+    private void OnDirectoryChanged(object sender, FileSystemEventArgs e) => GetLocalizations();
+
+    public void GetLocalizations()
+    {
+        localizations = Directory.EnumerateFiles(path).ToArray();
+        Count = localizations.Count();
     }
 
     public string CultureName

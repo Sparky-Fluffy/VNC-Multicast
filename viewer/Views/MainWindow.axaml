@@ -129,9 +129,9 @@
             <!--#endregion-->
 
             <StackPanel Name="AppButtons" Classes="lowButtons">
-                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding Lang.LocalizeNext}"/>
+                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding SwitchLang}"/>
                 <Button Classes="roundedMax" Content="{Binding ThemeName}" Command="{Binding SwitchTheme}"/>
-                <Button Classes="roundedMax" Content="{Binding NetInterfaceName}"/>
+                <Button Classes="roundedMax" Content="{Binding NetIface.NetIfaceName}" Command="{Binding SwitchNetIface}"/>
             </StackPanel>
 
             <StackPanel Name="ListButtons" Classes="lowButtons">
