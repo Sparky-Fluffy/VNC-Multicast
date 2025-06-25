@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace viewer.ViewModels;
 
-public class Lang : SwitchManager<Lang, string>
+public class LangManager : SwitchManager<LangManager, string>
 {
     public string cultureID = "";
     private CultureInfo? culture = null;
@@ -20,7 +20,7 @@ public class Lang : SwitchManager<Lang, string>
         set => value = path;
     }
 
-    private Lang()
+    private LangManager()
     {
         watcher = new FileSystemWatcher(path);
         watcher.NotifyFilter = NotifyFilters.LastWrite
@@ -39,7 +39,7 @@ public class Lang : SwitchManager<Lang, string>
     {
         if (list == null || index < 0) return;
         
-        if (JsonManager.TryFetchTranslations(list.ElementAt(index), out var items))
+        if (JsonManager.TryFetchLanguages(list.ElementAt(index), out var items))
         {
             TitleFirst = items["TitleFirst"] ?? TitleFirst;
             TitleSecond = items["TitleSecond"] ?? TitleSecond;

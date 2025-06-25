@@ -1,4 +1,5 @@
 ﻿using Avalonia.Styling;
+using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,10 +46,10 @@ public partial class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref NetIfaceManager.Instance, value);
     }
 
-    public Lang Lang
+    public LangManager Lang
     {
-        get => Lang.Instance;
-        set => this.RaiseAndSetIfChanged(ref Lang.Instance, value);
+        get => LangManager.Instance;
+        set => this.RaiseAndSetIfChanged(ref LangManager.Instance, value);
     }
 
     public int AppTitleFontSize => 0;
@@ -181,7 +182,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IpParts = new ObservableCollection<string> { "", "", "", "" };
         McastPortString = "";
 
-        JsonManager.Add(addrPath, mcastIP, mcastPort);
+        JsonManager.Add(addrPath, new AddressHolder { Ip = mcastIP, Port = mcastPort });
         StartSession();
     }
 
@@ -251,29 +252,26 @@ public partial class MainWindowViewModel : ViewModelBase
         Lang.LangPath = langPath;
         Lang.GetList();
 
-        Dictionary<string, string>? settings;
+        SettingsHolder? settings;
 
         JsonManager.TryFetchSettings(settingsPath, out settings);
 
-        if (settings.TryGetValue("Theme", out var themeStr))
-        {
-            if (themeStr == "Light") Theme = ThemeVariant.Light;
-            else if (themeStr == "Dark") Theme = ThemeVariant.Dark;
-        }
+        if (settings?.Theme == "Light") Theme = ThemeVariant.Light;
+        else if (settings?.Theme == "Dark") Theme = ThemeVariant.Dark;
         else Theme = ThemeVariant.Dark;
 
-        if (settings.TryGetValue("Lang", out var langStr))
+        if (settings != null)
         {
-            Lang.cultureID = langStr;
+            Lang.cultureID = settings.Lang;
             Lang.GetList();
             Lang.SetCurrent();
             ThemeName = IsDark ? Lang.DarkThemeName : Lang.LightThemeName;
         }
         else SwitchLang();
 
-        if (settings.TryGetValue("NetInterface", out var ifaceStr))
+        if (settings!= null)
         {
-            NetIface.NetIfaceName = ifaceStr;
+            NetIface.NetIfaceName = settings.NetInterface;
             NetIface.GetList();
             NetIface.SetCurrent();
             mcastIface = NetIface.NetIface;
@@ -303,13 +301,19 @@ public partial class MainWindowViewModel : ViewModelBase
         SaveSettings();
     }
 
-    public void SaveSettings() =>
+    public void SaveSettings()
+    {
         JsonManager.SaveSettings
         (
-            settingsPath, Lang.cultureID,
-            IsDark ? "Dark" : "Light",
-            NetIface.NetIfaceName
+            settingsPath,
+            new SettingsHolder
+            {
+                Lang = Lang.cultureID,
+                Theme = IsDark ? "Dark" : "Light",
+                NetInterface = NetIface.NetIfaceName
+            }
         );
+    }
 
     #endregion
 }
