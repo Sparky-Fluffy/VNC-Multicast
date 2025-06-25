@@ -53,7 +53,23 @@ public static class JsonManager
         if (node is JObject)
             items = [(TObj)node.ToObject(typeof(TObj))!];
         else if (node is JArray)
-            items = [.. node?.Select(a => (TObj)a.ToObject(typeof(TObj))!)!];
+            items =
+            [..
+                node?.Select
+                (
+                    a =>
+                    {
+                        try { return a.ToObject<TObj>(); }
+                        catch { return (TObj)typeof(TObj).GetConstructor
+            (
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                new Type[0],
+                new ParameterModifier[0]
+            ).Invoke(null); }
+                    }
+                )!
+            ];
 
         return items != null;
     }
@@ -106,7 +122,7 @@ public static class JsonManager
         JToken? d = addressList.FirstOrDefault
         (
             item => (string?)item["Ip"] == (string)t["Ip"]! &&
-                (ushort?)item["Port"] == (ushort)t["Port"]!
+                (string?)item["Port"] == (((ushort)t["Port"]! == 0) ? "" : (string)t["Port"]!)
         );
 
         if (d != null) addressList.Remove(d);

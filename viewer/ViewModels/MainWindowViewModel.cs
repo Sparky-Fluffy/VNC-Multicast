@@ -1,8 +1,8 @@
 ﻿using Avalonia.Styling;
-using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Reactive;
 
 namespace viewer.ViewModels;
@@ -133,6 +133,16 @@ public partial class MainWindowViewModel : ViewModelBase
     private string langPath = @"language/";
     private string settingsPath = @"settings.json";
 
+    private bool IsAddress(string ip, ushort port)
+    {
+        if (IPAddress.TryParse(ip, out var ips))
+        {
+            byte f = ips.GetAddressBytes()[0];
+            return f >= 224 && f <= 239 && port >= 1024;
+        }
+        return false;
+    }
+
     public MainWindowViewModel()
     {
         GetSettings();
@@ -149,16 +159,17 @@ public partial class MainWindowViewModel : ViewModelBase
             x => x.IpParts[3],
             x => x.McastPortString,
             (ip0_s, ip1_s, ip2_s, ip3_s, port_s) =>
-                byte.TryParse(ip0_s, out byte ip0) &&
-                ip0 >= 224 && ip0 <= 239 &&
-                byte.TryParse(ip1_s, out _) &&
-                byte.TryParse(ip2_s, out _) &&
-                byte.TryParse(ip3_s, out _) &&
                 ushort.TryParse(port_s, out ushort port) &&
-                port >= 1024
+                IsAddress($"{ip0_s}.{ip1_s}.{ip2_s}.{ip3_s}", port)
         );
 
         AddSession = ReactiveCommand.Create(Add, isFilledForm);
+
+        var isSelectedSession = this.WhenAnyValue
+        (
+            x => x.SelectedListItem,
+            x => x != null && IsAddress(x.Ip, x.Port)
+        );
 
         var isSelected = this.WhenAnyValue<MainWindowViewModel, bool, AddressHolder>
         (
@@ -166,7 +177,7 @@ public partial class MainWindowViewModel : ViewModelBase
             x => x != null
         );
 
-        SelectSession = ReactiveCommand.Create(Select, isSelected);
+        SelectSession = ReactiveCommand.Create(Select, isSelectedSession);
         DeleteSession = ReactiveCommand.Create(Delete, isSelected);
 
         UpdateSessionList();
