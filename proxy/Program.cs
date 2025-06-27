@@ -94,21 +94,11 @@ class Program
 #endif
         client.SetPixelFormat();
 
-        ushort width = BitConverter.ToUInt16([client.width[1], client.width[0]]);
-        ushort height = BitConverter.ToUInt16([client.height[1], client.height[0]]);
-        ushort rectW = (ushort)(width / 10);
-        ushort rectH = (ushort)(height / 10);
+        ushort width = client.ScreenWidth;
+        ushort height = client.ScreenHeight;
 
         while (true)
-        {
-            for (ushort x = 0; x < 10; x++)
-            {
-                for (ushort y = 0; y < 10; y++)
-                {
-                    client.FramebufferUpdateRequest(0, (ushort)(x * rectW), (ushort)(y * rectH), rectW, rectH);
-                }
-            }
-        }
+            client.FramebufferUpdateRequest(1, 0, 0, width, height);
     }
 
     static void ExitAppConsole(object sender, ConsoleCancelEventArgs args)

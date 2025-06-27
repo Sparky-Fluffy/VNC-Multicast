@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,7 +56,7 @@ public class Session : ReactiveObject
         mcastIP = null;
         mcastPort = 0;
     }
-    
+
     private async Task ReceiveBitmap()
     {
         try
@@ -65,7 +64,6 @@ public class Session : ReactiveObject
             cancelToken.ThrowIfCancellationRequested();
 
             Receiver receiver = new Receiver(mcastIP, mcastPort, mcastIfaceIndex);
-            cancelToken.Register(receiver.Close);
 
             if (cancelToken.IsCancellationRequested)
             {
@@ -73,79 +71,53 @@ public class Session : ReactiveObject
                 cancelToken.ThrowIfCancellationRequested();
             }
 
-            int W = 0;
-            int H = 0;
+            ref ushort W = ref receiver.Width;
+            ref ushort H = ref receiver.Height;
+            ref ushort w = ref receiver.rectWidth;
+            ref ushort h = ref receiver.rectHeight;
             ref ushort x = ref receiver.rectX;
             ref ushort y = ref receiver.rectY;
-            ref byte[] pixelData = ref receiver.pixelData;
+            ref byte[] pixelData = ref receiver.data;
             ref byte p = ref receiver.pixelFormat;
 
-            SKBitmap bitmap;
             SKData enc;
             MemoryStream ms;
-            nint pixels;
 
-            int iter;
-            int i = 1;
+            if (cancelToken.IsCancellationRequested)
+            {
+                receiver.Close();
+                cancelToken.ThrowIfCancellationRequested();
+            }
+            
+            receiver.ReceiveRectData();
+
+            SKBitmap bitmap = new SKBitmap
+            (
+                W, H,
+                SKColorType.Bgra8888,
+                SKAlphaType.Premul
+            );
+
+            nint pixels = bitmap.GetPixels();
 
             while (true)
             {
-                if (cancelToken.IsCancellationRequested)
+                for (int i = 0; i < h; i++)
                 {
-                    receiver.Close();
-                    cancelToken.ThrowIfCancellationRequested();
-                }
-
-                receiver.ReceiveRectData();
-
-                W = receiver.rectWidth * 10;
-                H = receiver.rectHeight * 10;
-
-                bitmap = new SKBitmap
-                (
-                    W, H,
-                    SKColorType.Bgra8888,
-                    SKAlphaType.Premul
-                );
-
-                pixels = bitmap.GetPixels();
-
-                if (cancelToken.IsCancellationRequested)
-                {
-                    receiver.Close();
-                    cancelToken.ThrowIfCancellationRequested();
-                }
-
-                receiver.ReceivePixels();
-
-                SetPixels(p * (y * W + x), pixelData, pixels);
-
-                iter = H * (10 - x / receiver.rectWidth) - y;
-
-                while (iter-- > 1)
-                {
-                    if (cancelToken.IsCancellationRequested)
+                    for (int j = 0; j < w; j++)
                     {
-                        receiver.Close();
-                        cancelToken.ThrowIfCancellationRequested();
+                        if (cancelToken.IsCancellationRequested)
+                        {
+                            receiver.Close();
+                            cancelToken.ThrowIfCancellationRequested();
+                        }
+                        receiver.ReceivePixel();
+                        SetPixels(p * (y * W + i * W + x + j), pixelData, p, pixels);
                     }
-
-                    receiver.ReceiveRectData();
-
-                    if (cancelToken.IsCancellationRequested)
-                    {
-                        receiver.Close();
-                        cancelToken.ThrowIfCancellationRequested();
-                    }
-
-                    receiver.ReceivePixels();
-
-                    SetPixels(p * (y * W + x), pixelData, pixels);
                 }
 
                 using (enc = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100))
                 {
-
                     using (ms = new MemoryStream())
                     {
                         enc.SaveTo(ms);
@@ -153,14 +125,16 @@ public class Session : ReactiveObject
                         ViewBitmap = new Bitmap(ms);
                     }
                 }
+
+                receiver.ReceiveRectData();
             }
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             Console.WriteLine(ex);
         }
     }
 
-    private void SetPixels(int offset, byte[] pixels, nint pixelsDest) =>
-        Marshal.Copy(pixels, 0, pixelsDest + offset, pixels.Length);
+    private void SetPixels(int offset, byte[] pixels, int size, nint pixelsDest) =>
+        Marshal.Copy(pixels, 1, pixelsDest + offset, size);
 }
