@@ -37,7 +37,6 @@ public class Receiver
 
         multicastSocket.Bind(endPoint);
 
-
         MulticastOption mcastOption = new MulticastOption
         (
             multicastGroupAddress, IPAddress.Any
