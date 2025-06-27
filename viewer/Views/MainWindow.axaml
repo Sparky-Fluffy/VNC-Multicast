@@ -3,6 +3,7 @@
         xmlns:vm="using:viewer.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
         x:Class="viewer.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -10,46 +11,143 @@
         Title="VNC Viewer"
         MinWidth="320"
         MinHeight="480"
-        RequestedThemeVariant="Dark">
+        RequestedThemeVariant="{Binding Theme}">
+
+    <Window.Title>
+        <MultiBinding StringFormat="{}{0} {1}">
+            <Binding Path="Lang.TitleFirst"/>
+            <Binding Path="Lang.TitleSecond"/>
+        </MultiBinding>
+    </Window.Title>
+
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
     <Border Classes="window">
         <Grid>
-            <Grid Name="Page1" RowDefinitions="Auto, *" Classes="body" Grid.Row="0" IsVisible="True">
+            <!--#region FORM PAGE-->
+            <Grid Name="FormPage" RowDefinitions="Auto, *" Classes="body"
+            Grid.Row="0" IsVisible="{Binding PagesVisible[0]}">
+                <!--#region HEADER-->
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
-                        <TextBlock Classes="title special" Text="{Binding AppTitleFirst}"/>
-                        <TextBlock Classes="title" Text="{Binding AppTitleSecond}"/>
+                        <TextBlock Classes="title special" Text="{Binding Lang.TitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding Lang.TitleFirst}"/>
                     </StackPanel>
                 </Border>
-                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="*, Auto" Grid.Row="1">
-                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                <!--#endregion-->
+
+                <!--#region FORM-->
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="Auto, Auto" Grid.Row="1" VerticalAlignment="Center">
+                    <ListBox Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle">
+                        <ListBoxItem Classes="form">
+                            <Grid ColumnDefinitions="1*, 1*, 1*, 1*, 1*">
+                                <Label Classes="roundedMin" Content="IP" Grid.Column="0"/>
+                                <TextBox Name="IpInput" Classes="ipInput" Text="{Binding IpParts[0]}" Grid.Column="1"/>
+                                <TextBox Name="IpInput1" Classes="ipInput" Text="{Binding IpParts[1]}" Grid.Column="2"/>
+                                <TextBox Name="IpInput2" Classes="ipInput" Text="{Binding IpParts[2]}" Grid.Column="3"/>
+                                <TextBox Name="IpInput3" Classes="ipInput" Text="{Binding IpParts[3]}" Grid.Column="4"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem Classes="form">
+                            <Grid ColumnDefinitions="1*, 4*">
+                                <Label Classes="roundedMin" Content="{Binding Lang.PortName}" Grid.Column="0"/>
+                                <TextBox Name="PortInput" Classes="portInput" Text="{Binding McastPortString}" Grid.Column="1"/>
+                            </Grid>
+                        </ListBoxItem>
                     </ListBox>
-                    <Button Classes="selectButton rounded" Content="SELECT" Grid.Row="1" Grid.Column="1" Click="Select_OnClick" HotKey="W"/>
+                    <Button Classes="formButton addButton rounded" Content="{Binding Lang.AddName}"
+                    Grid.Row="1" Grid.Column="1" Command="{Binding AddSession}"/>
                 </Grid>
+                <!--#endregion-->
             </Grid>
-            <Grid Name="Page2" RowDefinitions="Auto, *, Auto" Classes="body" Grid.Row="1" IsVisible="False">
+            <!--#endregion-->
+
+            <!--#region List PAGE-->
+            <Grid Name="ListPage" RowDefinitions="Auto, *" Classes="body"
+            Grid.Row="0" IsVisible="{Binding PagesVisible[1]}">
+                <!--#region HEADER-->
+                <Border Classes="header" Grid.Row="0">
+                    <StackPanel Classes="title">
+                        <TextBlock Classes="title special" Text="{Binding Lang.TitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding Lang.TitleSecond}"/>
+                    </StackPanel>
+                </Border>
+                <!--#endregion-->
+                
+                <!--#region List-->
+                <Grid ColumnDefinitions="1*, 2*, 1*" RowDefinitions="1*, Auto" Grid.Row="1">
+                    <ListBox Name="SessionPicker" Classes="rounded" Grid.Row="0" Grid.Column="1" SelectionMode="Toggle" ItemsSource="{Binding ListItems}" SelectedItem="{Binding SelectedListItem}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Ip}"/>
+                                    <TextBlock Text="{Binding Port}" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Classes="formButton selectButton rounded" Content="{Binding Lang.SelectName}"
+                    Grid.Row="1" Grid.Column="1" Command="{Binding SelectSession}"/>
+                </Grid>
+                <!--#endregion-->
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region VIEW PAGE-->
+            <Grid Name="ViewPage" RowDefinitions="Auto, *, Auto" Classes="body"
+            Grid.Row="1" IsVisible="{Binding PagesVisible[2]}">
+                <!--#region HEADER-->
                 <Border Name="ViewHeader" Classes="header" Grid.Row="0"></Border>
+                <!--#endregion-->
+
+                <!--#region SCREENVIEW-->
                 <Grid Name="ScreenView" Grid.Row="1" ColumnDefinitions="1*, 4*, 1*" RowDefinitions="*, Auto">
                     <Border Classes="rounded">
-                        <Image Name="ScreenViewImage"/>
+                        <Image Name="ScreenViewImage" Source="{Binding MainSession.ViewBitmap}"/>
                     </Border>
                 </Grid>
+                <!--#endregion-->
+
+                <!--#region BUTTONS-->
                 <Grid Name="FunctionButtons" Grid.Row="2" ColumnDefinitions="Auto, 1*, Auto, 1*, Auto">
-                    <Button Classes="roundedMax" Content="Audio" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
+                    <Button Classes="roundedMax" Click="Audio_OnClick" Grid.Column="1" HorizontalAlignment="Right">
                         <Path Data="{DynamicResource AudioImage}"/>
                     </Button>
-                    <Button Classes="cancelButton roundedMax" Content="Cancel" Click="Cancel_OnClick" Grid.Column="2" HorizontalAlignment="Center">
+
+                    <Button Classes="cancelButton roundedMax" Click="Cancel_OnClick" Command="{Binding CancelSession}" Grid.Column="2" HorizontalAlignment="Center">
                         <Path Data="{DynamicResource CancelImage}"/>
                     </Button>
-                    <Button Classes="roundedMax" Content="Expand" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
+                    
+                    <Button Classes="roundedMax" Click="Expand_OnClick" Grid.Column="3" HorizontalAlignment="Left">
                         <Path Data="{DynamicResource ExpandImage}"/>
                     </Button>
                 </Grid>
+                <!--#endregion-->
             </Grid>
-            <Button Name="ThemeSwitch" Classes="roundedMax" Click="SwitchTheme_OnClick"/>
+            <!--#endregion-->
+
+            <StackPanel Name="AppButtons" Classes="lowButtons">
+                <Button Classes="roundedMax" Content="{Binding Lang.CultureName}" Command="{Binding SwitchLang}"/>
+                <Button Classes="roundedMax" Content="{Binding ThemeName}" Command="{Binding SwitchTheme}"/>
+                <Button Classes="roundedMax" Content="{Binding NetIface.NetIfaceName}" Command="{Binding SwitchNetIface}"/>
+            </StackPanel>
+
+            <StackPanel Name="ListButtons" Classes="lowButtons">
+                <Button Classes="roundedMax" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[0]}">
+                    <Path Data="{DynamicResource ReturnImage}"/>
+                </Button>
+                <Button Classes="roundedMax" Command="{Binding UpdateSessionList}" IsVisible="{Binding ListButtonsVisible[1]}">
+                    <Path Data="{DynamicResource ReloadImage}"/>
+                </Button>
+                <Button Classes="roundedMax" Command="{Binding OpenNewSessionForm}" IsVisible="{Binding ListButtonsVisible[2]}">
+                    <Path Data="{DynamicResource PlusImage}"/>
+                </Button>
+                <Button Classes="roundedMax cancelButton" Command="{Binding DeleteSession}" IsVisible="{Binding ListButtonsVisible[2]}">
+                    <Path Data="{DynamicResource DeleteImage}"/>
+                </Button>
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

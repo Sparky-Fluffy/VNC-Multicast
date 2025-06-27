@@ -31,6 +31,10 @@
     <Style Selector="^.roundedMax">
         <Setter Property="CornerRadius" Value="30"/>
     </Style>
+
+    <Style Selector="^.roundedMin">
+        <Setter Property="CornerRadius" Value="7"/>
+    </Style>
 </Style>
 
 <Style Selector="Border.rounded">
@@ -62,15 +66,79 @@
     <Setter Property="Foreground" Value="{DynamicResource SCyan}"/>
 </Style>
 
+<!--FORM-->
+
+<Style Selector="Label, TextBox">
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+</Style>
+
+<Style Selector="Label">
+    <Setter Property="Background" Value="{DynamicResource MBlue}"/>
+    <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="MinWidth" Value="58"/>
+    <Setter Property="Margin" Value="7 0"/>
+    <Setter Property="Padding" Value="7"/>
+</Style>
+
+<Style Selector="TextBox">
+    <Setter Property="Background" Value="{DynamicResource MWhite}"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="TextAlignment" Value="Left"/>
+    <Setter Property="MinWidth" Value="10"/>
+    <Setter Property="Margin" Value="3 0"/>
+    <Setter Property="Padding" Value="5 7 0 7"/>
+
+    <Style Selector="^:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="^ :is(TemplatedControl)">
+        <Setter Property="Foreground" Value="{DynamicResource ISGrey}"/>
+    </Style>
+
+    <Style Selector="^.ipInput">
+        <Setter Property="MaxLength" Value="3"/>
+
+        <Style Selector="^ /template/ TextBlock#PART_Watermark">
+            <Setter Property="Text" Value="255"/>
+        </Style>
+    </Style>
+
+    <Style Selector="^.portInput">
+        <Setter Property="MaxLength" Value="5"/>
+
+        <Style Selector="^ /template/ TextBlock#PART_Watermark">
+            <Setter Property="Text" Value="65535"/>
+        </Style>
+    </Style>
+</Style>
+
+<Style Selector="ListBoxItem.form :is(TemplatedControl)">
+    <Setter Property="CornerRadius" Value="7"/>
+</Style>
+
 <!--LISTBOX-->
 
 <Style Selector="ListBox">
     <Setter Property="Background" Value="{DynamicResource SGrey}"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
     <Setter Property="MinWidth" Value="300"/>
     <Setter Property="MaxWidth" Value="500"/>
     <Setter Property="Margin" Value="0 50 0 20"/>
-    <Setter Property="Padding" Value="10"/>
+    <Setter Property="Padding" Value="10 10 10 50"/>
+
+    <Style Selector="^ /template/ ScrollContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="AliceBlue"/>
+    </Style>
+
+    <Style Selector="^#SessionPicker">
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </Style>
 </Style>
 
 <Style Selector="ListBoxItem">
@@ -81,17 +149,27 @@
     <Setter Property="Margin" Value="0 0 0 10"/>
     <Setter Property="Padding" Value="10"/>
 
+    <Style Selector="^.form">
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style> 
+
+    <Style Selector="^.form:selected /template/ ContentPresenter,
+                    ^.form:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource TGrey}"/>
+    </Style>      
+
     <Style Selector="^:selected /template/ ContentPresenter,
                     ^:pointerover /template/ ContentPresenter">
         <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource MLWhite}"/>
     </Style>
 
-    <Style Selector="^:selected /template/ ContentPresenter">
+    <Style Selector="^:selected:not(.form) /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource MBlue}"/>
         <Setter Property="Padding" Value="15"/>
     </Style>
 
-    <Style Selector="^:pointerover /template/ ContentPresenter">
+    <Style Selector="^:pointerover:not(.form) /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource TBlue}"/>
     </Style>
 </Style>
@@ -114,11 +192,19 @@
         <Setter Property="Foreground" Value="{DynamicResource MBlue}"/>
     </Style>
 
-    <Style Selector="^.selectButton">
+    <Style Selector="^.formButton">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="MinWidth" Value="300"/>
+        <Setter Property="MinWidth" Value="160"/>
         <Setter Property="MaxWidth" Value="340"/>
-        <Setter Property="Margin" Value="70 0 70 50"/>
+        <Setter Property="Margin" Value="70 40 70 50"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+
+        <Style Selector="^.selectButton">
+            <Setter Property="Margin" Value="70 40 70 50"/>
+        </Style>
+        <Style Selector="^.addButton">
+            <Setter Property="Margin" Value="70 12 70 50"/>
+        </Style>
     </Style>
 
     <Style Selector="^ > Path">
@@ -193,12 +279,34 @@
     </Style>
 </Style>
 
-<Style Selector="Button#ThemeSwitch">
-    <Setter Property="HorizontalAlignment" Value="Right"/>
+<Style Selector="StackPanel.lowButtons">
     <Setter Property="VerticalAlignment" Value="Bottom"/>
-    <Setter Property="FontSize" Value="14"/>
-    <Setter Property="Padding" Value="5"/>
+    <Setter Property="Orientation" Value="Vertical"/>
     <Setter Property="Margin" Value="5"/>
+    <Setter Property="Spacing" Value="5"/>
+
+    <Style Selector="^ > Button">
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="10"/>
+    </Style>
+
+    <Style Selector="^#ListButtons">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+
+        <Style Selector="^ > Button">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Width" Value="40"/>
+        </Style>
+    </Style>
+
+    <Style Selector="^#AppButtons">
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+
+        <Style Selector="^ > Button">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </Style>
 </Style>
 
 </Styles>

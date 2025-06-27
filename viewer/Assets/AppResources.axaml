@@ -7,6 +7,7 @@
             <SolidColorBrush x:Key="TGrey">#d5dbf5</SolidColorBrush>
             <SolidColorBrush x:Key="TBlue">#a5b3f0</SolidColorBrush>
             <SolidColorBrush x:Key="FGrey">#757c9c</SolidColorBrush>
+            <SolidColorBrush x:Key="ISGrey">#383d52</SolidColorBrush>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key='Dark'>
@@ -15,6 +16,7 @@
             <SolidColorBrush x:Key="TGrey">#434b66</SolidColorBrush>
             <SolidColorBrush x:Key="TBlue">#748cf7</SolidColorBrush>
             <SolidColorBrush x:Key="FGrey">#22242e</SolidColorBrush>
+            <SolidColorBrush x:Key="ISGrey">#e1e5f5</SolidColorBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -45,5 +47,21 @@
         M 380.879608406508 158.490234375 L 440.879608406508 158.490234375 L 440.879608406508 218.490234375 L 440.879608406508 158.490234375 L 380.879608406508 158.490234375 Z
         M 273.6298828125 327.490234375 L 159.4562828125 442.490234375 Z
         M 159.4562828125 382.490234375 L 159.4562828125 442.490234375 L 219.4562828125 442.490234375 L 159.4562828125 442.490234375 L 159.4562828125 382.490234375 Z
+    </StreamGeometry>
+
+    <StreamGeometry x:Key="ReloadImage">
+        M 250 400 A 150 150 0 0 1 250 100 A 150 150 0 0 1 400 250 A 150 150 0 0 1 301.303021498850 390.953893117886
+        M 301.303021498850 290.953893117886 L 301.303021498850 390.953893117886 L 401.303021498850 390.953893117886
+    </StreamGeometry>
+
+    <StreamGeometry x:Key="PlusImage">
+        M 0 150 L 300 150 M 150 0 L 150 300
+    </StreamGeometry>
+
+    <StreamGeometry x:Key="DeleteImage">
+        M 0 0 L 300 300 M 300 0 L 0 300
+    </StreamGeometry>
+    <StreamGeometry x:Key="ReturnImage">
+        M 150 0 L 0 150 L 150 300 M 0 150 L 400 150
     </StreamGeometry>
 </ResourceDictionary>

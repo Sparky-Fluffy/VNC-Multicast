@@ -23,7 +23,7 @@ public class Receiver
 
     public byte pixelFormat = 0;
 
-    public Receiver(IPAddress multicastGroupAddress, ushort port)
+    public Receiver(IPAddress multicastGroupAddress, ushort port, int ifaceIndex)
     {
         multicastSocket = new Socket
         (
@@ -33,12 +33,12 @@ public class Receiver
         endPoint = new IPEndPoint(IPAddress.Any, port);
 
         multicastSocket.Bind(endPoint);
-        
+
         MulticastOption mcastOption = new MulticastOption
         (
             multicastGroupAddress, IPAddress.Any
         );
-
+        mcastOption.InterfaceIndex = ifaceIndex;
         multicastSocket.SetSocketOption
         (
             SocketOptionLevel.IP, SocketOptionName.AddMembership, mcastOption
@@ -76,4 +76,11 @@ public class Receiver
     }
 
     public void ReceivePixels() => multicastSocket.ReceiveAsync(pixelData);
+
+    public void Close()
+    {
+        multicastSocket.Shutdown(SocketShutdown.Receive);
+        multicastSocket.Close();
+        multicastSocket.Dispose();
+    }
 }
