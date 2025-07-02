@@ -129,10 +129,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #endregion
 
-    private string addrPath = @"addresses.json";
-    private string langPath = @"language/";
-    private string settingsPath = @"settings.json";
-
     private bool IsAddress(string ip, ushort port)
     {
         if (IPAddress.TryParse(ip, out var ips))
@@ -193,7 +189,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IpParts = new ObservableCollection<string> { "", "", "", "" };
         McastPortString = "";
 
-        JsonManager.Add(addrPath, new AddressHolder { Ip = mcastIP, Port = mcastPort });
+        JsonManager.Add(Paths.Address, new AddressHolder { Ip = mcastIP, Port = mcastPort });
         StartSession();
     }
 
@@ -207,7 +203,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Delete()
     {
-        JsonManager.Delete(addrPath, SelectedListItem);
+        JsonManager.Delete(Paths.Address, SelectedListItem);
         UpdateSessionList();
     }
 
@@ -215,7 +211,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public void UpdateSessionList()
     {
-        if (JsonManager.TryFetchAddresses(addrPath, out IList<AddressHolder> items))
+        if (JsonManager.TryFetchAddresses(Paths.Address, out IList<AddressHolder> items))
         {
             ListItems = new ObservableCollection<AddressHolder>(items);
             SetPage(1, 0, true);
@@ -260,12 +256,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void GetSettings()
     {
-        Lang.LangPath = langPath;
+        Lang.LangPath = Paths.Language;
         Lang.GetList();
 
         SettingsHolder? settings;
 
-        JsonManager.TryFetchSettings(settingsPath, out settings);
+        JsonManager.TryFetchSettings(Paths.Settings, out settings);
 
         if (settings?.Theme == "Light") Theme = ThemeVariant.Light;
         else if (settings?.Theme == "Dark") Theme = ThemeVariant.Dark;
@@ -316,7 +312,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         JsonManager.SaveSettings
         (
-            settingsPath,
+            Paths.Settings,
             new SettingsHolder
             {
                 Lang = Lang.cultureID,
