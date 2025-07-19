@@ -33,7 +33,7 @@
                 <Border Classes="header" Grid.Row="0">
                     <StackPanel Classes="title">
                         <TextBlock Classes="title special" Text="{Binding Lang.TitleFirst}"/>
-                        <TextBlock Classes="title" Text="{Binding Lang.TitleFirst}"/>
+                        <TextBlock Classes="title" Text="{Binding Lang.TitleSecond}"/>
                     </StackPanel>
                 </Border>
                 <!--#endregion-->
