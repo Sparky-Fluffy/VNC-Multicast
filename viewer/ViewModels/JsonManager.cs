@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace viewer.ViewModels;
@@ -17,13 +17,13 @@ public static class JsonManager
 
     public static bool TryFetchAddresses(string path, out IList<AddressHolder> items)
     {
-        return TryFetch<JArray, AddressHolder>(path, out items);
+        return TryFetch(path, out items);
     }
 
     public static bool TryFetchLanguages(string path, out Dictionary<string, string> dict)
     {
         dict = new Dictionary<string, string>();
-        if (TryFetch<JArray, LangHolder>(path, out var items) &&
+        if (TryFetch<LangHolder>(path, out var items) &&
             items != null && items.Count > 0)
             dict = items.ToDictionary(t => t.Name, t => t.Value);
         return dict != null;
@@ -33,80 +33,72 @@ public static class JsonManager
     {
         settings = null;
 
-        if (TryFetch<JObject, SettingsHolder>(path, out var items) &&
+        if (TryFetch<SettingsHolder>(path, out var items) &&
             items != null && items.Count > 0)
             settings = items[0];
 
         return settings != null;
     }
 
-    public static bool TryFetch<TNode, TObj>(string path, out IList<TObj> items)
-        where TNode : JToken
+    public static bool TryFetch<TObj>(string path, out IList<TObj> items)
     {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.MissingMemberHandling = MissingMemberHandling.Error;
+        serializer.NullValueHandling = NullValueHandling.Ignore;
+        serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
         items = null;
 
         if (!File.Exists(path)) return false;
 
-        TNode? node = (TNode?)TryParseJson(path);
+        JToken? node = TryParseJson(path);
         if (node == null || node.Count() < 1) return false;
 
-        if (node is JObject)
-            items = [(TObj)node.ToObject(typeof(TObj))!];
+        if (node is JObject) items = [node.ToObject<TObj>()!];
         else if (node is JArray)
             items =
             [..
-                node?.Select
+                node.Where
                 (
                     a =>
                     {
-                        try { return a.ToObject<TObj>(); }
-                        catch { return (TObj)typeof(TObj).GetConstructor
-            (
-                BindingFlags.Instance | BindingFlags.Public,
-                null,
-                new Type[0],
-                new ParameterModifier[0]
-            ).Invoke(null); }
+                        try { return a.Count() > 0 && a.ToObject<TObj>(serializer) != null; }
+                        catch { return false; }
                     }
-                )!
+                )
+                .Select(a => a.ToObject<TObj>()!)
             ];
 
         return items != null;
     }
     
     public static void SaveSettings(string path, SettingsHolder settings) =>
-        Save<JObject, SettingsHolder>(path, settings);
+        Save<JObject>(path, settings);
 
     public static void Add(string path, AddressHolder address) =>
-        Save<JArray, AddressHolder>(path, address);
+        Save<JArray>(path, address);
 
-    public static void Save<TNode, TObj>(string path, TObj obj)
-        where TNode : JToken where TObj : notnull
+    public static void Save<TNode>(string path, object obj) where TNode : JToken
     {
         if (obj == null) return;
-        TNode? node = null;
+        JToken? node = null;
 
         if (!File.Exists(path))
         {
             FileStream? file = File.Create(path);
             file?.Close();
         }
-        else node = (TNode?)TryParseJson(path);
-
-        if (node == null)
-            node = (TNode)typeof(TNode).GetConstructor
-            (
-                BindingFlags.Instance | BindingFlags.Public,
-                null,
-                new Type[0],
-                new ParameterModifier[0]
-            ).Invoke(null);
-
-        if (node is JObject)
+        
+        if (typeof(TNode) == typeof(JObject))
             node = (TNode)JToken.FromObject(obj);
-        else if (node is JArray)
-            (node as JArray)!.Add(JToken.FromObject(obj));
-        File.WriteAllText(path, node.ToString());
+
+        else if (typeof(TNode) == typeof(JArray))
+        {
+            node = (JArray?)TryParseJson(path);
+            node ??= new JArray();
+            (node as JArray)?.Add(JToken.FromObject(obj));
+        }
+            
+        File.WriteAllText(path, node!.ToString());
     }
 
     public static void Delete(string path, object selected)
