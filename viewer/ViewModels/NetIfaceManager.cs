@@ -11,7 +11,8 @@ public class NetIfaceManager : SwitchManager<NetIfaceManager, NetworkInterface>
 
     protected override void SetItem(int index)
     {
-        if (list == null || index < 0) return;
+        if (list == null) return;
+        if (index < 0) index = 0;
 
         var iface = list.ElementAt(index);
         NetIfaceName = iface.Name;

@@ -276,7 +276,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         else SwitchLang();
 
-        if (settings!= null)
+        if (settings != null)
         {
             NetIface.NetIfaceName = settings.NetInterface;
             NetIface.GetList();
